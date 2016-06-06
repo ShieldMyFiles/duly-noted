@@ -1,0 +1,7 @@
+{
+    "files": [
+        "./testFile1.js"
+    ], 
+    "commentRegExp": "\\/\\/",
+    "anchorRegExp": "![a-zA-Z0-9/]+"
+}

@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "glob": "registry:npm/glob#6.0.0+20160211003958",
+    "minimist": "registry:npm/minimist#1.0.0+20160229232932"
+  },
+  "globalDependencies": {
+    "line-reader": "registry:dt/line-reader#0.0.0+20160316155526",
+    "log4js": "registry:dt/log4js#0.0.0+20160316155526",
+    "node": "registry:dt/node#6.0.0+20160602155235",
+    "q": "registry:dt/q#0.0.0+20160417152954",
+    "underscore": "registry:dt/underscore#1.7.0+20160505190121",
+    "xregexp": "registry:dt/xregexp#3.0.0+20160317120654"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "duly-noted",
+  "version": "1.0.0",
+  "description": "A better way to document code. ",
+  "preferGlobal": true,
+  "bin": {
+    "duly-noted": "./bin/duly-noted.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/shieldmyfiles/duly-noted.git"
+  },
+  "author": "Christopher Webster <chris@shieldmyfiles.com>",
+  "license": "UNLICENSED",
+  "homepage": "https://bitbucket.org/shieldmyfiles/duly-noted#readme",
+  "dependencies": {
+    "glob": "^7.0.3",
+    "line-reader": "^0.4.0",
+    "log4js": "^0.6.36",
+    "minimist": "^1.2.0",
+    "q": "^2.0.3",
+    "underscore": "^1.8.3",
+    "xregexp": "^3.1.1"
+  }
+}
