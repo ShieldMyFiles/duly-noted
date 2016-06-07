@@ -31,7 +31,7 @@ export function run () {
          let referenceParser = new ReferenceParser(files, new RegExp(config.commentRegExp), new RegExp(config.anchorRegExp));
          referenceParser.parse()
          .then((response) => {
-             logger.debug(response);
+             logger.debug(JSON.stringify(response.getAllTags()));
          })
          .catch( (err) => {
              logger.error(err.message);

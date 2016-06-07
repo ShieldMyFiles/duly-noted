@@ -1,10 +1,10 @@
-import {IReferenceCollection, ReferenceCollection} from "../classes/referenceCollection";
-import log4js = require("log4js");
+import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";
 import XRegExp = require("xregexp");
 import lineReader = require("line-reader");
 import Q = require("q");
 import {doInOrder, doNext} from "../helpers/helpers";
 
+import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::ReferenceParser");
 
 export interface IReferenceParser {
@@ -18,20 +18,17 @@ export class ReferenceParser implements IReferenceParser {
     anchorRegExp: RegExp;
     commentRegExp: RegExp;
 
-    anchors: string[];
-
     constructor(files: string[], commentRegExp: RegExp, anchorRegExp: RegExp) {
         logger.debug("ready");
         this.files = files;
         this.rootCollection = new ReferenceCollection("root");
         this.anchorRegExp = anchorRegExp;
         this.commentRegExp = commentRegExp;
-        this.anchors = [];
     }
 
-    public parse(): Q.Promise<any> {
+    public parse(): Q.Promise<IReferenceCollection> {
         let that = this;
-        return Q.Promise((resolve, reject) => {
+        return Q.Promise<IReferenceCollection>((resolve, reject) => {
             logger.info("Starting parse actions for " + that.files.length + "files.");
 
             let parseActions = [];
@@ -42,7 +39,7 @@ export class ReferenceParser implements IReferenceParser {
 
             Q.all(parseActions)
             .then(() => {
-                resolve(that.anchors);
+                resolve(that.rootCollection);
             });
        });
     }
@@ -52,10 +49,10 @@ export class ReferenceParser implements IReferenceParser {
         return Q.Promise((resolve, reject) => {
             // read all lines:
             logger.info("Working on file: " + fileName);
-            let i = 0;
+            let i = 1; // Line numbering traditionally starts at 1
             lineReader.eachLine(fileName, (line, last) => {
                 console.info("Parseing line: " + i);
-                that.parseLine(line)
+                that.parseLine(line, fileName, i)
                 .then((anchors) => {
                     if (last) {
                         resolve(null);
@@ -67,13 +64,13 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 
-    parseLine(line: string): Q.Promise<{}> {
+    parseLine(line: string, fileName: string, lineNumber: number): Q.Promise<{}> {
         let that = this;
         return Q.Promise<string[]>((resolve, reject) => {
             let commentStart = line.search(that.commentRegExp);
             if (commentStart > -1) {
                 logger.debug("found comment: " + line.substr(commentStart));
-                that.parseComment(line.substr(commentStart))
+                that.parseComment(line.substr(commentStart), fileName, lineNumber)
                 .then(() => {
                     resolve(null);
                 });
@@ -83,18 +80,21 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 
-    parseComment(comment: string): Q.Promise<{}> {
+    parseComment(comment: string, fileName: string, lineNumber: number): Q.Promise<{}> {
         let that = this;
         return Q.Promise<{}>((resolve, reject) => {
             let pos = 0;
             let match;
 
             while (match = XRegExp.exec(comment, that.anchorRegExp, pos, false)) {
-                logger.debug("found anchor: " + match[0]);
-                that.anchors.push(match[0]);
+                logger.debug("found anchor: " + match[1]);
+
+                let parts = match[1].split("/");
+
+                that.rootCollection.addAnchorTag(parts, fileName, lineNumber);
+                resolve(null);
                 pos = match.index + match[0].length;
             }
-
             resolve(null);
         });
     };

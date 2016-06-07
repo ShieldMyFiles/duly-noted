@@ -4,6 +4,8 @@ export interface IReferenceCollection {
     subcollections?: IReferenceCollection[];
     addAnchor(anchor: IAnchor): void;
     addSubcollection(collection: IReferenceCollection): void;
+    addAnchorTag(anchorTag: string[], fileName: string, lineNumber: number): void;
+    getAllTags(parentPath?: string): IAnchor[];
 }
 export interface IAnchor {
     id: string;
@@ -17,4 +19,6 @@ export declare class ReferenceCollection implements IReferenceCollection {
     constructor(id: string);
     addAnchor(anchor: IAnchor): void;
     addSubcollection(collection: IReferenceCollection): void;
+    addAnchorTag(anchorTag: string[], fileName: string, lineNumber: number): void;
+    getAllTags(parentPath?: string): IAnchor[];
 }

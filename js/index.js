@@ -26,7 +26,7 @@ function run() {
         var referenceParser = new referenceParser_1.ReferenceParser(files, new RegExp(config.commentRegExp), new RegExp(config.anchorRegExp));
         referenceParser.parse()
             .then(function (response) {
-            logger.debug(response);
+            logger.debug(JSON.stringify(response.getAllTags()));
         })
             .catch(function (err) {
             logger.error(err.message);
