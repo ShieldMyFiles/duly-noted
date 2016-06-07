@@ -32,7 +32,8 @@ export function run () {
                                                    new RegExp(config.commentRegExp),
                                                    new RegExp(config.anchorRegExp),
                                                    new RegExp(config.longCommentOpenRegExp),
-                                                   new RegExp(config.longCommentCloseRegExp));
+                                                   new RegExp(config.longCommentCloseRegExp),
+                                                   config.outputDir);
          referenceParser.parse()
          .then((response) => {
              logger.debug(JSON.stringify(response.getAllTags()));

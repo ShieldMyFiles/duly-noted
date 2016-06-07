@@ -1,13 +1,17 @@
 "use strict";
 var referenceCollection_1 = require("../classes/referenceCollection");
+var fs_1 = require("fs");
+var mkdirp = require("mkdirp");
+var path = require("path");
 var XRegExp = require("xregexp");
 var lineReader = require("line-reader");
 var Q = require("q");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceParser");
 var ReferenceParser = (function () {
-    function ReferenceParser(files, commentRegExp, anchorRegExp, longCommentOpenRegExp, longCommentCloseRegExp) {
+    function ReferenceParser(files, commentRegExp, anchorRegExp, longCommentOpenRegExp, longCommentCloseRegExp, outputDir) {
         logger.debug("ready");
+        this.outputDir = outputDir;
         this.files = files;
         this.rootCollection = new referenceCollection_1.ReferenceCollection("root");
         this.anchorRegExp = anchorRegExp;
@@ -34,27 +38,98 @@ var ReferenceParser = (function () {
         var insideLongComment = false;
         return Q.Promise(function (resolve, reject) {
             logger.info("Working on file: " + fileName);
-            var i = 1;
+            that.file = {
+                name: fileName,
+                lines: [],
+                type: "notSure"
+            };
+            var lineNumber = 0;
             lineReader.eachLine(fileName, function (line, last) {
-                logger.info("Parsing line: " + i);
+                logger.info("Parsing line: " + lineNumber);
+                var thisLine = {
+                    number: lineNumber
+                };
+                that.file.lines.push(thisLine);
                 var longCommentStart = line.search(that.longCommentOpenRegExp);
                 if (!insideLongComment && longCommentStart === 0) {
                     insideLongComment = true;
+                    that.file.lines[lineNumber].longComment = true;
                 }
-                that.parseLine(line, fileName, i, insideLongComment)
-                    .then(function (anchors) {
-                    if (last) {
-                        resolve(null);
-                        return false;
+                if (!insideLongComment) {
+                    var commentStart = line.search(that.commentRegExp);
+                    if (commentStart > -1) {
+                        that.file.lines[lineNumber].comment = line.substr(commentStart);
+                        that.file.lines[lineNumber].code = line.substr(0, commentStart - 1);
+                        that.parseComment(line.substr(commentStart), fileName, lineNumber)
+                            .then(function () {
+                            if (last) {
+                                that.writeOutFile()
+                                    .then(function () {
+                                    resolve(null);
+                                    return false;
+                                })
+                                    .catch(function (err) {
+                                    logger.fatal(err.message);
+                                });
+                            }
+                        });
                     }
-                });
+                    else {
+                        that.file.lines[lineNumber].code = line;
+                        if (last) {
+                            that.writeOutFile()
+                                .then(function () {
+                                resolve(null);
+                                return false;
+                            })
+                                .catch(function (err) {
+                                logger.fatal(err.message);
+                            });
+                        }
+                    }
+                }
+                else {
+                    that.file.lines[lineNumber].comment = line;
+                    that.parseComment(line, fileName, lineNumber)
+                        .then(function () {
+                        if (last) {
+                            that.writeOutFile()
+                                .then(function () {
+                                resolve(null);
+                                return false;
+                            })
+                                .catch(function (err) {
+                                logger.fatal(err.message);
+                            });
+                        }
+                    });
+                }
                 if (insideLongComment) {
                     var longCommentEnd = line.search(that.longCommentCloseRegExp);
                     if (longCommentEnd > -1) {
                         insideLongComment = false;
                     }
                 }
-                i++;
+                lineNumber++;
+            });
+        });
+    };
+    ReferenceParser.prototype.writeOutFile = function () {
+        var that = this;
+        return Q.Promise(function (resolve, reject) {
+            logger.info("Saving output for: " + that.file.name);
+            var filePathArray = path.join(that.outputDir, that.file.name + ".json").split("/");
+            filePathArray.pop();
+            var filePath = filePathArray.join("/");
+            mkdirp(filePath, function (err) {
+                if (err) {
+                    logger.fatal(err.message);
+                    reject(err);
+                }
+                else {
+                    fs_1.writeFileSync(path.join(that.outputDir, that.file.name + ".json"), JSON.stringify(that.file), { flag: "w" });
+                    resolve(null);
+                }
             });
         });
     };
@@ -62,25 +137,6 @@ var ReferenceParser = (function () {
         var that = this;
         return Q.Promise(function (resolve, reject) {
             var commentStart = line.search(that.commentRegExp);
-            if (!insideLongComment) {
-                if (commentStart > -1) {
-                    logger.debug("found comment: " + line.substr(commentStart));
-                    that.parseComment(line.substr(commentStart), fileName, lineNumber)
-                        .then(function () {
-                        resolve(null);
-                    });
-                }
-                else {
-                    resolve(null);
-                }
-            }
-            else {
-                logger.debug("Inside long comment: " + line);
-                that.parseComment(line, fileName, lineNumber)
-                    .then(function () {
-                    resolve(null);
-                });
-            }
         });
     };
     ReferenceParser.prototype.parseComment = function (comment, fileName, lineNumber) {

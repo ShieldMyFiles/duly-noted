@@ -1,4 +1,8 @@
 import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";
+import {IFile, ILine} from "../classes/IFile";
+import {writeFileSync, mkdirSync, accessSync, F_OK, openSync} from "fs";
+import mkdirp = require("mkdirp");
+import * as path from "path";
 import XRegExp = require("xregexp");
 import lineReader = require("line-reader");
 import Q = require("q");
@@ -14,18 +18,22 @@ export interface IReferenceParser {
 
 export class ReferenceParser implements IReferenceParser {
     files: string[];
+    file: IFile;
     rootCollection: IReferenceCollection;
     anchorRegExp: RegExp;
     commentRegExp: RegExp;
     longCommentOpenRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
+    outputDir: string;
 
     constructor(files: string[],
                 commentRegExp: RegExp,
                 anchorRegExp: RegExp,
                 longCommentOpenRegExp: RegExp,
-                longCommentCloseRegExp: RegExp) {
+                longCommentCloseRegExp: RegExp,
+                outputDir: string) {
         logger.debug("ready");
+        this.outputDir = outputDir;
         this.files = files;
         this.rootCollection = new ReferenceCollection("root");
         this.anchorRegExp = anchorRegExp;
@@ -58,24 +66,83 @@ export class ReferenceParser implements IReferenceParser {
         return Q.Promise((resolve, reject) => {
             // read all lines:
             logger.info("Working on file: " + fileName);
-            let i = 1; // Line numbering traditionally starts at 1
+            that.file = {
+                name: fileName,
+                lines: [],
+                type: "notSure"
+            };
+
+            let lineNumber = 0; // Line numbering traditionally starts at 1
             lineReader.eachLine(fileName, (line, last) => {
-                logger.info("Parsing line: " + i);
+                logger.info("Parsing line: " + lineNumber);
+
+                let thisLine: ILine = {
+                    number: lineNumber
+                };
+                that.file.lines.push(thisLine);
 
                 let longCommentStart = line.search(that.longCommentOpenRegExp);
 
                 if (!insideLongComment && longCommentStart === 0) { // These comments must come at beginning of line.
                     insideLongComment = true;
+                    that.file.lines[lineNumber].longComment = true;
                 }
 
-                that.parseLine(line, fileName, i, insideLongComment)
-                .then((anchors) => {
-                    if (last) {
-                        resolve(null);
-                        return false;
-                    }
-                });
+                // Not inside a long comment - look for a regular comment.
+                if (!insideLongComment) {
+                    let commentStart = line.search(that.commentRegExp);
 
+                    // Contains a tradition comment
+                    if (commentStart > -1) {
+
+                        that.file.lines[lineNumber].comment = line.substr(commentStart);
+                        that.file.lines[lineNumber].code = line.substr(0, commentStart - 1);
+
+                        that.parseComment(line.substr(commentStart), fileName, lineNumber)
+                        .then(() => {
+                            if (last) {
+                                that.writeOutFile()
+                                .then(() => {
+                                    resolve(null);
+                                    return false;
+                                })
+                                .catch((err) => {
+                                    logger.fatal(err.message);
+                                });
+                            }
+                        });
+                    // Not a comment (code only)
+                    } else {
+                        that.file.lines[lineNumber].code = line;
+                        if (last) {
+                            that.writeOutFile()
+                            .then(() => {
+                                resolve(null);
+                                return false;
+                            })
+                            .catch((err) => {
+                                logger.fatal(err.message);
+                            });
+                        }
+                    }
+                } else { // Inside a long comment - so the whole thing is a comment
+                    that.file.lines[lineNumber].comment = line;
+                    that.parseComment(line, fileName, lineNumber)
+                    .then(() => {
+                        if (last) {
+                            that.writeOutFile()
+                            .then(() => {
+                                resolve(null);
+                                return false;
+                            })
+                            .catch((err) => {
+                                logger.fatal(err.message);
+                            });
+                        }
+                    });
+                }
+
+                // If this line contains a long comment closing symbol, then next line isn't long comment.
                 if (insideLongComment) {
                     let longCommentEnd = line.search(that.longCommentCloseRegExp);
                     if (longCommentEnd > -1) {
@@ -83,7 +150,27 @@ export class ReferenceParser implements IReferenceParser {
                     }
                 }
 
-                i++;
+                lineNumber++;
+            });
+        });
+    }
+
+    writeOutFile() {
+        let that = this;
+        return Q.Promise<{}>((resolve, reject) => {
+            logger.info("Saving output for: " + that.file.name);
+            let filePathArray = path.join(that.outputDir, that.file.name + ".json").split("/");
+            filePathArray.pop();
+            let filePath = filePathArray.join("/");
+            mkdirp(filePath, function (err) {
+                if (err) {
+                    logger.fatal(err.message);
+                    reject(err);
+                }
+                else {
+                    writeFileSync(path.join(that.outputDir, that.file.name + ".json"), JSON.stringify(that.file), {flag: "w"});
+                    resolve(null);
+                }
             });
         });
     }
@@ -92,25 +179,6 @@ export class ReferenceParser implements IReferenceParser {
         let that = this;
         return Q.Promise<string[]>((resolve, reject) => {
             let commentStart = line.search(that.commentRegExp);
-
-            // Not inside a long comment - look for a regular comment.
-            if (!insideLongComment) {
-                if (commentStart > -1) {
-                    logger.debug("found comment: " + line.substr(commentStart));
-                    that.parseComment(line.substr(commentStart), fileName, lineNumber)
-                    .then(() => {
-                        resolve(null);
-                    });
-                } else {
-                    resolve(null);
-                }
-            } else { // Inside a long comment - parse anchors away!
-                logger.debug("Inside long comment: " + line);
-                that.parseComment(line, fileName, lineNumber)
-                .then(() => {
-                    resolve(null);
-                });
-            }
         });
     }
 
