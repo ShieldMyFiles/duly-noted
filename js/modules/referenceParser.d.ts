@@ -9,9 +9,11 @@ export declare class ReferenceParser implements IReferenceParser {
     rootCollection: IReferenceCollection;
     anchorRegExp: RegExp;
     commentRegExp: RegExp;
-    constructor(files: string[], commentRegExp: RegExp, anchorRegExp: RegExp);
+    longCommentOpenRegExp: RegExp;
+    longCommentCloseRegExp: RegExp;
+    constructor(files: string[], commentRegExp: RegExp, anchorRegExp: RegExp, longCommentOpenRegExp: RegExp, longCommentCloseRegExp: RegExp);
     parse(): Q.Promise<IReferenceCollection>;
     parseFile(fileName: string): Q.Promise<{}>;
-    parseLine(line: string, fileName: string, lineNumber: number): Q.Promise<{}>;
+    parseLine(line: string, fileName: string, lineNumber: number, insideLongComment: boolean): Q.Promise<{}>;
     parseComment(comment: string, fileName: string, lineNumber: number): Q.Promise<{}>;
 }

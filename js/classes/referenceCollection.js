@@ -11,19 +11,19 @@ var ReferenceCollection = (function () {
     ReferenceCollection.prototype.addAnchor = function (anchor) {
         var existing = underscore_1.findWhere(this.anchors, { id: anchor.id });
         if (existing) {
-            throw new Error("Cannot add anchor '" + anchor.id + "' from " + anchor.file + ":" + anchor.line + " to " + this.id + "because it was already defined at " + existing.file + ":" + existing.line);
+            logger.error("Cannot add anchor '" + anchor.id + "' from " + anchor.file + ":" + anchor.line + " to '" + this.id + "' collection because it was already defined at " + existing.file + ":" + existing.line);
         }
         this.anchors.push(anchor);
     };
     ReferenceCollection.prototype.addSubcollection = function (collection) {
         var existingAnchor = underscore_1.findWhere(this.anchors, { id: collection.id });
         if (existingAnchor) {
-            logger.error("Cannot add collection '" + collection.id + "because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
+            logger.error("Cannot add collection '" + collection.id + "' because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
             return;
         }
         var existingCollection = underscore_1.findWhere(this.anchors, { id: collection.id });
         if (existingCollection) {
-            logger.error("Cannot add collection '" + collection.id + "because it was already defined as a subcollection of '" + collection.id + "'");
+            logger.error("Cannot add collection '" + collection.id + "' because it was already defined as a subcollection of '" + collection.id + "'");
             return;
         }
         this.subcollections.push(collection);
@@ -44,7 +44,6 @@ var ReferenceCollection = (function () {
             var i = underscore_1.findIndex(this.subcollections, function (item) {
                 return item.id === collectionTag_1;
             });
-            logger.debug("i:" + i);
             if (i > -1) {
                 logger.debug("Collection present:" + collectionTag_1);
                 return this.subcollections[i].addAnchorTag(anchorTag, fileName, lineNumber);

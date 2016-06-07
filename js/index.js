@@ -23,7 +23,7 @@ function run() {
     Q.all(getFiles)
         .then(function (results) {
         var files = _.flatten(results);
-        var referenceParser = new referenceParser_1.ReferenceParser(files, new RegExp(config.commentRegExp), new RegExp(config.anchorRegExp));
+        var referenceParser = new referenceParser_1.ReferenceParser(files, new RegExp(config.commentRegExp), new RegExp(config.anchorRegExp), new RegExp(config.longCommentOpenRegExp), new RegExp(config.longCommentCloseRegExp));
         referenceParser.parse()
             .then(function (response) {
             logger.debug(JSON.stringify(response.getAllTags()));

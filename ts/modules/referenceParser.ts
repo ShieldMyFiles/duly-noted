@@ -17,13 +17,21 @@ export class ReferenceParser implements IReferenceParser {
     rootCollection: IReferenceCollection;
     anchorRegExp: RegExp;
     commentRegExp: RegExp;
+    longCommentOpenRegExp: RegExp;
+    longCommentCloseRegExp: RegExp;
 
-    constructor(files: string[], commentRegExp: RegExp, anchorRegExp: RegExp) {
+    constructor(files: string[],
+                commentRegExp: RegExp,
+                anchorRegExp: RegExp,
+                longCommentOpenRegExp: RegExp,
+                longCommentCloseRegExp: RegExp) {
         logger.debug("ready");
         this.files = files;
         this.rootCollection = new ReferenceCollection("root");
         this.anchorRegExp = anchorRegExp;
         this.commentRegExp = commentRegExp;
+        this.longCommentOpenRegExp = longCommentOpenRegExp;
+        this.longCommentCloseRegExp = longCommentCloseRegExp;
     }
 
     public parse(): Q.Promise<IReferenceCollection> {
@@ -46,36 +54,62 @@ export class ReferenceParser implements IReferenceParser {
 
     parseFile(fileName: string): Q.Promise<{}> {
         let that = this;
+        let insideLongComment = false;
         return Q.Promise((resolve, reject) => {
             // read all lines:
             logger.info("Working on file: " + fileName);
             let i = 1; // Line numbering traditionally starts at 1
             lineReader.eachLine(fileName, (line, last) => {
-                console.info("Parseing line: " + i);
-                that.parseLine(line, fileName, i)
+                logger.info("Parsing line: " + i);
+
+                let longCommentStart = line.search(that.longCommentOpenRegExp);
+
+                if (!insideLongComment && longCommentStart === 0) { // These comments must come at beginning of line.
+                    insideLongComment = true;
+                }
+
+                that.parseLine(line, fileName, i, insideLongComment)
                 .then((anchors) => {
                     if (last) {
                         resolve(null);
                         return false;
                     }
                 });
+
+                if (insideLongComment) {
+                    let longCommentEnd = line.search(that.longCommentCloseRegExp);
+                    if (longCommentEnd > -1) {
+                        insideLongComment = false;
+                    }
+                }
+
                 i++;
             });
         });
     }
 
-    parseLine(line: string, fileName: string, lineNumber: number): Q.Promise<{}> {
+    parseLine(line: string, fileName: string, lineNumber: number, insideLongComment: boolean): Q.Promise<{}> {
         let that = this;
         return Q.Promise<string[]>((resolve, reject) => {
             let commentStart = line.search(that.commentRegExp);
-            if (commentStart > -1) {
-                logger.debug("found comment: " + line.substr(commentStart));
-                that.parseComment(line.substr(commentStart), fileName, lineNumber)
+
+            // Not inside a long comment - look for a regular comment.
+            if (!insideLongComment) {
+                if (commentStart > -1) {
+                    logger.debug("found comment: " + line.substr(commentStart));
+                    that.parseComment(line.substr(commentStart), fileName, lineNumber)
+                    .then(() => {
+                        resolve(null);
+                    });
+                } else {
+                    resolve(null);
+                }
+            } else { // Inside a long comment - parse anchors away!
+                logger.debug("Inside long comment: " + line);
+                that.parseComment(line, fileName, lineNumber)
                 .then(() => {
                     resolve(null);
                 });
-            } else {
-                resolve(null);
             }
         });
     }

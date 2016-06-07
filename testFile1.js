@@ -1,4 +1,1 @@
-// !classes/test1
-// !classes/test2
-// !classes/bob/test3
-// !topLevel
+// Short comment with one anchor !classes/test1

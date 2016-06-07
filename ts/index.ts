@@ -28,7 +28,11 @@ export function run () {
      Q.all(getFiles)
      .then((results) => {
          let files = _.flatten(results);
-         let referenceParser = new ReferenceParser(files, new RegExp(config.commentRegExp), new RegExp(config.anchorRegExp));
+         let referenceParser = new ReferenceParser(files,
+                                                   new RegExp(config.commentRegExp),
+                                                   new RegExp(config.anchorRegExp),
+                                                   new RegExp(config.longCommentOpenRegExp),
+                                                   new RegExp(config.longCommentCloseRegExp));
          referenceParser.parse()
          .then((response) => {
              logger.debug(JSON.stringify(response.getAllTags()));

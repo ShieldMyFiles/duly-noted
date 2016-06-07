@@ -3,5 +3,7 @@
         "./testFile1.js"
     ], 
     "commentRegExp": "\\/\\/",
+    "longCommentOpenRegExp": "\\/\\*",
+    "longCommentCloseRegExp": "\\*\/",
     "anchorRegExp": "!([a-zA-Z0-9/]+)"
 }
