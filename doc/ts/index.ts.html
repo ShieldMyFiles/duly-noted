@@ -7,16 +7,36 @@
         <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <script src="..//scripts/highlight.js"></script>
+        <style>
+            body {
+                padding-top: 50px;
+            }
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+        </style>
     </head>
     <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="..//index.html">Duly-Noted</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
         <div class="container">
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<h1 id="-a-name-index-index-a-"><a name="Index">#Index</a></h1>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> <a href=".././authors.md.html#authors/chris">authors/chris</a>  * 
-This is file runs Duly Noted</p>
-                        </div>
+                            <div class="well">
+<h1 id="-a-name-index-187-index-a-"><a name="Index">&#187; Index</a></h1>
+<p> <a href=".././authors.md.html#authors/chris">authors/chris</a> </p>
+<p> This is file runs Duly Noted</p>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">import {IConfig} from &quot;./classes/IConfig&quot;;import {ReferenceParser} from &quot;./modules/referenceParser&quot;;
 import parseArgs &#x3D; require(&quot;minimist&quot;);
@@ -34,9 +54,9 @@ export function run () {
     let config: IConfig;
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> Parse config file</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">        if (args[&quot;c&quot;]) {
         config &#x3D; require(args[&quot;c&quot;]);
@@ -50,22 +70,16 @@ export function run () {
      Q.all(getFiles)
      .then((results) &#x3D;&gt; {
          let files &#x3D; _.flatten(results);
-         let referenceParser &#x3D; new ReferenceParser(files,
-                                                   new RegExp(config.commentRegExp),
-                                                   new RegExp(config.anchorRegExp),
-                                                   new RegExp(config.longCommentOpenRegExp),
-                                                   new RegExp(config.longCommentLineRegExp),
-                                                   new RegExp(config.longCommentCloseRegExp),
-                                                   config.outputDir);
+         let referenceParser &#x3D; new ReferenceParser(config);
          referenceParser.parse()
          .then((response) &#x3D;&gt; {
              logger.info(&quot;parsing complete, beginning export of HTML&quot;);
-             new HtmlGenerator(config.outputDir, path.join(__dirname, &quot;templates&quot;, &quot;stacked.html&quot;), new RegExp(config.anchorRegExp), new RegExp(config.linkRegExp)).generate();
+             new HtmlGenerator(config).generate();
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p>new MarkdownGenerator(config.outputDir).generate();</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">                     })
          .catch( (err: Error) &#x3D;&gt; {

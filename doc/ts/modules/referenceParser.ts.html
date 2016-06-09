@@ -7,17 +7,38 @@
         <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <script src="../..//scripts/highlight.js"></script>
+        <style>
+            body {
+                padding-top: 50px;
+            }
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+        </style>
     </head>
     <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="../..//index.html">Duly-Noted</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
         <div class="container">
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<h1 id="-a-name-referenceparser-referenceparser-a-"><a name="ReferenceParser">#ReferenceParser</a></h1>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="well">
+<h1 id="-a-name-referenceparser-187-referenceparser-a-"><a name="ReferenceParser">&#187; ReferenceParser</a></h1>
 <p> <a href="../.././authors.md.html#authors/chris">authors/chris</a> </p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">import {IReferenceCollection, IAnchor, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;import {IFile, ILine} from &quot;../classes/IFile&quot;;
+                            <pre><code class="typescript">import {IReferenceCollection, IAnchor, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;import {IConfig, IExternalReference} from &quot;../classes/IConfig&quot;;
+import {IFile, ILine} from &quot;../classes/IFile&quot;;
 import {getFileType} from &quot;../helpers/fileType&quot;;
 import {writeFileSync, mkdirSync, accessSync, F_OK, openSync} from &quot;fs&quot;;
 import mkdirp &#x3D; require(&quot;mkdirp&quot;);
@@ -41,22 +62,18 @@ export class ReferenceParser implements IReferenceParser {
     longCommentLineRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
     outputDir: string;
-    constructor(files: string[],
-        commentRegExp: RegExp,
-        anchorRegExp: RegExp,
-        longCommentOpenRegExp: RegExp,
-        longCommentLineRegExp: RegExp,
-        longCommentCloseRegExp: RegExp,
-        outputDir: string) {
+    externalReferences: IExternalReference[];
+    constructor(config: IConfig) {
         logger.debug(&quot;ready&quot;);
-        this.outputDir &#x3D; outputDir;
-        this.files &#x3D; files;
+        this.outputDir &#x3D; config.outputDir;
+        this.files &#x3D; config.files;
         this.rootCollection &#x3D; new ReferenceCollection(path.basename(this.outputDir));
-        this.anchorRegExp &#x3D; anchorRegExp;
-        this.commentRegExp &#x3D; commentRegExp;
-        this.longCommentOpenRegExp &#x3D; longCommentOpenRegExp;
-        this.longCommentLineRegExp &#x3D; longCommentLineRegExp;
-        this.longCommentCloseRegExp &#x3D; longCommentCloseRegExp;
+        this.anchorRegExp &#x3D; new RegExp(config.anchorRegExp);
+        this.commentRegExp &#x3D; new RegExp(config.commentRegExp);
+        this.longCommentOpenRegExp &#x3D; new RegExp(config.longCommentOpenRegExp);
+        this.longCommentLineRegExp &#x3D; new RegExp(config.longCommentLineRegExp);
+        this.longCommentCloseRegExp &#x3D; new RegExp(config.longCommentCloseRegExp);
+        this.externalReferences &#x3D; config.externalReferences;
     }
     public parse(): Q.Promise&lt;IReferenceCollection&gt; {
         let that &#x3D; this;
@@ -74,8 +91,9 @@ export class ReferenceParser implements IReferenceParser {
             }
             Q.all(parseActions)
             .then(() &#x3D;&gt; {
-                logger.info(&quot;Saving out references.json&quot;);
-                writeFileSync(path.join(that.outputDir, &quot;references.json&quot;), JSON.stringify(that.rootCollection), { flag: &quot;w&quot; });
+                logger.info(&quot;Saving out internalReferences.json&quot;);
+                writeFileSync(path.join(that.outputDir, &quot;internalReferences.json&quot;), JSON.stringify(that.rootCollection), { flag: &quot;w&quot; });
+                writeFileSync(path.join(that.outputDir, &quot;externalReferences.json&quot;), JSON.stringify(that.externalReferences), { flag: &quot;w&quot; });
                 resolve(that.rootCollection);
             });
         });
@@ -90,9 +108,9 @@ export class ReferenceParser implements IReferenceParser {
         };
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> Line numbering traditionally starts at 1</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">        let lineNumber &#x3D; 0;        return Q.Promise((resolve, reject) &#x3D;&gt; {
             lineReader.eachLine(fileName, (line, last) &#x3D;&gt; {
@@ -102,9 +120,9 @@ export class ReferenceParser implements IReferenceParser {
                 file.lines.push(thisLine);
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> In Markdown all lines are considered comments</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">                file.lines[lineNumber].comment &#x3D; line;                that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
                 .then(() &#x3D;&gt; {
@@ -131,9 +149,9 @@ export class ReferenceParser implements IReferenceParser {
         return Q.Promise((resolve, reject) &#x3D;&gt; {
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> read all lines:</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">                       logger.info(&quot;Working on file: &quot; + fileName);
             file &#x3D; {
@@ -143,9 +161,9 @@ export class ReferenceParser implements IReferenceParser {
             };
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> Line numbering traditionally starts at 1</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">            let lineNumber &#x3D; 0;            lineReader.eachLine(fileName, (line, last) &#x3D;&gt; {
                 let thisLine: ILine &#x3D; {
@@ -155,26 +173,26 @@ export class ReferenceParser implements IReferenceParser {
                 let longCommentOpenMatch &#x3D; XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> These comments must come at beginning of line.</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">                if (!insideLongComment &amp;&amp; longCommentOpenMatch) {                    insideLongComment &#x3D; true;
                     file.lines[lineNumber].longComment &#x3D; true;
                 }
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> Not inside a long comment - look for a regular comment.</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">                               if (!insideLongComment) {
                     let match &#x3D; XRegExp.exec(line, that.commentRegExp, 0, false);
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> Contains a tradition comment</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">                                       if (match) {
                         file.lines[lineNumber].comment &#x3D; match[1];
@@ -194,9 +212,9 @@ export class ReferenceParser implements IReferenceParser {
                             });
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> Not a comment (code only)</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">                                           } else {
                         file.lines[lineNumber].code &#x3D; line;
@@ -213,21 +231,21 @@ export class ReferenceParser implements IReferenceParser {
                     }
 </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> Inside a long comment - so the whole thing is a comment</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">                } else {</code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> If this line contains a long comment closing symbol, then next line isn&#39;t long comment.</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">                   </code></pre>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
 <p> let longCommentEnd = line.search(that.longCommentCloseRegExp);</p>
-                        </div>
+                            </div>
                         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
                             <pre><code class="typescript">                                       if (XRegExp.exec(line, this.longCommentCloseRegExp, 0)) {
                         file.lines[lineNumber].comment &#x3D; &quot;&quot;;
@@ -238,7 +256,7 @@ export class ReferenceParser implements IReferenceParser {
                             file.lines[lineNumber].comment &#x3D; longCommentOpenMatch[1].trim();
                         } else {
                             let match &#x3D; XRegExp.exec(line, this.longCommentLineRegExp, 0);
-                            file.lines[lineNumber].comment &#x3D; match[1].trim() || line;
+                            file.lines[lineNumber].comment &#x3D;  &quot; &quot; + match[1].trim() || line;
                         }
                         that.parseComment(line, fileName, lineNumber)
                         .then(() &#x3D;&gt; {

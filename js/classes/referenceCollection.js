@@ -69,7 +69,6 @@ var ReferenceCollection = (function () {
         parentPath = parentPath || "";
         depth = depth || 0;
         var allTags = [];
-        logger.debug("Depth" + depth);
         if (depth > 0) {
             for (var i = 0; i < this.anchors.length; i++) {
                 if (parentPath !== "" && parentPath !== null) {
@@ -104,6 +103,26 @@ var ReferenceCollection = (function () {
             }
         }
         return allTags;
+    };
+    ReferenceCollection.prototype.getTagsByCollection = function (allCollections, parentPath) {
+        allCollections = allCollections || [];
+        parentPath = parentPath || "";
+        var id = parentPath + "/" + this.id;
+        allCollections.push({
+            name: id,
+            anchors: []
+        });
+        for (var i = 0; i < this.anchors.length; i++) {
+            allCollections[allCollections.length - 1].anchors.push({
+                anchor: this.anchors[i].id,
+                path: this.anchors[i].file,
+                linkStub: this.anchors[i].id
+            });
+        }
+        for (var i = 0; i < this.subcollections.length; i++) {
+            allCollections = this.subcollections[i].getTagsByCollection(allCollections, id);
+        }
+        return allCollections;
     };
     return ReferenceCollection;
 }());

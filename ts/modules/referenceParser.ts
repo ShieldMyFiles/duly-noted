@@ -1,9 +1,10 @@
 /**
  * # !ReferenceParser
- * @authors/chris
+ *  @authors/chris
  */
 
 import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";
+import {IConfig, IExternalReference} from "../classes/IConfig";
 import {IFile, ILine} from "../classes/IFile";
 import {getFileType} from "../helpers/fileType";
 import {writeFileSync, mkdirSync, accessSync, F_OK, openSync} from "fs";
@@ -31,23 +32,19 @@ export class ReferenceParser implements IReferenceParser {
     longCommentLineRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
     outputDir: string;
+    externalReferences: IExternalReference[];
 
-    constructor(files: string[],
-        commentRegExp: RegExp,
-        anchorRegExp: RegExp,
-        longCommentOpenRegExp: RegExp,
-        longCommentLineRegExp: RegExp,
-        longCommentCloseRegExp: RegExp,
-        outputDir: string) {
+    constructor(config: IConfig) {
         logger.debug("ready");
-        this.outputDir = outputDir;
-        this.files = files;
+        this.outputDir = config.outputDir;
+        this.files = config.files;
         this.rootCollection = new ReferenceCollection(path.basename(this.outputDir));
-        this.anchorRegExp = anchorRegExp;
-        this.commentRegExp = commentRegExp;
-        this.longCommentOpenRegExp = longCommentOpenRegExp;
-        this.longCommentLineRegExp = longCommentLineRegExp;
-        this.longCommentCloseRegExp = longCommentCloseRegExp;
+        this.anchorRegExp = new RegExp(config.anchorRegExp);
+        this.commentRegExp = new RegExp(config.commentRegExp);
+        this.longCommentOpenRegExp = new RegExp(config.longCommentOpenRegExp);
+        this.longCommentLineRegExp = new RegExp(config.longCommentLineRegExp);
+        this.longCommentCloseRegExp = new RegExp(config.longCommentCloseRegExp);
+        this.externalReferences = config.externalReferences;
     }
 
     public parse(): Q.Promise<IReferenceCollection> {
@@ -69,8 +66,9 @@ export class ReferenceParser implements IReferenceParser {
 
             Q.all(parseActions)
             .then(() => {
-                logger.info("Saving out references.json");
-                writeFileSync(path.join(that.outputDir, "references.json"), JSON.stringify(that.rootCollection), { flag: "w" });
+                logger.info("Saving out internalReferences.json");
+                writeFileSync(path.join(that.outputDir, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
+                writeFileSync(path.join(that.outputDir, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
                 resolve(that.rootCollection);
             });
         });
@@ -193,7 +191,7 @@ export class ReferenceParser implements IReferenceParser {
                             file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
                         } else {
                             let match = XRegExp.exec(line, this.longCommentLineRegExp, 0);
-                            file.lines[lineNumber].comment = match[1].trim() || line;
+                            file.lines[lineNumber].comment =  " " + match[1].trim() || line;
                         }
 
                         that.parseComment(line, fileName, lineNumber)

@@ -10,16 +10,17 @@ var Q = require("q");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceParser");
 var ReferenceParser = (function () {
-    function ReferenceParser(files, commentRegExp, anchorRegExp, longCommentOpenRegExp, longCommentLineRegExp, longCommentCloseRegExp, outputDir) {
+    function ReferenceParser(config) {
         logger.debug("ready");
-        this.outputDir = outputDir;
-        this.files = files;
+        this.outputDir = config.outputDir;
+        this.files = config.files;
         this.rootCollection = new referenceCollection_1.ReferenceCollection(path.basename(this.outputDir));
-        this.anchorRegExp = anchorRegExp;
-        this.commentRegExp = commentRegExp;
-        this.longCommentOpenRegExp = longCommentOpenRegExp;
-        this.longCommentLineRegExp = longCommentLineRegExp;
-        this.longCommentCloseRegExp = longCommentCloseRegExp;
+        this.anchorRegExp = new RegExp(config.anchorRegExp);
+        this.commentRegExp = new RegExp(config.commentRegExp);
+        this.longCommentOpenRegExp = new RegExp(config.longCommentOpenRegExp);
+        this.longCommentLineRegExp = new RegExp(config.longCommentLineRegExp);
+        this.longCommentCloseRegExp = new RegExp(config.longCommentCloseRegExp);
+        this.externalReferences = config.externalReferences;
     }
     ReferenceParser.prototype.parse = function () {
         var that = this;
@@ -38,8 +39,9 @@ var ReferenceParser = (function () {
             }
             Q.all(parseActions)
                 .then(function () {
-                logger.info("Saving out references.json");
-                fs_1.writeFileSync(path.join(that.outputDir, "references.json"), JSON.stringify(that.rootCollection), { flag: "w" });
+                logger.info("Saving out internalReferences.json");
+                fs_1.writeFileSync(path.join(that.outputDir, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
+                fs_1.writeFileSync(path.join(that.outputDir, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
                 resolve(that.rootCollection);
             });
         });
@@ -146,7 +148,7 @@ var ReferenceParser = (function () {
                         }
                         else {
                             var match = XRegExp.exec(line, _this.longCommentLineRegExp, 0);
-                            file.lines[lineNumber].comment = match[1].trim() || line;
+                            file.lines[lineNumber].comment = " " + match[1].trim() || line;
                         }
                         that.parseComment(line, fileName, lineNumber)
                             .then(function () {

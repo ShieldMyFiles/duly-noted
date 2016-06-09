@@ -1,4 +1,6 @@
 import { IReferenceCollection, ITag } from "../classes/referenceCollection";
+import { IConfig } from "../classes/IConfig";
+import { IExternalReference } from "../classes/IConfig";
 export interface IHtmlGenerator {
 }
 export declare class HtmlGenerator implements IHtmlGenerator {
@@ -7,14 +9,20 @@ export declare class HtmlGenerator implements IHtmlGenerator {
     anchorRegExp: RegExp;
     linkRegExp: RegExp;
     template: any;
+    indexTemplate: any;
     projectPath: string;
     referenceCollection: IReferenceCollection;
     tags: ITag[];
-    constructor(outputDir: string, templatePath: string, anchorRegExp: RegExp, linkRegExp: RegExp);
+    externalReferences: IExternalReference[];
+    readme: string;
+    projectName: string;
+    constructor(config: IConfig);
     generate(): void;
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void;
     replaceAnchors(comment: string, fileName: string, line: number): string;
-    replaceLinks(comment: string, fileName: string, line: number): string;
+    replaceInternalLinks(comment: string, fileName: string, line: number): string;
+    replaceExternalLinks(comment: string, fileName: string, line: number): string;
+    generateIndexPage(): void;
     cleanUp(err: any, files: any): void;
     getLinkPrefix(fileName: string): string;
     markdownHelper(context: any, options: any): string;

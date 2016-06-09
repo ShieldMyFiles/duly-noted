@@ -37,17 +37,12 @@ export function run () {
      Q.all(getFiles)
      .then((results) => {
          let files = _.flatten(results);
-         let referenceParser = new ReferenceParser(files,
-                                                   new RegExp(config.commentRegExp),
-                                                   new RegExp(config.anchorRegExp),
-                                                   new RegExp(config.longCommentOpenRegExp),
-                                                   new RegExp(config.longCommentLineRegExp),
-                                                   new RegExp(config.longCommentCloseRegExp),
-                                                   config.outputDir);
+         let referenceParser = new ReferenceParser(config);
+
          referenceParser.parse()
          .then((response) => {
              logger.info("parsing complete, beginning export of HTML");
-             new HtmlGenerator(config.outputDir, path.join(__dirname, "templates", "stacked.html"), new RegExp(config.anchorRegExp), new RegExp(config.linkRegExp)).generate();
+             new HtmlGenerator(config).generate();
              //new MarkdownGenerator(config.outputDir).generate();
          })
          .catch( (err: Error) => {

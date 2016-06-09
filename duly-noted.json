@@ -1,4 +1,5 @@
 {
+    "projectName":"Duly-Noted",
     "files": [
         "./ts/index.ts",
         "./ts/modules/referenceParser.ts",
@@ -10,5 +11,12 @@
     "longCommentLineRegExp": "\\*(.*)",
     "longCommentCloseRegExp": "\\*\/",
     "anchorRegExp": "!([a-zA-Z0-9/]+)",
-    "linkRegExp": "@([a-zA-Z0-9/]+)"
+    "linkRegExp": "\\W@([a-zA-Z0-9\\-/]+)",
+    "readme": "./README.md",
+    "externalReferences": [
+        {
+            "anchor": "jira",
+            "path": "https://shieldmyfiles.atlassian.net/browse/::"
+        }
+    ]
 }

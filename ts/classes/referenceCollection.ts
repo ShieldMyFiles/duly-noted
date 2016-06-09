@@ -102,7 +102,6 @@ export class ReferenceCollection implements IReferenceCollection {
         depth = depth || 0;
 
         let allTags: ITag[] = [];
-        logger.debug("Depth" + depth);
         if (depth > 0) {
 
             for (let i = 0; i < this.anchors.length; i++) {
@@ -140,5 +139,30 @@ export class ReferenceCollection implements IReferenceCollection {
         }
 
         return allTags;
+    }
+
+    public getTagsByCollection (allCollections?, parentPath?) {
+        allCollections = allCollections || [];
+        parentPath = parentPath || "";
+        let id = parentPath + "/" + this.id;
+
+        allCollections.push({
+            name: id,
+            anchors: []
+        });
+
+        for (let i = 0; i < this.anchors.length; i++) {
+            allCollections[allCollections.length - 1].anchors.push({
+                anchor: this.anchors[i].id,
+                path: this.anchors[i].file,
+                linkStub: this.anchors[i].id
+            });
+        }
+
+        for (let i = 0; i < this.subcollections.length; i++) {
+            allCollections = this.subcollections[i].getTagsByCollection(allCollections, id);
+        }
+
+        return allCollections;
     }
 }

@@ -2,7 +2,6 @@
 var referenceParser_1 = require("./modules/referenceParser");
 var parseArgs = require("minimist");
 var _ = require("underscore");
-var path = require("path");
 var glob = require("glob");
 var Q = require("q");
 var Htmlgenerator_1 = require("./generators/Htmlgenerator");
@@ -25,11 +24,11 @@ function run() {
     Q.all(getFiles)
         .then(function (results) {
         var files = _.flatten(results);
-        var referenceParser = new referenceParser_1.ReferenceParser(files, new RegExp(config.commentRegExp), new RegExp(config.anchorRegExp), new RegExp(config.longCommentOpenRegExp), new RegExp(config.longCommentLineRegExp), new RegExp(config.longCommentCloseRegExp), config.outputDir);
+        var referenceParser = new referenceParser_1.ReferenceParser(config);
         referenceParser.parse()
             .then(function (response) {
             logger.info("parsing complete, beginning export of HTML");
-            new Htmlgenerator_1.HtmlGenerator(config.outputDir, path.join(__dirname, "templates", "stacked.html"), new RegExp(config.anchorRegExp), new RegExp(config.linkRegExp)).generate();
+            new Htmlgenerator_1.HtmlGenerator(config).generate();
         })
             .catch(function (err) {
             logger.error(err.message + err.stack);

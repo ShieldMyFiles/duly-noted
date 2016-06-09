@@ -23,4 +23,5 @@ export declare class ReferenceCollection implements IReferenceCollection {
     addSubcollection(collection: IReferenceCollection): void;
     addAnchorTag(anchorTag: string[], fileName: string, lineNumber: number): void;
     getAllTags(parentPath?: string, depth?: number): ITag[];
+    getTagsByCollection(allCollections?: any, parentPath?: any): any;
 }
