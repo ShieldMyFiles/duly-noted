@@ -16,9 +16,12 @@
     "files": [
         "typings/index.d.ts",
         "index.ts",
+        "generators/htmlGenerator.ts",
+        "generators/markdownGenerator.ts",
         "modules/referenceParser.ts",
         "classes/IConfig.ts",
         "classes/referenceCollection.ts",
-        "helpers/helpers.ts"
+        "helpers/helpers.ts",
+        "helpers/fileType.ts"
     ]
 }

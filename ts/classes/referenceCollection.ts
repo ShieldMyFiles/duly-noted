@@ -6,16 +6,18 @@ export interface IReferenceCollection {
     id: string;
     anchors?: IAnchor[];
     subcollections?: IReferenceCollection[];
-    addAnchor(anchor: IAnchor): void;
-    addSubcollection(collection: IReferenceCollection): void;
-    addAnchorTag(anchorTag: string[], fileName: string, lineNumber: number): void;
-    getAllTags(parentPath?: string): IAnchor[];
 }
 
 export interface IAnchor {
     id: string;
     file: string;
     line: number;
+}
+
+export interface ITag {
+    anchor: string;
+    path: string;
+    linkStub: string;
 }
 
 export class ReferenceCollection implements IReferenceCollection {
@@ -27,6 +29,15 @@ export class ReferenceCollection implements IReferenceCollection {
         this.id = id;
         this.anchors = [];
         this.subcollections = [];
+    }
+
+    public inflate(collection: IReferenceCollection) {
+        this.id = collection.id;
+        this.anchors = collection.anchors;
+        for (let i = 0; i < collection.subcollections.length; i++) {
+            this.subcollections.push(new ReferenceCollection(collection.subcollections[i].id).inflate(collection.subcollections[i]));
+        }
+        return this;
     }
 
     public addAnchor(anchor: IAnchor): void {
@@ -86,21 +97,44 @@ export class ReferenceCollection implements IReferenceCollection {
         }
     }
 
-    public getAllTags(parentPath?: string): IAnchor[] {
+    public getAllTags(parentPath?: string, toplevel?: boolean): ITag[] {
         parentPath = parentPath || "";
 
-        let allTags: IAnchor[] = [];
+        let allTags: ITag[] = [];
+        if (toplevel === false) {
 
-        for (let i = 0; i < this.anchors.length; i++) {
-            allTags.push({
-                id: parentPath + "/" + this.id + "/" + this.anchors[i].id,
-                file: this.anchors[i].file,
-                line: this.anchors[i].line
-            });
-        }
+            for (let i = 0; i < this.anchors.length; i++) {
+                if (parentPath !== "" && parentPath !== null) {
+                    allTags.push({
+                        anchor: parentPath + "/" + this.id + "/" + this.anchors[i].id,
+                        path: this.anchors[i].file,
+                        linkStub: this.anchors[i].id
+                    });
+                } else {
+                    allTags.push({
+                        anchor: this.id + "/" + this.anchors[i].id,
+                        path: this.anchors[i].file,
+                        linkStub: this.anchors[i].id
+                    });
+                }
+            }
 
-        for (let i = 0; i < this.subcollections.length; i++) {
-            allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id));
+            for (let i = 0; i < this.subcollections.length; i++) {
+                allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id, false));
+            }
+        } else {
+
+            for (let i = 0; i < this.anchors.length; i++) {
+                allTags.push({
+                    anchor: this.anchors[i].id,
+                    path: this.anchors[i].file,
+                    linkStub: this.anchors[i].id
+                });
+            }
+
+            for (let i = 0; i < this.subcollections.length; i++) {
+                allTags = allTags.concat(this.subcollections[i].getAllTags(null, false));
+            }
         }
 
         return allTags;

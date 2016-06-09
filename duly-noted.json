@@ -1,10 +1,12 @@
 {
     "files": [
-        "./ts/modules/referenceParser.ts"
+        "./testFile1.js"
     ], 
     "outputDir": "./doc",
-    "commentRegExp": "\\/\\/",
-    "longCommentOpenRegExp": "\\/\\*",
+    "commentRegExp": "\\/\\/(.*)",
+    "longCommentOpenRegExp": "\\/\\*\\*(.*)",
+    "longCommentLineRegExp": "\\*(.*)",
     "longCommentCloseRegExp": "\\*\/",
-    "anchorRegExp": "!([a-zA-Z0-9/]+)"
+    "anchorRegExp": "!([a-zA-Z0-9/]+)",
+    "linkRegExp": "@([a-zA-Z0-9/]+)"
 }

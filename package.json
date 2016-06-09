@@ -18,11 +18,16 @@
   "license": "UNLICENSED",
   "homepage": "https://bitbucket.org/shieldmyfiles/duly-noted#readme",
   "dependencies": {
+    "fs-extra": "^0.30.0",
     "glob": "^7.0.3",
+    "handlebars": "^4.0.5",
+    "highlight.js": "^9.4.0",
     "line-reader": "^0.4.0",
     "log4js": "^0.6.36",
+    "marked": "^0.3.5",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
+    "node-dir": "^0.1.12",
     "q": "^2.0.3",
     "underscore": "^1.8.3",
     "xregexp": "^3.1.1"

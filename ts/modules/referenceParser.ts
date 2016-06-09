@@ -1,5 +1,6 @@
 import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";
 import {IFile, ILine} from "../classes/IFile";
+import {getFileType} from "../helpers/fileType";
 import {writeFileSync, mkdirSync, accessSync, F_OK, openSync} from "fs";
 import mkdirp = require("mkdirp");
 import * as path from "path";
@@ -18,27 +19,29 @@ export interface IReferenceParser {
 
 export class ReferenceParser implements IReferenceParser {
     files: string[];
-    file: IFile;
     rootCollection: IReferenceCollection;
     anchorRegExp: RegExp;
     commentRegExp: RegExp;
     longCommentOpenRegExp: RegExp;
+    longCommentLineRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
     outputDir: string;
 
     constructor(files: string[],
-                commentRegExp: RegExp,
-                anchorRegExp: RegExp,
-                longCommentOpenRegExp: RegExp,
-                longCommentCloseRegExp: RegExp,
-                outputDir: string) {
+        commentRegExp: RegExp,
+        anchorRegExp: RegExp,
+        longCommentOpenRegExp: RegExp,
+        longCommentLineRegExp: RegExp,
+        longCommentCloseRegExp: RegExp,
+        outputDir: string) {
         logger.debug("ready");
         this.outputDir = outputDir;
         this.files = files;
-        this.rootCollection = new ReferenceCollection("root");
+        this.rootCollection = new ReferenceCollection(path.basename(this.outputDir));
         this.anchorRegExp = anchorRegExp;
         this.commentRegExp = commentRegExp;
         this.longCommentOpenRegExp = longCommentOpenRegExp;
+        this.longCommentLineRegExp = longCommentLineRegExp;
         this.longCommentCloseRegExp = longCommentCloseRegExp;
     }
 
@@ -50,26 +53,29 @@ export class ReferenceParser implements IReferenceParser {
             let parseActions = [];
 
             for (let i = 0; i < that.files.length; i++) {
-                 parseActions.push(that.parseFile(that.files[i]));
+                parseActions.push(that.parseFile(that.files[i]));
             }
 
             Q.all(parseActions)
             .then(() => {
+                logger.info("Saving out references.json");
+                writeFileSync(path.join(that.outputDir, "references.json"), JSON.stringify(that.rootCollection), { flag: "w" });
                 resolve(that.rootCollection);
             });
-       });
+        });
     }
 
     parseFile(fileName: string): Q.Promise<{}> {
         let that = this;
+        let file: IFile;
         let insideLongComment = false;
         return Q.Promise((resolve, reject) => {
             // read all lines:
             logger.info("Working on file: " + fileName);
-            that.file = {
+            file = {
                 name: fileName,
                 lines: [],
-                type: "notSure"
+                type: getFileType(fileName)
             };
 
             let lineNumber = 0; // Line numbering traditionally starts at 1
@@ -79,43 +85,43 @@ export class ReferenceParser implements IReferenceParser {
                 let thisLine: ILine = {
                     number: lineNumber
                 };
-                that.file.lines.push(thisLine);
+                file.lines.push(thisLine);
 
-                let longCommentStart = line.search(that.longCommentOpenRegExp);
+                let longCommentOpenMatch = XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);
 
-                if (!insideLongComment && longCommentStart === 0) { // These comments must come at beginning of line.
+                if (!insideLongComment && longCommentOpenMatch) { // These comments must come at beginning of line.
                     insideLongComment = true;
-                    that.file.lines[lineNumber].longComment = true;
+                    file.lines[lineNumber].longComment = true;
                 }
 
                 // Not inside a long comment - look for a regular comment.
                 if (!insideLongComment) {
-                    let commentStart = line.search(that.commentRegExp);
+                    let match = XRegExp.exec(line, that.commentRegExp, 0, false);
 
                     // Contains a tradition comment
-                    if (commentStart > -1) {
+                    if (match) {
 
-                        that.file.lines[lineNumber].comment = line.substr(commentStart);
-                        that.file.lines[lineNumber].code = line.substr(0, commentStart - 1);
+                        file.lines[lineNumber].comment = match[1];
+                        file.lines[lineNumber].code = line.substr(0, match.index - 1);
 
-                        that.parseComment(line.substr(commentStart), fileName, lineNumber)
-                        .then(() => {
-                            if (last) {
-                                that.writeOutFile()
-                                .then(() => {
-                                    resolve(null);
-                                    return false;
-                                })
-                                .catch((err) => {
-                                    logger.fatal(err.message);
-                                });
-                            }
-                        });
-                    // Not a comment (code only)
+                        that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
+                            .then(() => {
+                                if (last) {
+                                    that.writeOutFile(file)
+                                    .then(() => {
+                                        resolve(null);
+                                        return false;
+                                    })
+                                    .catch((err) => {
+                                        logger.fatal(err.message);
+                                    });
+                                }
+                            });
+                        // Not a comment (code only)
                     } else {
-                        that.file.lines[lineNumber].code = line;
+                        file.lines[lineNumber].code = line;
                         if (last) {
-                            that.writeOutFile()
+                            that.writeOutFile(file)
                             .then(() => {
                                 resolve(null);
                                 return false;
@@ -126,27 +132,46 @@ export class ReferenceParser implements IReferenceParser {
                         }
                     }
                 } else { // Inside a long comment - so the whole thing is a comment
-                    that.file.lines[lineNumber].comment = line;
-                    that.parseComment(line, fileName, lineNumber)
-                    .then(() => {
-                        if (last) {
-                            that.writeOutFile()
-                            .then(() => {
-                                resolve(null);
-                                return false;
-                            })
-                            .catch((err) => {
-                                logger.fatal(err.message);
-                            });
-                        }
-                    });
-                }
-
-                // If this line contains a long comment closing symbol, then next line isn't long comment.
-                if (insideLongComment) {
-                    let longCommentEnd = line.search(that.longCommentCloseRegExp);
-                    if (longCommentEnd > -1) {
+                    // If this line contains a long comment closing symbol, then next line isn't long comment.
+                    // let longCommentEnd = line.search(that.longCommentCloseRegExp);
+                    if (XRegExp.exec(line, this.longCommentCloseRegExp, 0)) {
+                        file.lines[lineNumber].comment = "";
                         insideLongComment = false;
+                    } else {
+
+                        file.lines[lineNumber].longComment = true;
+
+                        if (longCommentOpenMatch) {
+                            file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
+                        } else {
+                            let match = XRegExp.exec(line, this.longCommentLineRegExp, 0);
+                            file.lines[lineNumber].comment = match[1].trim() || line;
+                        }
+
+                        that.parseComment(line, fileName, lineNumber)
+                        .then(() => {
+                            if (last) {
+                                that.writeOutFile(file)
+                                    .then(() => {
+                                        resolve(null);
+                                        return false;
+                                    })
+                                    .catch((err) => {
+                                        logger.fatal(err.message);
+                                    });
+                            }
+                        });
+                    }
+
+                    if (last) {
+                        that.writeOutFile(file)
+                        .then(() => {
+                            resolve(null);
+                            return false;
+                        })
+                        .catch((err) => {
+                            logger.fatal(err.message);
+                        });
                     }
                 }
 
@@ -155,11 +180,10 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 
-    writeOutFile() {
+    writeOutFile(file: IFile) {
         let that = this;
         return Q.Promise<{}>((resolve, reject) => {
-            logger.info("Saving output for: " + that.file.name);
-            let filePathArray = path.join(that.outputDir, that.file.name + ".json").split("/");
+            let filePathArray = path.join(that.outputDir, file.name + ".json").split("/");
             filePathArray.pop();
             let filePath = filePathArray.join("/");
             mkdirp(filePath, function (err) {
@@ -168,7 +192,8 @@ export class ReferenceParser implements IReferenceParser {
                     reject(err);
                 }
                 else {
-                    writeFileSync(path.join(that.outputDir, that.file.name + ".json"), JSON.stringify(that.file), {flag: "w"});
+                    logger.info("Saving output for: " + file.name);
+                    writeFileSync(path.join(that.outputDir, file.name + ".json"), JSON.stringify(file), { flag: "w" });
                     resolve(null);
                 }
             });
@@ -195,6 +220,7 @@ export class ReferenceParser implements IReferenceParser {
 
                 that.rootCollection.addAnchorTag(parts, fileName, lineNumber);
                 resolve(null);
+
                 pos = match.index + match[0].length;
             }
             resolve(null);

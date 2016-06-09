@@ -2,8 +2,11 @@ import {IConfig} from "./classes/IConfig";
 import {ReferenceParser} from "./modules/referenceParser";
 import parseArgs = require("minimist");
 import _ = require("underscore");
+import * as path from "path";
 import glob = require("glob");
 import Q = require("q");
+import {MarkdownGenerator} from "./generators/markdownGenerator";
+import {HtmlGenerator} from "./generators/Htmlgenerator";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::run");
 
@@ -32,14 +35,17 @@ export function run () {
                                                    new RegExp(config.commentRegExp),
                                                    new RegExp(config.anchorRegExp),
                                                    new RegExp(config.longCommentOpenRegExp),
+                                                   new RegExp(config.longCommentLineRegExp),
                                                    new RegExp(config.longCommentCloseRegExp),
                                                    config.outputDir);
          referenceParser.parse()
          .then((response) => {
-             logger.debug(JSON.stringify(response.getAllTags()));
+             logger.info("parsing complete, beginning export of HTML");
+             new HtmlGenerator(config.outputDir, path.join(__dirname, "templates", "basic.html"), new RegExp(config.anchorRegExp), new RegExp(config.linkRegExp)).generate();
+             //new MarkdownGenerator(config.outputDir).generate();
          })
-         .catch( (err) => {
-             logger.error(err.message);
+         .catch( (err: Error) => {
+             logger.error(err.message + err.stack);
          });
      });
 }

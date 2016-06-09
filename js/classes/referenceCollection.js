@@ -8,6 +8,14 @@ var ReferenceCollection = (function () {
         this.anchors = [];
         this.subcollections = [];
     }
+    ReferenceCollection.prototype.inflate = function (collection) {
+        this.id = collection.id;
+        this.anchors = collection.anchors;
+        for (var i = 0; i < collection.subcollections.length; i++) {
+            this.subcollections.push(new ReferenceCollection(collection.subcollections[i].id).inflate(collection.subcollections[i]));
+        }
+        return this;
+    };
     ReferenceCollection.prototype.addAnchor = function (anchor) {
         var existing = underscore_1.findWhere(this.anchors, { id: anchor.id });
         if (existing) {
@@ -57,18 +65,41 @@ var ReferenceCollection = (function () {
             }
         }
     };
-    ReferenceCollection.prototype.getAllTags = function (parentPath) {
+    ReferenceCollection.prototype.getAllTags = function (parentPath, toplevel) {
         parentPath = parentPath || "";
         var allTags = [];
-        for (var i = 0; i < this.anchors.length; i++) {
-            allTags.push({
-                id: parentPath + "/" + this.id + "/" + this.anchors[i].id,
-                file: this.anchors[i].file,
-                line: this.anchors[i].line
-            });
+        if (toplevel === false) {
+            for (var i = 0; i < this.anchors.length; i++) {
+                if (parentPath !== "" && parentPath !== null) {
+                    allTags.push({
+                        anchor: parentPath + "/" + this.id + "/" + this.anchors[i].id,
+                        path: this.anchors[i].file,
+                        linkStub: this.anchors[i].id
+                    });
+                }
+                else {
+                    allTags.push({
+                        anchor: this.id + "/" + this.anchors[i].id,
+                        path: this.anchors[i].file,
+                        linkStub: this.anchors[i].id
+                    });
+                }
+            }
+            for (var i = 0; i < this.subcollections.length; i++) {
+                allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id, false));
+            }
         }
-        for (var i = 0; i < this.subcollections.length; i++) {
-            allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id));
+        else {
+            for (var i = 0; i < this.anchors.length; i++) {
+                allTags.push({
+                    anchor: this.anchors[i].id,
+                    path: this.anchors[i].file,
+                    linkStub: this.anchors[i].id
+                });
+            }
+            for (var i = 0; i < this.subcollections.length; i++) {
+                allTags = allTags.concat(this.subcollections[i].getAllTags(null, false));
+            }
         }
         return allTags;
     };

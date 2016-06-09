@@ -1,15 +1,3 @@
-/**
- * # This is a long comment
- * ## It is awesome.
- */
-
-
-// @authors/Chris !authors/Joe are the best authors ever
-function myFunc(){ 
-    console.log("Test");
-}
-
-
 "use strict";
 var node_dir_1 = require("node-dir");
 var fs_1 = require("fs");
@@ -78,5 +66,4 @@ var MarkdownGenerator = (function () {
     };
     return MarkdownGenerator;
 }());
-// This line contains a link !authors/Chris
 exports.MarkdownGenerator = MarkdownGenerator;

@@ -5,4 +5,6 @@ export interface IConfig {
     commentRegExp: string;
     longCommentOpenRegExp: string;
     longCommentCloseRegExp: string;
+    longCommentLineRegExp: string;
+    linkRegExp: string;
 }

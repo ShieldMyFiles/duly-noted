@@ -1,5 +1,6 @@
 "use strict";
 var referenceCollection_1 = require("../classes/referenceCollection");
+var fileType_1 = require("../helpers/fileType");
 var fs_1 = require("fs");
 var mkdirp = require("mkdirp");
 var path = require("path");
@@ -9,14 +10,15 @@ var Q = require("q");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceParser");
 var ReferenceParser = (function () {
-    function ReferenceParser(files, commentRegExp, anchorRegExp, longCommentOpenRegExp, longCommentCloseRegExp, outputDir) {
+    function ReferenceParser(files, commentRegExp, anchorRegExp, longCommentOpenRegExp, longCommentLineRegExp, longCommentCloseRegExp, outputDir) {
         logger.debug("ready");
         this.outputDir = outputDir;
         this.files = files;
-        this.rootCollection = new referenceCollection_1.ReferenceCollection("root");
+        this.rootCollection = new referenceCollection_1.ReferenceCollection(path.basename(this.outputDir));
         this.anchorRegExp = anchorRegExp;
         this.commentRegExp = commentRegExp;
         this.longCommentOpenRegExp = longCommentOpenRegExp;
+        this.longCommentLineRegExp = longCommentLineRegExp;
         this.longCommentCloseRegExp = longCommentCloseRegExp;
     }
     ReferenceParser.prototype.parse = function () {
@@ -29,19 +31,23 @@ var ReferenceParser = (function () {
             }
             Q.all(parseActions)
                 .then(function () {
+                logger.info("Saving out references.json");
+                fs_1.writeFileSync(path.join(that.outputDir, "references.json"), JSON.stringify(that.rootCollection), { flag: "w" });
                 resolve(that.rootCollection);
             });
         });
     };
     ReferenceParser.prototype.parseFile = function (fileName) {
+        var _this = this;
         var that = this;
+        var file;
         var insideLongComment = false;
         return Q.Promise(function (resolve, reject) {
             logger.info("Working on file: " + fileName);
-            that.file = {
+            file = {
                 name: fileName,
                 lines: [],
-                type: "notSure"
+                type: fileType_1.getFileType(fileName)
             };
             var lineNumber = 0;
             lineReader.eachLine(fileName, function (line, last) {
@@ -49,21 +55,21 @@ var ReferenceParser = (function () {
                 var thisLine = {
                     number: lineNumber
                 };
-                that.file.lines.push(thisLine);
-                var longCommentStart = line.search(that.longCommentOpenRegExp);
-                if (!insideLongComment && longCommentStart === 0) {
+                file.lines.push(thisLine);
+                var longCommentOpenMatch = XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);
+                if (!insideLongComment && longCommentOpenMatch) {
                     insideLongComment = true;
-                    that.file.lines[lineNumber].longComment = true;
+                    file.lines[lineNumber].longComment = true;
                 }
                 if (!insideLongComment) {
-                    var commentStart = line.search(that.commentRegExp);
-                    if (commentStart > -1) {
-                        that.file.lines[lineNumber].comment = line.substr(commentStart);
-                        that.file.lines[lineNumber].code = line.substr(0, commentStart - 1);
-                        that.parseComment(line.substr(commentStart), fileName, lineNumber)
+                    var match = XRegExp.exec(line, that.commentRegExp, 0, false);
+                    if (match) {
+                        file.lines[lineNumber].comment = match[1];
+                        file.lines[lineNumber].code = line.substr(0, match.index - 1);
+                        that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
                             .then(function () {
                             if (last) {
-                                that.writeOutFile()
+                                that.writeOutFile(file)
                                     .then(function () {
                                     resolve(null);
                                     return false;
@@ -75,9 +81,9 @@ var ReferenceParser = (function () {
                         });
                     }
                     else {
-                        that.file.lines[lineNumber].code = line;
+                        file.lines[lineNumber].code = line;
                         if (last) {
-                            that.writeOutFile()
+                            that.writeOutFile(file)
                                 .then(function () {
                                 resolve(null);
                                 return false;
@@ -89,36 +95,52 @@ var ReferenceParser = (function () {
                     }
                 }
                 else {
-                    that.file.lines[lineNumber].comment = line;
-                    that.parseComment(line, fileName, lineNumber)
-                        .then(function () {
-                        if (last) {
-                            that.writeOutFile()
-                                .then(function () {
-                                resolve(null);
-                                return false;
-                            })
-                                .catch(function (err) {
-                                logger.fatal(err.message);
-                            });
-                        }
-                    });
-                }
-                if (insideLongComment) {
-                    var longCommentEnd = line.search(that.longCommentCloseRegExp);
-                    if (longCommentEnd > -1) {
+                    if (XRegExp.exec(line, _this.longCommentCloseRegExp, 0)) {
+                        file.lines[lineNumber].comment = "";
                         insideLongComment = false;
+                    }
+                    else {
+                        file.lines[lineNumber].longComment = true;
+                        if (longCommentOpenMatch) {
+                            file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
+                        }
+                        else {
+                            var match = XRegExp.exec(line, _this.longCommentLineRegExp, 0);
+                            file.lines[lineNumber].comment = match[1].trim() || line;
+                        }
+                        that.parseComment(line, fileName, lineNumber)
+                            .then(function () {
+                            if (last) {
+                                that.writeOutFile(file)
+                                    .then(function () {
+                                    resolve(null);
+                                    return false;
+                                })
+                                    .catch(function (err) {
+                                    logger.fatal(err.message);
+                                });
+                            }
+                        });
+                    }
+                    if (last) {
+                        that.writeOutFile(file)
+                            .then(function () {
+                            resolve(null);
+                            return false;
+                        })
+                            .catch(function (err) {
+                            logger.fatal(err.message);
+                        });
                     }
                 }
                 lineNumber++;
             });
         });
     };
-    ReferenceParser.prototype.writeOutFile = function () {
+    ReferenceParser.prototype.writeOutFile = function (file) {
         var that = this;
         return Q.Promise(function (resolve, reject) {
-            logger.info("Saving output for: " + that.file.name);
-            var filePathArray = path.join(that.outputDir, that.file.name + ".json").split("/");
+            var filePathArray = path.join(that.outputDir, file.name + ".json").split("/");
             filePathArray.pop();
             var filePath = filePathArray.join("/");
             mkdirp(filePath, function (err) {
@@ -127,7 +149,8 @@ var ReferenceParser = (function () {
                     reject(err);
                 }
                 else {
-                    fs_1.writeFileSync(path.join(that.outputDir, that.file.name + ".json"), JSON.stringify(that.file), { flag: "w" });
+                    logger.info("Saving output for: " + file.name);
+                    fs_1.writeFileSync(path.join(that.outputDir, file.name + ".json"), JSON.stringify(file), { flag: "w" });
                     resolve(null);
                 }
             });

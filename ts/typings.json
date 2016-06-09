@@ -5,9 +5,13 @@
     "mkdirp": "registry:npm/mkdirp#0.5.0+20160222053049"
   },
   "globalDependencies": {
+    "fs-extra": "registry:dt/fs-extra#0.0.0+20160319124112",
+    "handlebars": "registry:dt/handlebars#3.0.3+20160317120654",
     "line-reader": "registry:dt/line-reader#0.0.0+20160316155526",
     "log4js": "registry:dt/log4js#0.0.0+20160316155526",
+    "marked": "registry:dt/marked#0.0.0+20160325085301",
     "node": "registry:dt/node#6.0.0+20160602155235",
+    "node-dir": "registry:dt/node-dir#0.0.0+20160316155526",
     "q": "registry:dt/q#0.0.0+20160417152954",
     "underscore": "registry:dt/underscore#1.7.0+20160505190121",
     "xregexp": "registry:dt/xregexp#3.0.0+20160317120654"
