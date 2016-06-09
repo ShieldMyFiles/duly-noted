@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="{{linkPrefix}}/css/default.css">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="{{linkPrefix}}/scripts/highlight.js"></script>
+    </head>
+    <body>
+        <div class="container">
+                {{#each items}}
+                    {{#ifCond type "comment"}}
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+                        {{#md content}}
+                        {{/md}}
+                        </div>
+                    {{/ifCond}}
+                    {{#ifCond type "code"}}
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
+                            <pre><code class="{{lang}}">{{content}}</code></pre>
+                        </div>
+                    {{/ifCond}}
+                {{/each}}
+        </div>
+        <script type="text/javascript">
+            (function(){
+                console.log("loaded");
+                hljs.configure({
+                    tabReplace: '  '
+                });
+                hljs.initHighlighting();
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="..//css/default.css">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="..//scripts/highlight.js"></script>
+    </head>
+    <body>
+        <div class="container">
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+<h1 id="-a-name-index-index-a-"><a name="Index">#Index</a></h1>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+<p> <a href=".././authors.md.html#authors/chris">authors/chris</a>  * 
+This is file runs Duly Noted</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
+                            <pre><code class="typescript">import {IConfig} from &quot;./classes/IConfig&quot;;import {ReferenceParser} from &quot;./modules/referenceParser&quot;;
+import parseArgs &#x3D; require(&quot;minimist&quot;);
+import _ &#x3D; require(&quot;underscore&quot;);
+import * as path from &quot;path&quot;;
+import glob &#x3D; require(&quot;glob&quot;);
+import Q &#x3D; require(&quot;q&quot;);
+import {MarkdownGenerator} from &quot;./generators/markdownGenerator&quot;;
+import {HtmlGenerator} from &quot;./generators/Htmlgenerator&quot;;
+import log4js &#x3D; require(&quot;log4js&quot;);
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
+export function run () {
+    logger.info(&quot;Welcome to Duly Noted.&quot;);
+    let args &#x3D; parseArgs(process.argv.slice(2));
+    let config: IConfig;
+</code></pre>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+<p> Parse config file</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
+                            <pre><code class="typescript">        if (args[&quot;c&quot;]) {
+        config &#x3D; require(args[&quot;c&quot;]);
+     } else {
+        config &#x3D; require(process.cwd() + &quot;/duly-noted.json&quot;);
+     }
+     let getFiles: Q.IPromise&lt;string[]&gt;[] &#x3D; [];
+     for (let i &#x3D; 0; i &lt; config.files.length; i++) {
+        getFiles.push(getFilesFromGlob(config.files[i]));
+     }
+     Q.all(getFiles)
+     .then((results) &#x3D;&gt; {
+         let files &#x3D; _.flatten(results);
+         let referenceParser &#x3D; new ReferenceParser(files,
+                                                   new RegExp(config.commentRegExp),
+                                                   new RegExp(config.anchorRegExp),
+                                                   new RegExp(config.longCommentOpenRegExp),
+                                                   new RegExp(config.longCommentLineRegExp),
+                                                   new RegExp(config.longCommentCloseRegExp),
+                                                   config.outputDir);
+         referenceParser.parse()
+         .then((response) &#x3D;&gt; {
+             logger.info(&quot;parsing complete, beginning export of HTML&quot;);
+             new HtmlGenerator(config.outputDir, path.join(__dirname, &quot;templates&quot;, &quot;stacked.html&quot;), new RegExp(config.anchorRegExp), new RegExp(config.linkRegExp)).generate();
+</code></pre>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
+<p>new MarkdownGenerator(config.outputDir).generate();</p>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
+                            <pre><code class="typescript">                     })
+         .catch( (err: Error) &#x3D;&gt; {
+             logger.error(err.message + err.stack);
+         });
+     });
+}
+function getFilesFromGlob(globString: string): Q.Promise&lt;string[]&gt; {
+    return Q.Promise&lt;string[]&gt;((resolve, reject) &#x3D;&gt; {
+        glob(globString, (err, files: string[]) &#x3D;&gt; {
+            if (err) reject(err);
+            resolve(files);
+        });
+    });
+}
+</code></pre>
+                        </div>
+        </div>
+        <script type="text/javascript">
+            (function(){
+                console.log("loaded");
+                hljs.configure({
+                    tabReplace: '  '
+                });
+                hljs.initHighlighting();
+            })();
+        </script>
+    </body>
+</html>

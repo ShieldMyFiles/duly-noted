@@ -24,10 +24,17 @@ var ReferenceParser = (function () {
     ReferenceParser.prototype.parse = function () {
         var that = this;
         return Q.Promise(function (resolve, reject) {
-            logger.info("Starting parse actions for " + that.files.length + "files.");
+            logger.info("Starting parse actions for " + that.files.length + " files.");
             var parseActions = [];
             for (var i = 0; i < that.files.length; i++) {
-                parseActions.push(that.parseFile(that.files[i]));
+                var fileName = that.files[i].split(".");
+                var extension = fileName[fileName.length - 1];
+                if (extension === "md") {
+                    parseActions.push(that.parseAsMarkdown(that.files[i]));
+                }
+                else {
+                    parseActions.push(that.parseFile(that.files[i]));
+                }
             }
             Q.all(parseActions)
                 .then(function () {
@@ -37,8 +44,42 @@ var ReferenceParser = (function () {
             });
         });
     };
+    ReferenceParser.prototype.parseAsMarkdown = function (fileName) {
+        logger.info("parsing markdown file: " + fileName);
+        var that = this;
+        var file = {
+            name: fileName,
+            type: "markdown",
+            lines: []
+        };
+        var lineNumber = 0;
+        return Q.Promise(function (resolve, reject) {
+            lineReader.eachLine(fileName, function (line, last) {
+                var thisLine = {
+                    number: lineNumber
+                };
+                file.lines.push(thisLine);
+                file.lines[lineNumber].comment = line;
+                that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
+                    .then(function () {
+                    if (last) {
+                        that.writeOutFile(file)
+                            .then(function () {
+                            resolve(null);
+                            return false;
+                        })
+                            .catch(function (err) {
+                            logger.fatal(err.message);
+                        });
+                    }
+                });
+                lineNumber++;
+            });
+        });
+    };
     ReferenceParser.prototype.parseFile = function (fileName) {
         var _this = this;
+        logger.info("parsing code file: " + fileName);
         var that = this;
         var file;
         var insideLongComment = false;
@@ -51,7 +92,6 @@ var ReferenceParser = (function () {
             };
             var lineNumber = 0;
             lineReader.eachLine(fileName, function (line, last) {
-                logger.info("Parsing line: " + lineNumber);
                 var thisLine = {
                     number: lineNumber
                 };

@@ -1,3 +1,9 @@
+/**
+ * # !Index
+ * @authors/chris
+ * 
+ * This is file runs Duly Noted
+ */
 import {IConfig} from "./classes/IConfig";
 import {ReferenceParser} from "./modules/referenceParser";
 import parseArgs = require("minimist");
@@ -41,7 +47,7 @@ export function run () {
          referenceParser.parse()
          .then((response) => {
              logger.info("parsing complete, beginning export of HTML");
-             new HtmlGenerator(config.outputDir, path.join(__dirname, "templates", "basic.html"), new RegExp(config.anchorRegExp), new RegExp(config.linkRegExp)).generate();
+             new HtmlGenerator(config.outputDir, path.join(__dirname, "templates", "stacked.html"), new RegExp(config.anchorRegExp), new RegExp(config.linkRegExp)).generate();
              //new MarkdownGenerator(config.outputDir).generate();
          })
          .catch( (err: Error) => {

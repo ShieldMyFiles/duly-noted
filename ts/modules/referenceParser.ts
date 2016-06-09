@@ -1,3 +1,8 @@
+/**
+ * # !ReferenceParser
+ * @authors/chris
+ */
+
 import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";
 import {IFile, ILine} from "../classes/IFile";
 import {getFileType} from "../helpers/fileType";
@@ -48,12 +53,18 @@ export class ReferenceParser implements IReferenceParser {
     public parse(): Q.Promise<IReferenceCollection> {
         let that = this;
         return Q.Promise<IReferenceCollection>((resolve, reject) => {
-            logger.info("Starting parse actions for " + that.files.length + "files.");
+            logger.info("Starting parse actions for " + that.files.length + " files.");
 
             let parseActions = [];
 
             for (let i = 0; i < that.files.length; i++) {
-                parseActions.push(that.parseFile(that.files[i]));
+                let fileName = that.files[i].split(".");
+                let extension = fileName[fileName.length - 1];
+                if (extension === "md") {
+                    parseActions.push(that.parseAsMarkdown(that.files[i]));
+                } else {
+                    parseActions.push(that.parseFile(that.files[i]));
+                }
             }
 
             Q.all(parseActions)
@@ -65,7 +76,45 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 
+    parseAsMarkdown(fileName: string): Q.Promise<{}> {
+        logger.info("parsing markdown file: " + fileName);
+        let that = this;
+        let file: IFile = {
+            name: fileName,
+            type: "markdown",
+            lines: []
+        };
+        let lineNumber = 0; // Line numbering traditionally starts at 1
+        return Q.Promise((resolve, reject) => {
+            lineReader.eachLine(fileName, (line, last) => {
+                let thisLine: ILine = {
+                    number: lineNumber
+                };
+
+                file.lines.push(thisLine);
+                file.lines[lineNumber].comment = line; // In Markdown all lines are considered comments
+
+                that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
+                .then(() => {
+                    if (last) {
+                        that.writeOutFile(file)
+                        .then(() => {
+                            resolve(null);
+                            return false;
+                        })
+                        .catch((err) => {
+                            logger.fatal(err.message);
+                        });
+                    }
+                });
+
+                lineNumber++;
+            });
+        });
+    }
+
     parseFile(fileName: string): Q.Promise<{}> {
+        logger.info("parsing code file: " + fileName);
         let that = this;
         let file: IFile;
         let insideLongComment = false;
@@ -80,7 +129,6 @@ export class ReferenceParser implements IReferenceParser {
 
             let lineNumber = 0; // Line numbering traditionally starts at 1
             lineReader.eachLine(fileName, (line, last) => {
-                logger.info("Parsing line: " + lineNumber);
 
                 let thisLine: ILine = {
                     number: lineNumber

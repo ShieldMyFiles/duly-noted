@@ -3,16 +3,9 @@
  * ## It is awesome.
  */
 
-
-// @authors/Chris !authors/Joe are the best authors ever
-function myFunc(){ 
-    console.log("Test");
-}
-
-
 "use strict";
-var node_dir_1 = require("node-dir");
-var fs_1 = require("fs");
+var node_dir_1 = require("node-dir"); // In line comments look like this.
+var fs_1 = require("fs"); // This is another comment
 var mkdirp = require("mkdirp");
 var path = require("path");
 var log4js = require("log4js");

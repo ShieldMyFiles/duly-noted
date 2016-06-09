@@ -1,6 +1,8 @@
 {
     "files": [
-        "./testFile1.js"
+        "./ts/index.ts",
+        "./ts/modules/referenceParser.ts",
+        "./authors.md"
     ], 
     "outputDir": "./doc",
     "commentRegExp": "\\/\\/(.*)",

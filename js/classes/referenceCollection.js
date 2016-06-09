@@ -65,10 +65,12 @@ var ReferenceCollection = (function () {
             }
         }
     };
-    ReferenceCollection.prototype.getAllTags = function (parentPath, toplevel) {
+    ReferenceCollection.prototype.getAllTags = function (parentPath, depth) {
         parentPath = parentPath || "";
+        depth = depth || 0;
         var allTags = [];
-        if (toplevel === false) {
+        logger.debug("Depth" + depth);
+        if (depth > 0) {
             for (var i = 0; i < this.anchors.length; i++) {
                 if (parentPath !== "" && parentPath !== null) {
                     allTags.push({
@@ -86,7 +88,7 @@ var ReferenceCollection = (function () {
                 }
             }
             for (var i = 0; i < this.subcollections.length; i++) {
-                allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id, false));
+                allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id, depth + 1));
             }
         }
         else {
@@ -98,7 +100,7 @@ var ReferenceCollection = (function () {
                 });
             }
             for (var i = 0; i < this.subcollections.length; i++) {
-                allTags = allTags.concat(this.subcollections[i].getAllTags(null, false));
+                allTags = allTags.concat(this.subcollections[i].getAllTags(null, depth + 1));
             }
         }
         return allTags;

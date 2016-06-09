@@ -16,6 +16,7 @@ export declare class ReferenceParser implements IReferenceParser {
     outputDir: string;
     constructor(files: string[], commentRegExp: RegExp, anchorRegExp: RegExp, longCommentOpenRegExp: RegExp, longCommentLineRegExp: RegExp, longCommentCloseRegExp: RegExp, outputDir: string);
     parse(): Q.Promise<IReferenceCollection>;
+    parseAsMarkdown(fileName: string): Q.Promise<{}>;
     parseFile(fileName: string): Q.Promise<{}>;
     writeOutFile(file: IFile): Q.Promise<{}>;
     parseLine(line: string, fileName: string, lineNumber: number, insideLongComment: boolean): Q.Promise<{}>;

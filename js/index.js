@@ -29,7 +29,7 @@ function run() {
         referenceParser.parse()
             .then(function (response) {
             logger.info("parsing complete, beginning export of HTML");
-            new Htmlgenerator_1.HtmlGenerator(config.outputDir, path.join(__dirname, "templates", "basic.html"), new RegExp(config.anchorRegExp), new RegExp(config.linkRegExp)).generate();
+            new Htmlgenerator_1.HtmlGenerator(config.outputDir, path.join(__dirname, "templates", "stacked.html"), new RegExp(config.anchorRegExp), new RegExp(config.linkRegExp)).generate();
         })
             .catch(function (err) {
             logger.error(err.message + err.stack);

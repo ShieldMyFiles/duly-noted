@@ -16,5 +16,7 @@ export declare class HtmlGenerator implements IHtmlGenerator {
     replaceAnchors(comment: string, fileName: string, line: number): string;
     replaceLinks(comment: string, fileName: string, line: number): string;
     cleanUp(err: any, files: any): void;
+    getLinkPrefix(fileName: string): string;
     markdownHelper(context: any, options: any): string;
+    ifCondHelper(v1: any, v2: any, options: any): any;
 }

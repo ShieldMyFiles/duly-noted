@@ -42,20 +42,25 @@ export class HtmlGenerator implements IHtmlGenerator {
         this.projectPath = projectPathArray.join("/");
 
         handlebars.registerHelper("md", this.markdownHelper);
+        handlebars.registerHelper("ifCond", this.ifCondHelper);
     }
 
     public generate(): void {
         let that = this;
-        readFiles(this.outputDir, {match: /.json$/, exclude: /references.json/}, (err, content, next) => {
+        readFiles(this.outputDir, {match: /.json$/, exclude: /references.json/, recursive: true}, (err, content, next) => {
             that.proccessFile(err, content, next, that.outputDir);
         }, that.cleanUp);
 
         fse.copySync(path.join(this.projectPath, "templates", "highlight.pack.js"), path.join(this.outputDir, "scripts/highlight.js"));
+        fse.copySync(path.join(this.projectPath, "templates", "css", "vs.css"), path.join(this.outputDir, "css/vs.css"));
+        fse.copySync(path.join(this.projectPath, "templates", "css", "monokai-sublime.css"), path.join(this.outputDir, "css/monokai-sublime.css"));
+        fse.copySync(path.join(this.projectPath, "templates", "css", "default.css"), path.join(this.outputDir, "css/default.css"));
     }
 
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
-        // Prepare Map by converting anchors and links.
         let file: IFile = JSON.parse(content);
+        logger.info("Processing " + file.name);
+
 
         for (let i = 0; i < file.lines.length; i++) {
             if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
@@ -64,36 +69,58 @@ export class HtmlGenerator implements IHtmlGenerator {
             }
         }
 
-        let output = this.template(file);
+        let outputMap = {
+            items: [],
+            type: file.name,
+            name: file.type
+            linkPrefix: this.getLinkPrefix(file.name)
+        };
+
+         for (let i = 0; i < file.lines.length; i++) {
+            if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
+                if (outputMap.items.length > 1 && outputMap.items[outputMap.items.length - 1].type === "comment"){
+                     outputMap.items[outputMap.items.length - 1].content +=  file.lines[i].comment + "\n";
+                } else {
+                    outputMap.items.push({content: file.lines[i].comment, type: "comment"});
+                }
+            }
+
+            if (typeof(file.lines[i].code) === "string" && file.lines[i].code !== "" && file.lines[i].code !== null) {
+                if (outputMap.items.length > 1 && outputMap.items[outputMap.items.length - 1].type === "code") {
+                     outputMap.items[outputMap.items.length - 1].content  +=  file.lines[i].code + "\n";
+                } else {
+                    outputMap.items.push({content: file.lines[i].code, type: "code", lang: file.type});
+                }
+            }
+         }
+        let output = this.template(outputMap);
         writeFileSync(path.join(outputDir, file.name + ".html"), output, { flag: "w" });
+        next();
     }
 
     replaceAnchors(comment: string,  fileName: string, line: number) {
-        logger.debug("replacing anchors in " + fileName ":" + line);
         let pos = 0;
         let match;
         let newComment: string = comment;
         // Look at the line for anchors - replace them with links. 
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
-            logger.debug("found anchor: " + match[1]);
             newComment =  newComment.substr(0, match.index - 1) +
             " <a name=\"" + match[1] + "\">#" + match[1] + "</a> " +
-            //" [" + match[1] + "](#" + match[1] + ") " +
             newComment.substr(match.index + match[0].length);
 
             pos = match.index + match[0].length;
         }
 
-        logger.debug(newComment);
-
         return newComment;
     }
 
     replaceLinks(comment: string, fileName: string, line: number) {
-        logger.debug("replacing links in " + fileName + ":" + line + " looking for " + this.linkRegExp);
         let pos = 0;
         let match;
         let newComment: string = comment;
+
+        let linkPrefix = this.getLinkPrefix(fileName);
+
         // Look at the line for anchors - replace them with links. 
         while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             logger.debug("found link: " + match[1]);
@@ -102,7 +129,7 @@ export class HtmlGenerator implements IHtmlGenerator {
                 logger.error("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             } else {
                 newComment =  comment.substr(0, match.index - 1) +
-                " [" + match[1] + "](" + tag.path + ".html#" + match[1] + ") " +
+                " [" + match[1] + "](" + linkPrefix + tag.path + ".html#" + match[1] + ") " +
                 newComment.substr(match.index + match[0].length);
             }
             pos = match.index + match[0].length;
@@ -121,8 +148,25 @@ export class HtmlGenerator implements IHtmlGenerator {
         // }
     }
 
+    // > NOTE: Without this code, the link will not properly navigated deeply nested pages with relative linking.
+    getLinkPrefix(fileName: string): string {
+        let fileNameAsArray = fileName.split("/");
+        let linkPrefix = "";
+        for (let i = 0; i < fileNameAsArray.length - 2; i++) {
+            linkPrefix += "../";
+        }
+
+        return linkPrefix;
+    }
+
     markdownHelper(context, options) {
        return marked(context);
     }
 
+    ifCondHelper(v1, v2, options) {
+        if (v1 === v2) {
+            return options.fn(this);
+        }
+        return options.inverse(this);
+    };
 }

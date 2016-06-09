@@ -97,11 +97,13 @@ export class ReferenceCollection implements IReferenceCollection {
         }
     }
 
-    public getAllTags(parentPath?: string, toplevel?: boolean): ITag[] {
+    public getAllTags(parentPath?: string, depth?: number): ITag[] {
         parentPath = parentPath || "";
+        depth = depth || 0;
 
         let allTags: ITag[] = [];
-        if (toplevel === false) {
+        logger.debug("Depth" + depth);
+        if (depth > 0) {
 
             for (let i = 0; i < this.anchors.length; i++) {
                 if (parentPath !== "" && parentPath !== null) {
@@ -120,7 +122,7 @@ export class ReferenceCollection implements IReferenceCollection {
             }
 
             for (let i = 0; i < this.subcollections.length; i++) {
-                allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id, false));
+                allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id,  depth + 1));
             }
         } else {
 
@@ -133,7 +135,7 @@ export class ReferenceCollection implements IReferenceCollection {
             }
 
             for (let i = 0; i < this.subcollections.length; i++) {
-                allTags = allTags.concat(this.subcollections[i].getAllTags(null, false));
+                allTags = allTags.concat(this.subcollections[i].getAllTags(null, depth + 1));
             }
         }
 
