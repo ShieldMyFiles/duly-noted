@@ -104,7 +104,7 @@ var MarkdownGenerator = (function () {
             else {
                 logger.debug("found internal link: " + match[1]);
                 newComment = comment.substr(0, match.index - 1) +
-                    " [" + match[1] + "](" + linkPrefix + tag.path + ".html#" + match[1] + ") " +
+                    " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + match[1] + ") " +
                     newComment.substr(match.index + match[0].length);
             }
             pos = match.index + match[0].length;

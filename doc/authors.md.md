@@ -12,9 +12,9 @@
 
 > files: 
 
->  [Index](./ts/index.ts.html#Index) 
+>  [Index](./ts/index.ts.md#Index) 
 
->  [ReferenceParser](./ts/modules/referenceParser.ts.html#ReferenceParser) 
+>  [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
 
 > ____________________________________
 

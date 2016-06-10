@@ -1,6 +1,6 @@
  # <a name="ReferenceParser">&#187; ReferenceParser</a> 
 
- [authors/chris](../.././authors.md.html#authors/chris) 
+ [authors/chris](../.././authors.md.md#authors/chris) 
 
 ```typescript
 import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";

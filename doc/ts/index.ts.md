@@ -1,6 +1,6 @@
  # <a name="Index">&#187; Index</a> 
 
- [authors/chris](.././authors.md.html#authors/chris) 
+ [authors/chris](.././authors.md.md#authors/chris) 
 
  
 
