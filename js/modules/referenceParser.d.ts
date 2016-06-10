@@ -6,6 +6,7 @@ export interface IReferenceParser {
     files: string[];
     parse(): any;
 }
+export declare const parseLoc: string;
 export declare class ReferenceParser implements IReferenceParser {
     files: string[];
     rootCollection: IReferenceCollection;
@@ -14,7 +15,6 @@ export declare class ReferenceParser implements IReferenceParser {
     longCommentOpenRegExp: RegExp;
     longCommentLineRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
-    outputDir: string;
     externalReferences: IExternalReference[];
     constructor(config: IConfig);
     parse(): Q.Promise<IReferenceCollection>;

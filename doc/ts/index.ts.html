@@ -15,8 +15,17 @@
                 padding: 40px 15px;
                 text-align: center;
             }
-            .popover {
+            pre {
                 display: block;
+                padding: 0;
+                margin: 0 0 30px 0;
+                font-size: 11px;
+                line-height: 1.42857143;
+                color: #333;
+                word-break: break-all;
+                word-wrap: break-word;
+                border: 1px solid #ccc;
+                border-radius: 4px;
             }
         </style>
     </head>
@@ -37,13 +46,13 @@
         <div class="container">
             <div class="row">
                     <div class="well">
-<h1 id="-a-name-index-187-index-a-"><a name="Index">&#187; Index</a></h1>
+<h1 id="-a-name-index-187-index-a-ts"><a name="Index">&#187; Index</a> .ts</h1>
 <p> <a href=".././authors.md.html#authors/chris">authors/chris</a> </p>
-<p> This is file runs Duly Noted</p>
+<p> This is the entry file to Duly Noted</p>
                     </div>
                 </div>
             <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">import {IConfig} from &quot;./classes/IConfig&quot;;
 import {ReferenceParser} from &quot;./modules/referenceParser&quot;;
@@ -64,13 +73,13 @@ export function run () {
                     </div>
                 </div>
             <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <p> Parse config file</p>
 
                         </div>
                 </div>
             <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">   
      if (args[&quot;c&quot;]) {
@@ -90,7 +99,7 @@ export function run () {
          .then((response) &#x3D;&gt; {
              logger.info(&quot;parsing complete, beginning export of HTML&quot;);
              new HtmlGenerator(config).generate();
-             new MarkdownGenerator(config).generate();
+             new MarkdownGenerator(config).generate(true);
          })
          .catch( (err: Error) &#x3D;&gt; {
              logger.error(err.message + err.stack);
@@ -117,9 +126,6 @@ function getFilesFromGlob(globString: string): Q.Promise&lt;string[]&gt; {
                 });
                 hljs.initHighlighting();
             })();
-            $(function () {
-                $('[data-toggle="popover"]').popover()
-            })
         </script>
     </body>
 </html>

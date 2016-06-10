@@ -16,7 +16,7 @@ export declare class HtmlGenerator implements IHtmlGenerator {
     readme: string;
     projectName: string;
     constructor(config: IConfig);
-    generate(): void;
+    generate(cleanUp?: boolean): void;
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void;
     replaceAnchors(comment: string, fileName: string, line: number): string;
     replaceInternalLinks(comment: string, fileName: string, line: number): string;

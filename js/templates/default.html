@@ -5,18 +5,24 @@
         <link rel="stylesheet" href="{{linkPrefix}}/css/default.css">
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script   src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"   integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw="   crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <script src="{{linkPrefix}}/scripts/highlight.js"></script>
         <style>
             body {
                 padding-top: 50px;
             }
-            .starter-template {
-                padding: 40px 15px;
-                text-align: center;
+
+            .code {
+                min-height: 1em;
+                z-index: 9999
             }
             .comment {
-                position: relative;
+                background: grey;
+                z-index: 1;
+                margin-left: 33%;
+                margin-top: 5px;
+                width: 33%;
             }
         </style>
     </head>
@@ -33,34 +39,44 @@
                 </div>
             </div>
         </nav>
-
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <pre style="width:100%">
-                        <code  class="{{type}}">
-                        {{#each lines}}
-                        {{#if code}}
-                            {{code}}
-                        {{/if}}
-                       
-                        {{#if comment}}
-                        <span class="comment">{{#md comment}}{{\md}}</span>
-                        {{/if}}
-                        {{/each}}
-                        </code>
-                    </pre>
-                </div>
+        <div class="container-fluid">
+            <div class="code col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                <pre>
+                    <code class="{{type}}">{{#each lines}}
+<p class="code" id="code-{{number}}">{{code}}{{/each}}</p></code>  
+                </pre>
             </div>
+            <div id="comments" class="code col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            </div>
+        </div>  
+        <div>
+            {{#each lines}}
+                {{#if comment}}
+                    <div id="{{number}}" class="comment">
+                    <p>{{#md comment}}{{/md}}</p>
+                    </div>
+                {{/if}}
+            {{/each}}
         </div>
         <script type="text/javascript">
-            (function(){
-                console.log("loaded");
-                hljs.configure({
-                    tabReplace: '  '
+        (function(){
+            console.log("loaded");
+            hljs.configure({
+                tabReplace: '  '
+            });
+            hljs.initHighlighting();
+        })();
+        $(function () {
+           $(".comment").each(function(){
+                $(this).position({
+                    my: "left top",
+                    at: "right bottom",
+                    of: "#code-" + this.id,
+                    collision: "flipfit",
+                    withint: "#comments"
                 });
-                hljs.initHighlighting();
-            })();
+            });
+        });
         </script>
     </body>
 </html>

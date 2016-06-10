@@ -1,5 +1,6 @@
 "use strict";
 var referenceCollection_1 = require("../classes/referenceCollection");
+var referenceParser_1 = require("../modules/referenceParser");
 var node_dir_1 = require("node-dir");
 var fs_1 = require("fs");
 var path = require("path");
@@ -14,11 +15,11 @@ var HtmlGenerator = (function () {
     function HtmlGenerator(config) {
         this.tags = [];
         this.outputDir = config.outputDir;
-        this.collection = JSON.parse(fs_1.readFileSync(path.join(config.outputDir, "internalReferences.json")).toString());
+        this.collection = JSON.parse(fs_1.readFileSync(path.join(referenceParser_1.parseLoc, "internalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
         this.linkRegExp = new RegExp(config.linkRegExp);
-        this.referenceCollection = new referenceCollection_1.ReferenceCollection("").inflate(JSON.parse(fs_1.readFileSync(path.join(this.outputDir, "internalReferences.json")).toString()));
-        this.externalReferences = JSON.parse(fs_1.readFileSync(path.join(this.outputDir, "externalReferences.json")).toString());
+        this.referenceCollection = new referenceCollection_1.ReferenceCollection("").inflate(JSON.parse(fs_1.readFileSync(path.join(referenceParser_1.parseLoc, "internalReferences.json")).toString()));
+        this.externalReferences = JSON.parse(fs_1.readFileSync(path.join(referenceParser_1.parseLoc, "externalReferences.json")).toString());
         this.tags = this.referenceCollection.getAllTags();
         var projectPathArray = __dirname.split("/");
         projectPathArray.pop();
@@ -30,17 +31,18 @@ var HtmlGenerator = (function () {
         handlebars.registerHelper("md", this.markdownHelper);
         handlebars.registerHelper("ifCond", this.ifCondHelper);
     }
-    HtmlGenerator.prototype.generate = function () {
+    HtmlGenerator.prototype.generate = function (cleanUp) {
         var that = this;
-        node_dir_1.readFiles(this.outputDir, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
+        var clean = cleanUp || false;
+        node_dir_1.readFiles(referenceParser_1.parseLoc, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
             that.proccessFile(err, content, next, that.outputDir);
         }, function (err, files) {
-            that.cleanUp(err, files);
             that.generateIndexPage();
+            if (clean) {
+                that.cleanUp(err, files);
+            }
         });
         fse.copySync(path.join(this.projectPath, "templates", "highlight.pack.js"), path.join(this.outputDir, "scripts/highlight.js"));
-        fse.copySync(path.join(this.projectPath, "templates", "css", "vs.css"), path.join(this.outputDir, "css/vs.css"));
-        fse.copySync(path.join(this.projectPath, "templates", "css", "monokai-sublime.css"), path.join(this.outputDir, "css/monokai-sublime.css"));
         fse.copySync(path.join(this.projectPath, "templates", "css", "default.css"), path.join(this.outputDir, "css/default.css"));
     };
     HtmlGenerator.prototype.proccessFile = function (err, content, next, outputDir) {

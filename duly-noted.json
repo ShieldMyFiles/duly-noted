@@ -11,7 +11,7 @@
     "longCommentLineRegExp": "\\*(.*)",
     "longCommentCloseRegExp": "\\*\/",
     "anchorRegExp": "!([a-zA-Z0-9/]+)",
-    "linkRegExp": "\\W@([a-zA-Z0-9\\-/]+)",
+    "linkRegExp": "(?:^|\\W)@([a-zA-Z0-9\\-/]+)",
     "readme": "./README.md",
     "externalReferences": [
         {

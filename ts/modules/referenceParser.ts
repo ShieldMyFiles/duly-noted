@@ -23,6 +23,8 @@ export interface IReferenceParser {
     parse(): any;
 }
 
+export const parseLoc = "duly-noted";
+
 export class ReferenceParser implements IReferenceParser {
     files: string[];
     rootCollection: IReferenceCollection;
@@ -31,14 +33,12 @@ export class ReferenceParser implements IReferenceParser {
     longCommentOpenRegExp: RegExp;
     longCommentLineRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
-    outputDir: string;
     externalReferences: IExternalReference[];
 
     constructor(config: IConfig) {
         logger.debug("ready");
-        this.outputDir = config.outputDir;
         this.files = config.files;
-        this.rootCollection = new ReferenceCollection(path.basename(this.outputDir));
+        this.rootCollection = new ReferenceCollection(parseLoc);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
         this.commentRegExp = new RegExp(config.commentRegExp);
         this.longCommentOpenRegExp = new RegExp(config.longCommentOpenRegExp);
@@ -67,8 +67,8 @@ export class ReferenceParser implements IReferenceParser {
             Q.all(parseActions)
             .then(() => {
                 logger.info("Saving out internalReferences.json");
-                writeFileSync(path.join(that.outputDir, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
-                writeFileSync(path.join(that.outputDir, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
+                writeFileSync(path.join(parseLoc, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
+                writeFileSync(path.join(parseLoc, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
                 resolve(that.rootCollection);
             });
         });
@@ -229,7 +229,7 @@ export class ReferenceParser implements IReferenceParser {
     writeOutFile(file: IFile) {
         let that = this;
         return Q.Promise<{}>((resolve, reject) => {
-            let filePathArray = path.join(that.outputDir, file.name + ".json").split("/");
+            let filePathArray = path.join(parseLoc, file.name + ".json").split("/");
             filePathArray.pop();
             let filePath = filePathArray.join("/");
             mkdirp(filePath, function (err) {
@@ -239,7 +239,7 @@ export class ReferenceParser implements IReferenceParser {
                 }
                 else {
                     logger.info("Saving output for: " + file.name);
-                    writeFileSync(path.join(that.outputDir, file.name + ".json"), JSON.stringify(file), { flag: "w" });
+                    writeFileSync(path.join(parseLoc, file.name + ".json"), JSON.stringify(file), { flag: "w" });
                     resolve(null);
                 }
             });

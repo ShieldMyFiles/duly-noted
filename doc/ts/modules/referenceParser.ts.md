@@ -20,6 +20,7 @@ export interface IReferenceParser {
     files: string[];
     parse(): any;
 }
+export const parseLoc = "duly-noted";
 export class ReferenceParser implements IReferenceParser {
     files: string[];
     rootCollection: IReferenceCollection;
@@ -28,13 +29,11 @@ export class ReferenceParser implements IReferenceParser {
     longCommentOpenRegExp: RegExp;
     longCommentLineRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
-    outputDir: string;
     externalReferences: IExternalReference[];
     constructor(config: IConfig) {
         logger.debug("ready");
-        this.outputDir = config.outputDir;
         this.files = config.files;
-        this.rootCollection = new ReferenceCollection(path.basename(this.outputDir));
+        this.rootCollection = new ReferenceCollection(parseLoc);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
         this.commentRegExp = new RegExp(config.commentRegExp);
         this.longCommentOpenRegExp = new RegExp(config.longCommentOpenRegExp);
@@ -59,8 +58,8 @@ export class ReferenceParser implements IReferenceParser {
             Q.all(parseActions)
             .then(() => {
                 logger.info("Saving out internalReferences.json");
-                writeFileSync(path.join(that.outputDir, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
-                writeFileSync(path.join(that.outputDir, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
+                writeFileSync(path.join(parseLoc, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
+                writeFileSync(path.join(parseLoc, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
                 resolve(that.rootCollection);
             });
         });
@@ -74,7 +73,7 @@ export class ReferenceParser implements IReferenceParser {
             lines: []
         };
 ```
->  Line numbering traditionally starts at 1
+ Line numbering traditionally starts at 1
 
 ```typescript
         let lineNumber = 0;
@@ -85,7 +84,7 @@ export class ReferenceParser implements IReferenceParser {
                 };
                 file.lines.push(thisLine);
 ```
->  In Markdown all lines are considered comments
+ In Markdown all lines are considered comments
 
 ```typescript
                 file.lines[lineNumber].comment = line;
@@ -113,7 +112,7 @@ export class ReferenceParser implements IReferenceParser {
         let insideLongComment = false;
         return Q.Promise((resolve, reject) => {
 ```
->  read all lines:
+ read all lines:
 
 ```typescript
            
@@ -124,7 +123,7 @@ export class ReferenceParser implements IReferenceParser {
                 type: getFileType(fileName)
             };
 ```
->  Line numbering traditionally starts at 1
+ Line numbering traditionally starts at 1
 
 ```typescript
             let lineNumber = 0;
@@ -135,7 +134,7 @@ export class ReferenceParser implements IReferenceParser {
                 file.lines.push(thisLine);
                 let longCommentOpenMatch = XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);
 ```
->  These comments must come at beginning of line.
+ These comments must come at beginning of line.
 
 ```typescript
                 if (!insideLongComment && longCommentOpenMatch) {
@@ -143,14 +142,14 @@ export class ReferenceParser implements IReferenceParser {
                     file.lines[lineNumber].longComment = true;
                 }
 ```
->  Not inside a long comment - look for a regular comment.
+ Not inside a long comment - look for a regular comment.
 
 ```typescript
                
                 if (!insideLongComment) {
                     let match = XRegExp.exec(line, that.commentRegExp, 0, false);
 ```
->  Contains a tradition comment
+ Contains a tradition comment
 
 ```typescript
                    
@@ -171,7 +170,7 @@ export class ReferenceParser implements IReferenceParser {
                                 }
                             });
 ```
->  Not a comment (code only)
+ Not a comment (code only)
 
 ```typescript
                        
@@ -189,17 +188,17 @@ export class ReferenceParser implements IReferenceParser {
                         }
                     }
 ```
->  Inside a long comment - so the whole thing is a comment
+ Inside a long comment - so the whole thing is a comment
 
 ```typescript
                 } else {
 ```
->  If this line contains a long comment closing symbol, then next line isn't long comment.
+ If this line contains a long comment closing symbol, then next line isn't long comment.
 
 ```typescript
                    
 ```
->  let longCommentEnd = line.search(that.longCommentCloseRegExp);
+ let longCommentEnd = line.search(that.longCommentCloseRegExp);
 
 ```typescript
                    
@@ -246,7 +245,7 @@ export class ReferenceParser implements IReferenceParser {
     writeOutFile(file: IFile) {
         let that = this;
         return Q.Promise<{}>((resolve, reject) => {
-            let filePathArray = path.join(that.outputDir, file.name + ".json").split("/");
+            let filePathArray = path.join(parseLoc, file.name + ".json").split("/");
             filePathArray.pop();
             let filePath = filePathArray.join("/");
             mkdirp(filePath, function (err) {
@@ -256,7 +255,7 @@ export class ReferenceParser implements IReferenceParser {
                 }
                 else {
                     logger.info("Saving output for: " + file.name);
-                    writeFileSync(path.join(that.outputDir, file.name + ".json"), JSON.stringify(file), { flag: "w" });
+                    writeFileSync(path.join(parseLoc, file.name + ".json"), JSON.stringify(file), { flag: "w" });
                     resolve(null);
                 }
             });

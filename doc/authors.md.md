@@ -1,30 +1,18 @@
-> # Authors
+# Authors
 
->  [jira/BRUICH-215](https://shieldmyfiles.atlassian.net/browse/BRUICH-215) 
+____________________________________
 
-> ____________________________________
+[authors/chris](#authors/chris)
 
-> [authors/chris](#authors/chris)
+## Chris Webster
 
-> ## Chris Webster
+* email: chris@shieldmyfile.com
 
-> * email: chris@shieldmyfile.com
+____________________________________
 
-> files: 
+[authors/joe](#authors/joe)
 
->  [Index](./ts/index.ts.md#Index) 
+## Joe Webster
 
->  [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
-
-> ____________________________________
-
-> [authors/joe](#authors/joe)
-
-> ## Joe Webster
-
-> * email: joe@shieldmyfile.com 
-
-> [authors/deep/nest](#authors/deep/nest)
-
-> [authors/deep/second](#authors/deep/second)
+* email: joe@shieldmyfile.com 
 

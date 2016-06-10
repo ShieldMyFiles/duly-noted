@@ -1,4 +1,5 @@
-import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";
+import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
+import {parseLoc} from "../modules/referenceParser";
 import {IConfig, IExternalReference} from "../classes/IConfig";
 import {readFiles} from "node-dir";
 import {IFile, ILine} from "../classes/IFile";
@@ -7,6 +8,7 @@ import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} fr
 import mkdirp = require("mkdirp");
 import * as path from "path";
 import _ = require("underscore");
+import lineReader = require("line-reader");
 
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::MarkdownGenerator");
@@ -23,22 +25,35 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     linkRegExp: RegExp;
     referenceCollection: ReferenceCollection;
     tags: ITag[] = [];
+    readme: string;
 
     constructor(config: IConfig) {
         this.outputDir = config.outputDir;
-        this.externalReferences = JSON.parse(readFileSync(path.join(this.outputDir, "externalReferences.json")).toString());
+        this.externalReferences = JSON.parse(readFileSync(path.join(parseLoc, "externalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
         this.linkRegExp = new RegExp(config.linkRegExp);
-        this.referenceCollection = new ReferenceCollection("").inflate(JSON.parse(readFileSync(path.join(this.outputDir, "internalReferences.json")).toString()));
+        this.referenceCollection = new ReferenceCollection("").inflate(JSON.parse(readFileSync(path.join(parseLoc, "internalReferences.json")).toString()));
         this.tags = this.referenceCollection.getAllTags();
-
+        this.readme = config.readme;
     }
 
-    public generate(): void {
+    public generate(cleanUp?: boolean): void {
         let that = this;
-        readFiles(this.outputDir, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
+        let clean = cleanUp || false;
+
+        readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
             that.proccessFile(err, content, next, that.outputDir);
-        }, that.cleanUp);
+        }, (err, files) => {
+            let readme = "";
+            let i = 1;
+            lineReader.eachLine(that.readme, (line, last) => {
+                let newLine = line;
+                newLine = that.replaceExternalLinks(newLine, that.readme, i);
+                newLine = that.replaceInternalLinks(newLine, that.readme, i);
+                readme +=  "\n" + newLine;
+                i++;
+            });
+        });
     }
 
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
@@ -69,11 +84,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                         inCodeBlock = false;
                     }
 
-                    if (!file.lines[i].longComment) {
-                        output += "> ";
-                    }
-
-                        output += file.lines[i].comment + "\n" + "\n";
+                    output += file.lines[i].comment + "\n" + "\n";
                 }
 
                 // Code
@@ -117,7 +128,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         // Look at the line for anchors - replace them with links. 
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
             newComment =  newComment.substr(0, match.index - 1) +
-            "[" + match[1] + "](#" + match[1] + ")";
+            "[" + match[1] + "](#" + match[1] + ")" +
             newComment.substr(match.index + match[0].length);
 
             pos = match.index + match[0].length;
@@ -189,13 +200,13 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     }
 
     cleanUp(err, files) {
-        //  if (err) {
-        //     logger.error(err.message);
-        // } else {
-        //     for (let i = 0; i < files.length; i++) {
-        //         unlinkSync(files[i]);
-        //     }
-        // }
+        if (err) {
+            logger.error(err.message);
+        } else {
+            for (let i = 0; i < files.length; i++) {
+                unlinkSync(files[i]);
+            }
+        }
     }
 }
 

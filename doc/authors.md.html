@@ -15,8 +15,17 @@
                 padding: 40px 15px;
                 text-align: center;
             }
-            .popover {
+            pre {
                 display: block;
+                padding: 0;
+                margin: 0 0 30px 0;
+                font-size: 11px;
+                line-height: 1.42857143;
+                color: #333;
+                word-break: break-all;
+                word-wrap: break-word;
+                border: 1px solid #ccc;
+                border-radius: 4px;
             }
         </style>
     </head>
@@ -36,25 +45,19 @@
 
         <div class="container">
             <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <h1 id="authors">Authors</h1>
-<p> <a href="https://shieldmyfiles.atlassian.net/browse/BRUICH-215">jira/BRUICH-215</a> </p>
 <hr>
 <p> <a name="authors/chris">&#187; authors/chris</a> </p>
 <h2 id="chris-webster">Chris Webster</h2>
 <ul>
-<li>email: chris@shieldmyfile.com
-files: 
-<a href="./ts/index.ts.html#Index">Index</a> 
-<a href="./ts/modules/referenceParser.ts.html#ReferenceParser">ReferenceParser</a> </li>
+<li>email: chris@shieldmyfile.com</li>
 </ul>
 <hr>
 <p> <a name="authors/joe">&#187; authors/joe</a> </p>
 <h2 id="joe-webster">Joe Webster</h2>
 <ul>
-<li>email: joe@shieldmyfile.com 
-<a name="authors/deep/nest">&#187; authors/deep/nest</a> 
-<a name="authors/deep/second">&#187; authors/deep/second</a> </li>
+<li>email: joe@shieldmyfile.com </li>
 </ul>
 
                         </div>
@@ -68,9 +71,6 @@ files:
                 });
                 hljs.initHighlighting();
             })();
-            $(function () {
-                $('[data-toggle="popover"]').popover()
-            })
         </script>
     </body>
 </html>

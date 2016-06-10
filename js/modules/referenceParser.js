@@ -9,12 +9,12 @@ var lineReader = require("line-reader");
 var Q = require("q");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceParser");
+exports.parseLoc = "duly-noted";
 var ReferenceParser = (function () {
     function ReferenceParser(config) {
         logger.debug("ready");
-        this.outputDir = config.outputDir;
         this.files = config.files;
-        this.rootCollection = new referenceCollection_1.ReferenceCollection(path.basename(this.outputDir));
+        this.rootCollection = new referenceCollection_1.ReferenceCollection(exports.parseLoc);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
         this.commentRegExp = new RegExp(config.commentRegExp);
         this.longCommentOpenRegExp = new RegExp(config.longCommentOpenRegExp);
@@ -40,8 +40,8 @@ var ReferenceParser = (function () {
             Q.all(parseActions)
                 .then(function () {
                 logger.info("Saving out internalReferences.json");
-                fs_1.writeFileSync(path.join(that.outputDir, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
-                fs_1.writeFileSync(path.join(that.outputDir, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
+                fs_1.writeFileSync(path.join(exports.parseLoc, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
+                fs_1.writeFileSync(path.join(exports.parseLoc, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
                 resolve(that.rootCollection);
             });
         });
@@ -182,7 +182,7 @@ var ReferenceParser = (function () {
     ReferenceParser.prototype.writeOutFile = function (file) {
         var that = this;
         return Q.Promise(function (resolve, reject) {
-            var filePathArray = path.join(that.outputDir, file.name + ".json").split("/");
+            var filePathArray = path.join(exports.parseLoc, file.name + ".json").split("/");
             filePathArray.pop();
             var filePath = filePathArray.join("/");
             mkdirp(filePath, function (err) {
@@ -192,7 +192,7 @@ var ReferenceParser = (function () {
                 }
                 else {
                     logger.info("Saving output for: " + file.name);
-                    fs_1.writeFileSync(path.join(that.outputDir, file.name + ".json"), JSON.stringify(file), { flag: "w" });
+                    fs_1.writeFileSync(path.join(exports.parseLoc, file.name + ".json"), JSON.stringify(file), { flag: "w" });
                     resolve(null);
                 }
             });

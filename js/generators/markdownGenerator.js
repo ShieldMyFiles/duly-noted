@@ -1,28 +1,42 @@
 "use strict";
 var referenceCollection_1 = require("../classes/referenceCollection");
+var referenceParser_1 = require("../modules/referenceParser");
 var node_dir_1 = require("node-dir");
 var XRegExp = require("xregexp");
 var fs_1 = require("fs");
 var mkdirp = require("mkdirp");
 var path = require("path");
 var _ = require("underscore");
+var lineReader = require("line-reader");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::MarkdownGenerator");
 var MarkdownGenerator = (function () {
     function MarkdownGenerator(config) {
         this.tags = [];
         this.outputDir = config.outputDir;
-        this.externalReferences = JSON.parse(fs_1.readFileSync(path.join(this.outputDir, "externalReferences.json")).toString());
+        this.externalReferences = JSON.parse(fs_1.readFileSync(path.join(referenceParser_1.parseLoc, "externalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
         this.linkRegExp = new RegExp(config.linkRegExp);
-        this.referenceCollection = new referenceCollection_1.ReferenceCollection("").inflate(JSON.parse(fs_1.readFileSync(path.join(this.outputDir, "internalReferences.json")).toString()));
+        this.referenceCollection = new referenceCollection_1.ReferenceCollection("").inflate(JSON.parse(fs_1.readFileSync(path.join(referenceParser_1.parseLoc, "internalReferences.json")).toString()));
         this.tags = this.referenceCollection.getAllTags();
+        this.readme = config.readme;
     }
-    MarkdownGenerator.prototype.generate = function () {
+    MarkdownGenerator.prototype.generate = function (cleanUp) {
         var that = this;
-        node_dir_1.readFiles(this.outputDir, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
+        var clean = cleanUp || false;
+        node_dir_1.readFiles(referenceParser_1.parseLoc, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
             that.proccessFile(err, content, next, that.outputDir);
-        }, that.cleanUp);
+        }, function (err, files) {
+            var readme = "";
+            var i = 1;
+            lineReader.eachLine(that.readme, function (line, last) {
+                var newLine = line;
+                newLine = that.replaceExternalLinks(newLine, that.readme, i);
+                newLine = that.replaceInternalLinks(newLine, that.readme, i);
+                readme += "\n" + newLine;
+                i++;
+            });
+        });
     };
     MarkdownGenerator.prototype.proccessFile = function (err, content, next, outputDir) {
         var file = JSON.parse(content);
@@ -46,9 +60,6 @@ var MarkdownGenerator = (function () {
                     if (inCodeBlock) {
                         output_1 += "```" + "\n";
                         inCodeBlock = false;
-                    }
-                    if (!file_1.lines[i].longComment) {
-                        output_1 += "> ";
                     }
                     output_1 += file_1.lines[i].comment + "\n" + "\n";
                 }
@@ -85,8 +96,8 @@ var MarkdownGenerator = (function () {
         var newComment = comment;
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
             newComment = newComment.substr(0, match.index - 1) +
-                "[" + match[1] + "](#" + match[1] + ")";
-            newComment.substr(match.index + match[0].length);
+                "[" + match[1] + "](#" + match[1] + ")" +
+                newComment.substr(match.index + match[0].length);
             pos = match.index + match[0].length;
         }
         return newComment;
@@ -140,6 +151,14 @@ var MarkdownGenerator = (function () {
         return linkPrefix;
     };
     MarkdownGenerator.prototype.cleanUp = function (err, files) {
+        if (err) {
+            logger.error(err.message);
+        }
+        else {
+            for (var i = 0; i < files.length; i++) {
+                fs_1.unlinkSync(files[i]);
+            }
+        }
     };
     return MarkdownGenerator;
 }());

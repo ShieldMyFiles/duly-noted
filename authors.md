@@ -1,16 +1,10 @@
 # Authors
 
- @jira/BRUICH-215
 ____________________________________
 
 !authors/chris
 ## Chris Webster
 * email: chris@shieldmyfile.com
-
-
-files: 
-* @Index
-* @ReferenceParser
 
 ____________________________________
 
@@ -18,7 +12,3 @@ ____________________________________
 ## Joe Webster
 
 * email: joe@shieldmyfile.com 
-
-!authors/deep/nest
-
-!authors/deep/second

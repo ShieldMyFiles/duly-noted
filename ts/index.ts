@@ -1,8 +1,8 @@
 /**
- * # !Index
+ * # !Index.ts
  * @authors/chris
  * 
- * This is file runs Duly Noted
+ * This is the entry file to Duly Noted
  */
 import {IConfig} from "./classes/IConfig";
 import {ReferenceParser} from "./modules/referenceParser";
@@ -43,7 +43,7 @@ export function run () {
          .then((response) => {
              logger.info("parsing complete, beginning export of HTML");
              new HtmlGenerator(config).generate();
-             new MarkdownGenerator(config).generate();
+             new MarkdownGenerator(config).generate(true);
          })
          .catch( (err: Error) => {
              logger.error(err.message + err.stack);

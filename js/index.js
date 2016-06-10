@@ -30,7 +30,7 @@ function run() {
             .then(function (response) {
             logger.info("parsing complete, beginning export of HTML");
             new Htmlgenerator_1.HtmlGenerator(config).generate();
-            new markdownGenerator_1.MarkdownGenerator(config).generate();
+            new markdownGenerator_1.MarkdownGenerator(config).generate(true);
         })
             .catch(function (err) {
             logger.error(err.message + err.stack);

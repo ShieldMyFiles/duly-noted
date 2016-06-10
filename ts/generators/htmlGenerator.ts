@@ -1,4 +1,5 @@
 import {IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
+import {parseLoc} from "../modules/referenceParser";
 import {IConfig, IExternalReference} from "../classes/IConfig";
 import {readFiles, files} from "node-dir";
 import {IFile, ILine} from "../classes/IFile";
@@ -32,14 +33,14 @@ export class HtmlGenerator implements IHtmlGenerator {
     externalReferences: IExternalReference[];
     readme: string;
     projectName: string;
-    
+
     constructor(config: IConfig){
         this.outputDir = config.outputDir;
-        this.collection = JSON.parse(readFileSync(path.join(config.outputDir, "internalReferences.json")).toString());
+        this.collection = JSON.parse(readFileSync(path.join(parseLoc, "internalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
         this.linkRegExp = new RegExp(config.linkRegExp);
-        this.referenceCollection = new ReferenceCollection("").inflate(JSON.parse(readFileSync(path.join(this.outputDir, "internalReferences.json")).toString()));
-        this.externalReferences = JSON.parse(readFileSync(path.join(this.outputDir, "externalReferences.json")).toString());
+        this.referenceCollection = new ReferenceCollection("").inflate(JSON.parse(readFileSync(path.join(parseLoc, "internalReferences.json")).toString()));
+        this.externalReferences = JSON.parse(readFileSync(path.join(parseLoc, "externalReferences.json")).toString());
         this.tags = this.referenceCollection.getAllTags();
         let projectPathArray = __dirname.split("/");
         projectPathArray.pop();
@@ -55,18 +56,19 @@ export class HtmlGenerator implements IHtmlGenerator {
         handlebars.registerHelper("ifCond", this.ifCondHelper);
     }
 
-    public generate(): void {
+    public generate(cleanUp?: boolean): void {
         let that = this;
-        readFiles(this.outputDir, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
+        let clean = cleanUp || false;
+        readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
             that.proccessFile(err, content, next, that.outputDir);
         }, (err, files) => {
-            that.cleanUp(err, files);
             that.generateIndexPage();
+            if (clean) {
+                that.cleanUp(err, files);
+            }
         });
 
         fse.copySync(path.join(this.projectPath, "templates", "highlight.pack.js"), path.join(this.outputDir, "scripts/highlight.js"));
-        fse.copySync(path.join(this.projectPath, "templates", "css", "vs.css"), path.join(this.outputDir, "css/vs.css"));
-        fse.copySync(path.join(this.projectPath, "templates", "css", "monokai-sublime.css"), path.join(this.outputDir, "css/monokai-sublime.css"));
         fse.copySync(path.join(this.projectPath, "templates", "css", "default.css"), path.join(this.outputDir, "css/default.css"));
     }
 
@@ -109,6 +111,11 @@ export class HtmlGenerator implements IHtmlGenerator {
             }
          }
         let output = this.template(outputMap);
+
+        // let outputMap = file;
+        // outputMap.linkPrefix = this.getLinkPrefix(file.name);
+        // outputMap.project = this.projectName;
+        // let output = this.template(outputMap);
         writeFileSync(path.join(outputDir, file.name + ".html"), output, { flag: "w" });
         next();
     }

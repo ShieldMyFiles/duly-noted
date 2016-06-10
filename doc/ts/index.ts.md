@@ -1,10 +1,10 @@
- #[Index](#Index)
+ #[Index](#Index).ts
 
  [authors/chris](.././authors.md.md#authors/chris) 
 
  
 
- This is file runs Duly Noted
+ This is the entry file to Duly Noted
 
 ```typescript
 import {IConfig} from "./classes/IConfig";
@@ -23,7 +23,7 @@ export function run () {
     let args = parseArgs(process.argv.slice(2));
     let config: IConfig;
 ```
->  Parse config file
+ Parse config file
 
 ```typescript
    
@@ -44,7 +44,7 @@ export function run () {
          .then((response) => {
              logger.info("parsing complete, beginning export of HTML");
              new HtmlGenerator(config).generate();
-             new MarkdownGenerator(config).generate();
+             new MarkdownGenerator(config).generate(true);
          })
          .catch( (err: Error) => {
              logger.error(err.message + err.stack);
