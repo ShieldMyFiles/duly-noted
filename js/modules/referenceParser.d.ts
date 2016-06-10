@@ -1,5 +1,5 @@
 import { IReferenceCollection } from "../classes/referenceCollection";
-import { IConfig, IExternalReference } from "../classes/IConfig";
+import { Config, IExternalReference } from "../classes/IConfig";
 import { IFile } from "../classes/IFile";
 import Q = require("q");
 export interface IReferenceParser {
@@ -16,7 +16,7 @@ export declare class ReferenceParser implements IReferenceParser {
     longCommentLineRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
     externalReferences: IExternalReference[];
-    constructor(config: IConfig);
+    constructor(config: Config);
     parse(): Q.Promise<IReferenceCollection>;
     parseAsMarkdown(fileName: string): Q.Promise<{}>;
     parseFile(fileName: string): Q.Promise<{}>;

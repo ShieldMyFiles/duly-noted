@@ -5,7 +5,7 @@
  * 
  * This is the entry file to Duly Noted
  */
-import {IConfig} from "./classes/IConfig";
+import {Config} from "./classes/IConfig";
 import {ReferenceParser} from "./modules/referenceParser";
 import parseArgs = require("minimist");
 import _ = require("underscore");
@@ -30,7 +30,7 @@ let logger = log4js.getLogger("duly-noted::run");
 export function run () {
     logger.info("Welcome to Duly Noted.");
     let args = parseArgs(process.argv.slice(2));
-    let config: IConfig;
+    let config: Config;
 
     // !TODO/config > This needs more flexible support for command line options
      if (args["c"]) {

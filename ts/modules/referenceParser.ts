@@ -4,7 +4,7 @@
  */
 
 import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";
-import {IConfig, IExternalReference} from "../classes/IConfig";
+import {Config, IExternalReference} from "../classes/IConfig";
 import {IFile, ILine} from "../classes/IFile";
 import {getFileType} from "../helpers/fileType";
 import {writeFileSync, mkdirSync, accessSync, F_OK, openSync} from "fs";
@@ -35,7 +35,7 @@ export class ReferenceParser implements IReferenceParser {
     longCommentCloseRegExp: RegExp;
     externalReferences: IExternalReference[];
 
-    constructor(config: IConfig) {
+    constructor(config: Config) {
         logger.debug("ready");
         this.files = config.files;
         this.rootCollection = new ReferenceCollection(parseLoc);

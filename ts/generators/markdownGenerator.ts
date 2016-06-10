@@ -1,6 +1,6 @@
 import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
 import {parseLoc} from "../modules/referenceParser";
-import {IConfig, IExternalReference} from "../classes/IConfig";
+import {Config, IExternalReference} from "../classes/IConfig";
 import {readFiles} from "node-dir";
 import {IFile, ILine} from "../classes/IFile";
 import XRegExp = require("xregexp");
@@ -27,7 +27,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     tags: ITag[] = [];
     readme: string;
 
-    constructor(config: IConfig) {
+    constructor(config: Config) {
         this.outputDir = config.outputDir;
         this.externalReferences = JSON.parse(readFileSync(path.join(parseLoc, "externalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);

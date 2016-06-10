@@ -1,5 +1,5 @@
 import { ITag, ReferenceCollection } from "../classes/referenceCollection";
-import { IConfig, IExternalReference } from "../classes/IConfig";
+import { Config, IExternalReference } from "../classes/IConfig";
 export interface IHtmlGenerator {
 }
 export declare class HtmlGenerator implements IHtmlGenerator {
@@ -15,7 +15,7 @@ export declare class HtmlGenerator implements IHtmlGenerator {
     externalReferences: IExternalReference[];
     readme: string;
     projectName: string;
-    constructor(config: IConfig);
+    constructor(config: Config);
     generate(cleanUp?: boolean): void;
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void;
     replaceAnchors(comment: string, fileName: string, line: number): string;

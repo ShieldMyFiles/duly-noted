@@ -1,6 +1,6 @@
 import {IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
 import {parseLoc} from "../modules/referenceParser";
-import {IConfig, IExternalReference} from "../classes/IConfig";
+import {Config, IExternalReference} from "../classes/IConfig";
 import {readFiles, files} from "node-dir";
 import {IFile, ILine} from "../classes/IFile";
 import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} from "fs";
@@ -34,7 +34,7 @@ export class HtmlGenerator implements IHtmlGenerator {
     readme: string;
     projectName: string;
 
-    constructor(config: IConfig){
+    constructor(config: Config){
         this.outputDir = config.outputDir;
         this.collection = JSON.parse(readFileSync(path.join(parseLoc, "internalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
