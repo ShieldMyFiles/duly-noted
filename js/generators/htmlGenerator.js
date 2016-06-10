@@ -71,7 +71,7 @@ var HtmlGenerator = (function () {
             }
             if (typeof (file.lines[i].code) === "string" && file.lines[i].code !== "" && file.lines[i].code !== null) {
                 if (outputMap.items.length > 0 && outputMap.items[outputMap.items.length - 1].type === "code") {
-                    outputMap.items[outputMap.items.length - 1].content += file.lines[i].code + "\n";
+                    outputMap.items[outputMap.items.length - 1].content += "\n" + file.lines[i].code;
                 }
                 else {
                     outputMap.items.push({ content: file.lines[i].code, type: "code", lang: file.type });

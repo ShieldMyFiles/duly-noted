@@ -1,6 +1,5 @@
-import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
-import {IConfig} from "../classes/IConfig";
-import {IExternalReference} from "../classes/IConfig";
+import {IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
+import {IConfig, IExternalReference} from "../classes/IConfig";
 import {readFiles, files} from "node-dir";
 import {IFile, ILine} from "../classes/IFile";
 import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} from "fs";
@@ -12,7 +11,6 @@ import * as marked from "marked";
 import * as fse from "fs-extra";
 import _ = require("underscore");
 
-
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::HtmlGenerator");
 
@@ -23,13 +21,13 @@ export interface IHtmlGenerator {
 
 export class HtmlGenerator implements IHtmlGenerator {
     outputDir: string;
-    collection: IReferenceCollection;
+    collection: ReferenceCollection;
     anchorRegExp: RegExp;
     linkRegExp: RegExp;
     template: any;
-    indexTemplate: any
+    indexTemplate: any;
     projectPath: string;
-    referenceCollection: IReferenceCollection;
+    referenceCollection: ReferenceCollection;
     tags: ITag[] = [];
     externalReferences: IExternalReference[];
     readme: string;
@@ -104,7 +102,7 @@ export class HtmlGenerator implements IHtmlGenerator {
 
             if (typeof(file.lines[i].code) === "string" && file.lines[i].code !== "" && file.lines[i].code !== null) {
                 if (outputMap.items.length > 0 && outputMap.items[outputMap.items.length - 1].type === "code") {
-                     outputMap.items[outputMap.items.length - 1].content  +=  file.lines[i].code + "\n";
+                     outputMap.items[outputMap.items.length - 1].content  +=  "\n" + file.lines[i].code;
                 } else {
                     outputMap.items.push({content: file.lines[i].code, type: "code", lang: file.type});
                 }
@@ -186,7 +184,7 @@ export class HtmlGenerator implements IHtmlGenerator {
         let that = this;
 
         let outputMap = {
-            project: this.projectName;
+            project: this.projectName,
             collections: [],
             files: [],
             readme: ""

@@ -4,6 +4,7 @@ var parseArgs = require("minimist");
 var _ = require("underscore");
 var glob = require("glob");
 var Q = require("q");
+var markdownGenerator_1 = require("./generators/markdownGenerator");
 var Htmlgenerator_1 = require("./generators/Htmlgenerator");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::run");
@@ -29,6 +30,7 @@ function run() {
             .then(function (response) {
             logger.info("parsing complete, beginning export of HTML");
             new Htmlgenerator_1.HtmlGenerator(config).generate();
+            new markdownGenerator_1.MarkdownGenerator(config).generate();
         })
             .catch(function (err) {
             logger.error(err.message + err.stack);

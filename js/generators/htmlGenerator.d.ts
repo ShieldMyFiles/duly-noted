@@ -1,17 +1,16 @@
-import { IReferenceCollection, ITag } from "../classes/referenceCollection";
-import { IConfig } from "../classes/IConfig";
-import { IExternalReference } from "../classes/IConfig";
+import { ITag, ReferenceCollection } from "../classes/referenceCollection";
+import { IConfig, IExternalReference } from "../classes/IConfig";
 export interface IHtmlGenerator {
 }
 export declare class HtmlGenerator implements IHtmlGenerator {
     outputDir: string;
-    collection: IReferenceCollection;
+    collection: ReferenceCollection;
     anchorRegExp: RegExp;
     linkRegExp: RegExp;
     template: any;
     indexTemplate: any;
     projectPath: string;
-    referenceCollection: IReferenceCollection;
+    referenceCollection: ReferenceCollection;
     tags: ITag[];
     externalReferences: IExternalReference[];
     readme: string;

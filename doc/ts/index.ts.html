@@ -15,6 +15,9 @@
                 padding: 40px 15px;
                 text-align: center;
             }
+            .popover {
+                display: block;
+            }
         </style>
     </head>
     <body>
@@ -32,13 +35,18 @@
         </nav>
 
         <div class="container">
-                            <div class="well">
+            <div class="row">
+                    <div class="well">
 <h1 id="-a-name-index-187-index-a-"><a name="Index">&#187; Index</a></h1>
 <p> <a href=".././authors.md.html#authors/chris">authors/chris</a> </p>
 <p> This is file runs Duly Noted</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">import {IConfig} from &quot;./classes/IConfig&quot;;import {ReferenceParser} from &quot;./modules/referenceParser&quot;;
+                    </div>
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">import {IConfig} from &quot;./classes/IConfig&quot;;
+import {ReferenceParser} from &quot;./modules/referenceParser&quot;;
 import parseArgs &#x3D; require(&quot;minimist&quot;);
 import _ &#x3D; require(&quot;underscore&quot;);
 import * as path from &quot;path&quot;;
@@ -51,14 +59,21 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
 export function run () {
     logger.info(&quot;Welcome to Duly Noted.&quot;);
     let args &#x3D; parseArgs(process.argv.slice(2));
-    let config: IConfig;
-</code></pre>
+    let config: IConfig;</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> Parse config file</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> Parse config file</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">        if (args[&quot;c&quot;]) {
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">   
+     if (args[&quot;c&quot;]) {
         config &#x3D; require(args[&quot;c&quot;]);
      } else {
         config &#x3D; require(process.cwd() + &quot;/duly-noted.json&quot;);
@@ -75,13 +90,8 @@ export function run () {
          .then((response) &#x3D;&gt; {
              logger.info(&quot;parsing complete, beginning export of HTML&quot;);
              new HtmlGenerator(config).generate();
-</code></pre>
-                        </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p>new MarkdownGenerator(config.outputDir).generate();</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">                     })
+             new MarkdownGenerator(config).generate();
+         })
          .catch( (err: Error) &#x3D;&gt; {
              logger.error(err.message + err.stack);
          });
@@ -94,10 +104,11 @@ function getFilesFromGlob(globString: string): Q.Promise&lt;string[]&gt; {
             resolve(files);
         });
     });
-}
-</code></pre>
-                        </div>
-        </div>
+}</code>
+                        </pre>
+                    </div>
+                </div>
+            </div>
         <script type="text/javascript">
             (function(){
                 console.log("loaded");
@@ -106,6 +117,9 @@ function getFilesFromGlob(globString: string): Q.Promise&lt;string[]&gt; {
                 });
                 hljs.initHighlighting();
             })();
+            $(function () {
+                $('[data-toggle="popover"]').popover()
+            })
         </script>
     </body>
 </html>

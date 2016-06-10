@@ -15,6 +15,9 @@
                 padding: 40px 15px;
                 text-align: center;
             }
+            .popover {
+                display: block;
+            }
         </style>
     </head>
     <body>
@@ -32,12 +35,17 @@
         </nav>
 
         <div class="container">
-                            <div class="well">
+            <div class="row">
+                    <div class="well">
 <h1 id="-a-name-referenceparser-187-referenceparser-a-"><a name="ReferenceParser">&#187; ReferenceParser</a></h1>
 <p> <a href="../.././authors.md.html#authors/chris">authors/chris</a> </p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">import {IReferenceCollection, IAnchor, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;import {IConfig, IExternalReference} from &quot;../classes/IConfig&quot;;
+                    </div>
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">import {IReferenceCollection, IAnchor, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;
+import {IConfig, IExternalReference} from &quot;../classes/IConfig&quot;;
 import {IFile, ILine} from &quot;../classes/IFile&quot;;
 import {getFileType} from &quot;../helpers/fileType&quot;;
 import {writeFileSync, mkdirSync, accessSync, F_OK, openSync} from &quot;fs&quot;;
@@ -105,26 +113,40 @@ export class ReferenceParser implements IReferenceParser {
             name: fileName,
             type: &quot;markdown&quot;,
             lines: []
-        };
-</code></pre>
+        };</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> Line numbering traditionally starts at 1</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> Line numbering traditionally starts at 1</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">        let lineNumber &#x3D; 0;        return Q.Promise((resolve, reject) &#x3D;&gt; {
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">        let lineNumber &#x3D; 0;
+        return Q.Promise((resolve, reject) &#x3D;&gt; {
             lineReader.eachLine(fileName, (line, last) &#x3D;&gt; {
                 let thisLine: ILine &#x3D; {
                     number: lineNumber
                 };
-                file.lines.push(thisLine);
-</code></pre>
+                file.lines.push(thisLine);</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> In Markdown all lines are considered comments</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> In Markdown all lines are considered comments</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">                file.lines[lineNumber].comment &#x3D; line;                that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">                file.lines[lineNumber].comment &#x3D; line;
+                that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
                 .then(() &#x3D;&gt; {
                     if (last) {
                         that.writeOutFile(file)
@@ -146,55 +168,90 @@ export class ReferenceParser implements IReferenceParser {
         let that &#x3D; this;
         let file: IFile;
         let insideLongComment &#x3D; false;
-        return Q.Promise((resolve, reject) &#x3D;&gt; {
-</code></pre>
+        return Q.Promise((resolve, reject) &#x3D;&gt; {</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> read all lines:</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> read all lines:</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">                       logger.info(&quot;Working on file: &quot; + fileName);
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">           
+            logger.info(&quot;Working on file: &quot; + fileName);
             file &#x3D; {
                 name: fileName,
                 lines: [],
                 type: getFileType(fileName)
-            };
-</code></pre>
+            };</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> Line numbering traditionally starts at 1</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> Line numbering traditionally starts at 1</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">            let lineNumber &#x3D; 0;            lineReader.eachLine(fileName, (line, last) &#x3D;&gt; {
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">            let lineNumber &#x3D; 0;
+            lineReader.eachLine(fileName, (line, last) &#x3D;&gt; {
                 let thisLine: ILine &#x3D; {
                     number: lineNumber
                 };
                 file.lines.push(thisLine);
-                let longCommentOpenMatch &#x3D; XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);
-</code></pre>
+                let longCommentOpenMatch &#x3D; XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> These comments must come at beginning of line.</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> These comments must come at beginning of line.</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">                if (!insideLongComment &amp;&amp; longCommentOpenMatch) {                    insideLongComment &#x3D; true;
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">                if (!insideLongComment &amp;&amp; longCommentOpenMatch) {
+                    insideLongComment &#x3D; true;
                     file.lines[lineNumber].longComment &#x3D; true;
-                }
-</code></pre>
+                }</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> Not inside a long comment - look for a regular comment.</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> Not inside a long comment - look for a regular comment.</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">                               if (!insideLongComment) {
-                    let match &#x3D; XRegExp.exec(line, that.commentRegExp, 0, false);
-</code></pre>
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">               
+                if (!insideLongComment) {
+                    let match &#x3D; XRegExp.exec(line, that.commentRegExp, 0, false);</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> Contains a tradition comment</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> Contains a tradition comment</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">                                       if (match) {
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">                   
+                    if (match) {
                         file.lines[lineNumber].comment &#x3D; match[1];
                         file.lines[lineNumber].code &#x3D; line.substr(0, match.index - 1);
                         that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
@@ -209,14 +266,21 @@ export class ReferenceParser implements IReferenceParser {
                                         logger.fatal(err.message);
                                     });
                                 }
-                            });
-</code></pre>
+                            });</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> Not a comment (code only)</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> Not a comment (code only)</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">                                           } else {
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">                       
+                    } else {
                         file.lines[lineNumber].code &#x3D; line;
                         if (last) {
                             that.writeOutFile(file)
@@ -228,26 +292,47 @@ export class ReferenceParser implements IReferenceParser {
                                 logger.fatal(err.message);
                             });
                         }
-                    }
-</code></pre>
+                    }</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> Inside a long comment - so the whole thing is a comment</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> Inside a long comment - so the whole thing is a comment</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">                } else {</code></pre>
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">                } else {</code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> If this line contains a long comment closing symbol, then next line isn&#39;t long comment.</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> If this line contains a long comment closing symbol, then next line isn&#39;t long comment.</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">                   </code></pre>
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">                   </code>
+                        </pre>
+                    </div>
+                </div>
+            <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        <p> let longCommentEnd = line.search(that.longCommentCloseRegExp);</p>
+
                         </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-<p> let longCommentEnd = line.search(that.longCommentCloseRegExp);</p>
-                            </div>
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="typescript">                                       if (XRegExp.exec(line, this.longCommentCloseRegExp, 0)) {
+                </div>
+            <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="typescript">                   
+                    if (XRegExp.exec(line, this.longCommentCloseRegExp, 0)) {
                         file.lines[lineNumber].comment &#x3D; &quot;&quot;;
                         insideLongComment &#x3D; false;
                     } else {
@@ -327,10 +412,11 @@ export class ReferenceParser implements IReferenceParser {
             resolve(null);
         });
     };
-}
-</code></pre>
-                        </div>
-        </div>
+}</code>
+                        </pre>
+                    </div>
+                </div>
+            </div>
         <script type="text/javascript">
             (function(){
                 console.log("loaded");
@@ -339,6 +425,9 @@ export class ReferenceParser implements IReferenceParser {
                 });
                 hljs.initHighlighting();
             })();
+            $(function () {
+                $('[data-toggle="popover"]').popover()
+            })
         </script>
     </body>
 </html>

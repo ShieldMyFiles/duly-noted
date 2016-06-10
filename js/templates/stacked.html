@@ -15,6 +15,9 @@
                 padding: 40px 15px;
                 text-align: center;
             }
+            .popover {
+                display: block;
+            }
         </style>
     </head>
     <body>
@@ -32,28 +35,31 @@
         </nav>
 
         <div class="container">
-                {{#each items}}
-                    {{#ifCond type "comment"}}
-                        {{#ifCond longComment true}}
-                            <div class="well">
-                                {{#md content}}
-                                {{/md}}
-                            </div>
-                        {{/ifCond}}
-                        {{#ifCond longComment false}}
-                            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-                            {{#md content}}
-                            {{/md}}
-                            </div>
-                        {{/ifCond}}
-                    {{/ifCond}}
+            {{#each items}}
+            <div class="row">
+                {{#ifCond longComment true}}
+                    <div class="well">
+                        {{#md content}}
+                        {{/md}}
+                    </div>
+                {{/ifCond}}
                     {{#ifCond type "code"}}
-                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
-                            <pre><code class="{{lang}}">{{content}}</code></pre>
-                        </div>
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                        <pre>
+                            <code class="{{lang}}">{{content}}</code>
+                        </pre>
+                    </div>
                     {{/ifCond}}
+                    {{#ifCond type "comment"}}
+                        {{#ifCond longComment false}}  
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 pull-bottom">
+                        {{#md content}}{{/md}}
+                        </div>
+                        {{/ifCond}}
+                    {{/ifCond}}
+                </div>
                 {{/each}}
-        </div>
+            </div>
         <script type="text/javascript">
             (function(){
                 console.log("loaded");
@@ -62,6 +68,9 @@
                 });
                 hljs.initHighlighting();
             })();
+            $(function () {
+                $('[data-toggle="popover"]').popover()
+            })
         </script>
     </body>
 </html>
