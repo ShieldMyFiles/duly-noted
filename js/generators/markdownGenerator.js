@@ -85,7 +85,7 @@ var MarkdownGenerator = (function () {
         var newComment = comment;
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
             newComment = newComment.substr(0, match.index - 1) +
-                "[#" + match[1] + "](#" + match[1] + ")";
+                "[" + match[1] + "](#" + match[1] + ")";
             newComment.substr(match.index + match[0].length);
             pos = match.index + match[0].length;
         }

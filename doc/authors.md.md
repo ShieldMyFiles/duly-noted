@@ -4,7 +4,7 @@
 
 > ____________________________________
 
-> [#authors/chris](#authors/chris)
+> [authors/chris](#authors/chris)
 
 > ## Chris Webster
 
@@ -18,13 +18,13 @@
 
 > ____________________________________
 
-> [#authors/joe](#authors/joe)
+> [authors/joe](#authors/joe)
 
 > ## Joe Webster
 
 > * email: joe@shieldmyfile.com 
 
-> [#authors/deep/nest](#authors/deep/nest)
+> [authors/deep/nest](#authors/deep/nest)
 
-> [#authors/deep/second](#authors/deep/second)
+> [authors/deep/second](#authors/deep/second)
 
