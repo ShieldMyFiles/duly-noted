@@ -1,4 +1,4 @@
- # <a name="Index">&#187; Index</a> 
+ #[#Index](#Index)
 
  [authors/chris](.././authors.md.md#authors/chris) 
 

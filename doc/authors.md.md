@@ -4,7 +4,7 @@
 
 > ____________________________________
 
->  <a name="authors/chris">&#187; authors/chris</a> 
+> [#authors/chris](#authors/chris)
 
 > ## Chris Webster
 
@@ -18,13 +18,13 @@
 
 > ____________________________________
 
->  <a name="authors/joe">&#187; authors/joe</a> 
+> [#authors/joe](#authors/joe)
 
 > ## Joe Webster
 
 > * email: joe@shieldmyfile.com 
 
->  <a name="authors/deep/nest">&#187; authors/deep/nest</a> 
+> [#authors/deep/nest](#authors/deep/nest)
 
->  <a name="authors/deep/second">&#187; authors/deep/second</a> 
+> [#authors/deep/second](#authors/deep/second)
 

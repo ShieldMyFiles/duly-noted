@@ -1,4 +1,4 @@
- # <a name="ReferenceParser">&#187; ReferenceParser</a> 
+ #[#ReferenceParser](#ReferenceParser)
 
  [authors/chris](../.././authors.md.md#authors/chris) 
 
