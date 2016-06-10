@@ -1,4 +1,6 @@
-// !Config
+[Config](#Config)
+
+```typescript
 export interface IConfig {
     projectName: string;
     files: string[];
@@ -12,8 +14,8 @@ export interface IConfig {
     externalReferences: IExternalReference[];
     readme: string;
 }
-
 export interface IExternalReference {
     anchorRegExp: string;
     path: string;
 }
+```

@@ -2,6 +2,8 @@
 
  [authors/chris](.././authors.md.md#authors/chris) 
 
+ [license](.././license.md.md#license) 
+
  
 
  This is the entry file to Duly Noted
@@ -18,12 +20,28 @@ import {MarkdownGenerator} from "./generators/markdownGenerator";
 import {HtmlGenerator} from "./generators/Htmlgenerator";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::run");
+```
+ ## Run
+
+ 
+
+ Runs duly-typed using taking the consuing th [Config](.././ts/classes/IConfig.ts.md#Config)  file found as `/duly-noted.json`
+
+ Basic code flow is:
+
+ 1. parse the cofiguration options
+
+ 2. get the files, and pass those to th [ReferenceParser](.././ts/modules/referenceParser.ts.md#ReferenceParser) 
+
+ 3. output the reponse to either/both @Htmlgenerator or @MarkdownGenerator
+
+```typescript
 export function run () {
     logger.info("Welcome to Duly Noted.");
     let args = parseArgs(process.argv.slice(2));
     let config: IConfig;
 ```
- Parse config file
+[TODO/config](#TODO/config) > This needs more flexible support for command line options
 
 ```typescript
    
@@ -42,15 +60,35 @@ export function run () {
          let referenceParser = new ReferenceParser(config);
          referenceParser.parse()
          .then((response) => {
+```
+[TODO/set](#TODO/set)-generators > This needs more flexible support selecting the generators from the command line / config
+
+```typescript
+            
              logger.info("parsing complete, beginning export of HTML");
-             new HtmlGenerator(config).generate();
+```
+ new HtmlGenerator(config).generate();
+
+```typescript
+            
              new MarkdownGenerator(config).generate(true);
          })
          .catch( (err: Error) => {
+```
+[TODO/errors](#TODO/errors) > An overall stratefy is needed to identify errors.
+
+```typescript
+            
              logger.error(err.message + err.stack);
          });
      });
 }
+```
+ ## Get Files from Glob
+
+ This is a simple helper to get a set of files from a glob.
+
+```typescript
 function getFilesFromGlob(globString: string): Q.Promise<string[]> {
     return Q.Promise<string[]>((resolve, reject) => {
         glob(globString, (err, files: string[]) => {

@@ -2,10 +2,12 @@
     "projectName":"Duly-Noted",
     "files": [
         "./ts/index.ts",
+        "./ts/classes/IConfig.ts",
         "./ts/modules/referenceParser.ts",
-        "./authors.md"
+        "./authors.md",
+        "./license.md"
     ], 
-    "outputDir": "./doc",
+    "outputDir": "./",
     "commentRegExp": "\\/\\/(.*)",
     "longCommentOpenRegExp": "\\/\\*\\*(.*)",
     "longCommentLineRegExp": "\\*(.*)",
