@@ -61,8 +61,9 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">import {IConfig} from &quot;./classes/IConfig&quot;;
+import program &#x3D; require(&quot;commander&quot;);
+import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} from &quot;fs&quot;;
 import {ReferenceParser} from &quot;./modules/referenceParser&quot;;
-import parseArgs &#x3D; require(&quot;minimist&quot;);
 import _ &#x3D; require(&quot;underscore&quot;);
 import * as path from &quot;path&quot;;
 import glob &#x3D; require(&quot;glob&quot;);
@@ -83,7 +84,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);</code>
 <ol>
 <li>parse the cofiguration options</li>
 <li>get the files, and pass those to the <a href=".././ts/modules/referenceParser.ts.html#ReferenceParser">ReferenceParser</a> </li>
-<li>output the reponse to either/both @Htmlgenerator or @MarkdownGenerator</li>
+<li>output the reponse to either/both @HtmlGenerator or @MarkdownGenerator <a href=".././ts/generators/markdownGenerator.ts.html#MarkdownGenerator">MarkdownGenerator</a> </li>
 </ol>
 
                     </div>
@@ -96,15 +97,23 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);</code>
                         <pre>
                             <code class="typescript">export function run () {
     logger.info(&quot;Welcome to Duly Noted.&quot;);
-    let args &#x3D; parseArgs(process.argv.slice(2));
-    let config: IConfig;</code>
+    let logLevel: string;
+    let config: IConfig;
+    program
+    .version(&quot;0.0.1&quot;)
+    .option(&quot;-c, --config &lt;file&gt;&quot;, &quot;Path to duly-noted.json&quot;, &quot;duly-noted.json&quot;)
+    .option(&quot;-o, --outputDir &lt;path&gt;&quot;, &quot;Path to output docs to&quot;)
+    .option(&quot;-g, --generator &lt;generator&gt;&quot;, &quot;Generator to use.&quot;)
+    .option(&quot;-i, --init&quot;, &quot;Creates a default duly-noted.json file&quot;)
+    .option(&quot;-v, --verbose&quot;, &quot;Chatty Cathy mode&quot;)
+    .parse(process.argv);</code>
                         </pre>
                     </div>
             </div>
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p>  <a name="TODO/config"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>TODO/config</a>  &gt; This needs more flexible support for command line options</p>
+                    <h3 id="init-copies-example-duly-noted-json">Init - copies example duly-noted.json</h3>
 
                     </div>
 
@@ -114,58 +123,57 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);</code>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
-     if (args[&quot;c&quot;]) {
-        config &#x3D; require(args[&quot;c&quot;]);
-     } else {
-        config &#x3D; require(process.cwd() + &quot;/duly-noted.json&quot;);
+                            <code class="typescript">    
+     if (program.init) {
+        try {
+          let config &#x3D; JSON.parse(readFileSync(&quot;duly-noted.json&quot;).toString());
+          logger.fatal(&quot;It looks like you already have a &#x27;duly-noted.json&#x27; file. Please just update that one.&quot;);
+          return;
+        } catch (err) {
+            let projectPathArray &#x3D; __dirname.split(&quot;/&quot;);
+            let projectPath &#x3D; projectPathArray.join(&quot;/&quot;);
+            let dnJSON &#x3D; readFileSync(path.join(projectPath, &quot;default.duly-noted.json&quot;)).toString();
+            writeFileSync(&quot;duly-noted.json&quot;, dnJSON);
+            logger.info(&quot;duly-noted.json file created. YOU NEED TO UPDATE IT TO FIT YOUR NEEDS. Duly Noted will not work off-the-shelf.&quot;);
+            logger.info(&quot;Seriously, stop reading the console, and go update your brand new duly-noted.json file aleady!&quot;);
+            return;
+        }
+     }
+     try {
+        config &#x3D; JSON.parse(readFileSync(program.config).toString());
+     } catch (error) {
+         logger.error(error.message);
+         logger.fatal(&quot;Error reading config file: &quot; + program.config);
+         return;
+     }
+     config.outputDir &#x3D; program.outputDir || config.outputDir;
+     if (program.generator) {
+         config.generators &#x3D; [program.generator];
      }
      let getFiles: Q.IPromise&lt;string[]&gt;[] &#x3D; [];
      for (let i &#x3D; 0; i &lt; config.files.length; i++) {
         getFiles.push(getFilesFromGlob(config.files[i]));
      }
+     if (program.verbose) {
+         logLevel &#x3D; &quot;DEUBG&quot;;
+     } else {
+         logLevel &#x3D; &quot;INFO&quot;;
+     }
+     logger.setLevel(logLevel);
+    logger.debug(&quot;Starting Reference Parsing.&quot;);
      Q.all(getFiles)
      .then((results) &#x3D;&gt; {
          let files &#x3D; _.flatten(results);
-         let referenceParser &#x3D; new ReferenceParser(config);
+         let referenceParser &#x3D; new ReferenceParser(config, logLevel);
          referenceParser.parse()
-         .then((response) &#x3D;&gt; {</code>
-                        </pre>
-                    </div>
-            </div>
-            <div class="row">    
-            
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p>  <a name="TODO/set-generators"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>TODO/set-generators</a>  &gt; This needs more flexible support selecting the generators from the command line / config</p>
-
-                    </div>
-
-            </div>
-            <div class="row">    
-            
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <pre>
-                            <code class="typescript">            
-             logger.info(&quot;parsing complete, beginning export of HTML&quot;);
-             new HtmlGenerator(config).generate();</code>
-                        </pre>
-                    </div>
-            </div>
-            <div class="row">    
-            
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> new MarkdownGenerator(config).generate(true);</p>
-
-                    </div>
-
-            </div>
-            <div class="row">    
-            
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <pre>
-                            <code class="typescript">            
+         .then((response) &#x3D;&gt; {
+             logger.info(&quot;Parsing complete, beginning export.&quot;);
+             if (_.contains(config.generators, &quot;html&quot;)) {
+                new HtmlGenerator(config, logLevel).generate();
+             }
+             if (_.contains(config.generators, &quot;markdown&quot;)) {
+                new MarkdownGenerator(config, logLevel).generate();
+             }
          })
          .catch( (err: Error) &#x3D;&gt; {</code>
                         </pre>

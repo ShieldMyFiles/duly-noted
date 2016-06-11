@@ -1,3 +1,27 @@
+ # [HtmlGenerator](#HtmlGenerator)
+
+ [authors/chris](../.././authors.md.md#authors/chris) 
+
+ [license](../.././license.md.md#license) 
+
+ 
+
+ Generates HTML pages for the source code,
+
+ replacing links and anchors as it goes along.
+
+ Builds a nice Index.html page with info and
+
+ README.md content.
+
+ 
+
+ Uses tempalate that employ handlebars as the
+
+ templating engine.
+
+ 
+
 ```typescript
 import {IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
 import {parseLoc} from "../modules/referenceParser";
@@ -14,8 +38,16 @@ import * as fse from "fs-extra";
 import _ = require("underscore");
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::HtmlGenerator");
+```
+ [interfaces/IHtmlGenerator](#interfaces/IHtmlGenerator)
+
+```typescript
 export interface IHtmlGenerator {
 }
+```
+ ## [classes/HtmlGenerator](#classes/HtmlGenerator)
+
+```typescript
 export class HtmlGenerator implements IHtmlGenerator {
     outputDir: string;
     collection: ReferenceCollection;
@@ -29,7 +61,12 @@ export class HtmlGenerator implements IHtmlGenerator {
     externalReferences: IExternalReference[];
     readme: string;
     projectName: string;
-    constructor(config: Config) {
+```
+ ### Creates an instance of [classes/HtmlGenerator](../.././ts/generators/htmlGenerator.ts.md#classes/HtmlGenerator) 
+
+```typescript
+    constructor(config: Config, logLevel?: string) {
+        logger.setLevel(logLevel || "DEBUG");
         this.outputDir = config.outputDir;
         this.collection = JSON.parse(readFileSync(path.join(parseLoc, "internalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
@@ -47,23 +84,34 @@ export class HtmlGenerator implements IHtmlGenerator {
         handlebars.registerHelper("md", this.markdownHelper);
         handlebars.registerHelper("ifCond", this.ifCondHelper);
     }
-    public generate(cleanUp?: boolean): void {
+```
+ ## Generate HTML Docs
+
+ Creates HTML docs for a set of file maps and reference maps set on [classes/HtmlGenerator](../.././ts/generators/htmlGenerator.ts.md#classes/HtmlGenerator)  construction.
+
+```typescript
+    public generate(): void {
+        logger.info("Generating HTML Documents");
         let that = this;
-        let clean = cleanUp || false;
         readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
             that.proccessFile(err, content, next, that.outputDir);
         }, (err, files) => {
             that.generateIndexPage();
-            if (clean) {
-                that.cleanUp(err, files);
-            }
         });
         fse.copySync(path.join(this.projectPath, "templates", "highlight.pack.js"), path.join(this.outputDir, "scripts/highlight.js"));
         fse.copySync(path.join(this.projectPath, "templates", "css", "default.css"), path.join(this.outputDir, "css/default.css"));
     }
+```
+ ## Process Files
+
+ Processes the file map for a file, making output decisions based on
+
+ code, comment, long comment presence
+
+```typescript
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
         let file: IFile = JSON.parse(content);
-        logger.info("Processing " + file.name);
+        logger.debug("Processing " + file.name);
         for (let i = 0; i < file.lines.length; i++) {
             if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
                 file.lines[i].comment = this.replaceAnchors(file.lines[i].comment, file.name, i);
@@ -95,26 +143,6 @@ export class HtmlGenerator implements IHtmlGenerator {
             }
          }
         let output = this.template(outputMap);
-```
- let outputMap = file;
-
-```typescript
-       
-```
- outputMap.linkPrefix = this.getLinkPrefix(file.name);
-
-```typescript
-       
-```
- outputMap.project = this.projectName;
-
-```typescript
-       
-```
- let output = this.template(outputMap);
-
-```typescript
-       
         let filePathArray = path.join(outputDir, file.name + ".md").split("/");
         filePathArray.pop();
         let filePath = filePathArray.join("/");
@@ -123,12 +151,18 @@ export class HtmlGenerator implements IHtmlGenerator {
                 logger.fatal(err.message);
             }
             else {
-                logger.info("Saving output for " + file.type + " file " + file.name);
+                logger.debug("Saving output for " + file.type + " file " + file.name " as " file.name + ".html");
                 writeFileSync(path.join(outputDir, file.name + ".html"), output, { flag: "w" });
                 next();
             }
         });
     }
+```
+ ## Replace Anchors
+
+ Processes a comment line, replacing anchors with a:href anchor tags
+
+```typescript
     replaceAnchors(comment: string,  fileName: string, line: number) {
         let pos = 0;
         let match;
@@ -146,6 +180,14 @@ export class HtmlGenerator implements IHtmlGenerator {
         }
         return newComment;
     }
+```
+ ## Replace Links
+
+ > Run this AFTER external link replacement to ensure warning accuracy
+
+ Processes a comment line, replacing links with links
+
+```typescript
     replaceInternalLinks(comment: string, fileName: string, line: number) {
         let pos = 0;
         let match;
@@ -159,7 +201,7 @@ export class HtmlGenerator implements IHtmlGenerator {
         while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             let tag =  _.findWhere(this.tags, {anchor: match[1]});
             if (!tag) {
-                logger.error("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
+                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             } else {
                 logger.debug("found internal link: " + match[1]);
                 newComment =  comment.substr(0, match.index) +
@@ -170,6 +212,14 @@ export class HtmlGenerator implements IHtmlGenerator {
         }
         return newComment;
     }
+```
+ ## Replace External Links
+
+ > Run this BEFORE internal link replacement
+
+ Processes a comment line, replacing links with links to external urls
+
+```typescript
     replaceExternalLinks(comment: string, fileName: string, line: number) {
         let pos = 0;
         let match;
@@ -195,6 +245,14 @@ export class HtmlGenerator implements IHtmlGenerator {
         }
         return newComment;
     }
+```
+ ## Generates the "Index Page"
+
+ This generates the index page, listing all the link collections,
+
+ and sucks in the README.
+
+```typescript
     generateIndexPage(): void {
         logger.info("generating index.html");
         let that = this;
@@ -216,8 +274,12 @@ export class HtmlGenerator implements IHtmlGenerator {
                 let linkPrefix = that.getLinkPrefix(anchors[x].path);
                 anchors[x].path = anchors[x].path + ".html#" + anchors[x].linkStub;
             }
+            let name = collections[i].name.split("/");
+            name.shift();
+            name.shift();
+            name = name.join("/");
             outputMap.collections.push({
-                name: collections[i].name,
+                name: name,
                 anchors: anchors
             });
         }
@@ -246,20 +308,12 @@ export class HtmlGenerator implements IHtmlGenerator {
             writeFileSync(path.join(that.outputDir, "index.html"), output, { flag: "w" });
         });
     }
-    cleanUp(err, files) {
-         if (err) {
-            logger.error(err.message);
-        } else {
-            for (let i = 0; i < files.length; i++) {
-                unlinkSync(files[i]);
-            }
-        }
-    }
 ```
- > NOTE: Without this code, the link will not properly navigated deeply nested pages with relative linking.
+ Generate a link Prefix from a fileName
+
+ > NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.
 
 ```typescript
-   
     getLinkPrefix(fileName: string): string {
         let fileNameAsArray = fileName.split("/");
         let linkPrefix = "";

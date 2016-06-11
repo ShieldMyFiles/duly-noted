@@ -13,8 +13,9 @@ var _ = require("underscore");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::HtmlGenerator");
 var HtmlGenerator = (function () {
-    function HtmlGenerator(config) {
+    function HtmlGenerator(config, logLevel) {
         this.tags = [];
+        logger.setLevel(logLevel || "DEBUG");
         this.outputDir = config.outputDir;
         this.collection = JSON.parse(fs_1.readFileSync(path.join(referenceParser_1.parseLoc, "internalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
@@ -32,23 +33,20 @@ var HtmlGenerator = (function () {
         handlebars.registerHelper("md", this.markdownHelper);
         handlebars.registerHelper("ifCond", this.ifCondHelper);
     }
-    HtmlGenerator.prototype.generate = function (cleanUp) {
+    HtmlGenerator.prototype.generate = function () {
+        logger.info("Generating HTML Documents");
         var that = this;
-        var clean = cleanUp || false;
         node_dir_1.readFiles(referenceParser_1.parseLoc, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
             that.proccessFile(err, content, next, that.outputDir);
         }, function (err, files) {
             that.generateIndexPage();
-            if (clean) {
-                that.cleanUp(err, files);
-            }
         });
         fse.copySync(path.join(this.projectPath, "templates", "highlight.pack.js"), path.join(this.outputDir, "scripts/highlight.js"));
         fse.copySync(path.join(this.projectPath, "templates", "css", "default.css"), path.join(this.outputDir, "css/default.css"));
     };
     HtmlGenerator.prototype.proccessFile = function (err, content, next, outputDir) {
         var file = JSON.parse(content);
-        logger.info("Processing " + file.name);
+        logger.debug("Processing " + file.name);
         for (var i = 0; i < file.lines.length; i++) {
             if (typeof (file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
                 file.lines[i].comment = this.replaceAnchors(file.lines[i].comment, file.name, i);
@@ -90,7 +88,7 @@ var HtmlGenerator = (function () {
                 logger.fatal(err.message);
             }
             else {
-                logger.info("Saving output for " + file.type + " file " + file.name);
+                logger.debug("Saving output for " + file.type + " file " + file.name, " as ", file.name + ".html");
                 fs_1.writeFileSync(path.join(outputDir, file.name + ".html"), output, { flag: "w" });
                 next();
             }
@@ -116,7 +114,7 @@ var HtmlGenerator = (function () {
         while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             var tag = _.findWhere(this.tags, { anchor: match[1] });
             if (!tag) {
-                logger.error("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
+                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             }
             else {
                 logger.debug("found internal link: " + match[1]);
@@ -165,8 +163,12 @@ var HtmlGenerator = (function () {
                 var linkPrefix = that.getLinkPrefix(anchors[x].path);
                 anchors[x].path = anchors[x].path + ".html#" + anchors[x].linkStub;
             }
+            var name_1 = collections[i].name.split("/");
+            name_1.shift();
+            name_1.shift();
+            name_1 = name_1.join("/");
             outputMap.collections.push({
-                name: collections[i].name,
+                name: name_1,
                 anchors: anchors
             });
         }
@@ -185,16 +187,6 @@ var HtmlGenerator = (function () {
             var output = _this.indexTemplate(outputMap);
             fs_1.writeFileSync(path.join(that.outputDir, "index.html"), output, { flag: "w" });
         });
-    };
-    HtmlGenerator.prototype.cleanUp = function (err, files) {
-        if (err) {
-            logger.error(err.message);
-        }
-        else {
-            for (var i = 0; i < files.length; i++) {
-                fs_1.unlinkSync(files[i]);
-            }
-        }
     };
     HtmlGenerator.prototype.getLinkPrefix = function (fileName) {
         var fileNameAsArray = fileName.split("/");

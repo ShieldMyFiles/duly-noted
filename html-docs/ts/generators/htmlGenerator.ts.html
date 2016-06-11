@@ -46,6 +46,22 @@
         <div class="container">
             <div class="row">    
             
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h1 id="-a-name-htmlgenerator-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-htmlgenerator-a-"><a name="HtmlGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>HtmlGenerator</a></h1>
+<p> <a href="../.././authors.md.html#authors/chris">authors/chris</a> 
+ <a href="../.././license.md.html#license">license</a> </p>
+<p> Generates HTML pages for the source code,
+ replacing links and anchors as it goes along.
+ Builds a nice Index.html page with info and
+ README.md content.</p>
+<p> Uses tempalate that employ handlebars as the
+ templating engine.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
@@ -63,10 +79,42 @@ import * as marked from &quot;marked&quot;;
 import * as fse from &quot;fs-extra&quot;;
 import _ &#x3D; require(&quot;underscore&quot;);
 import log4js &#x3D; require(&quot;log4js&quot;);
-let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);
-export interface IHtmlGenerator {
-}
-export class HtmlGenerator implements IHtmlGenerator {
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>  <a name="interfaces/IHtmlGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>interfaces/IHtmlGenerator</a> </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export interface IHtmlGenerator {
+}</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="-a-name-classes-htmlgenerator-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-classes-htmlgenerator-a-"><a name="classes/HtmlGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>classes/HtmlGenerator</a></h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export class HtmlGenerator implements IHtmlGenerator {
     outputDir: string;
     collection: ReferenceCollection;
     anchorRegExp: RegExp;
@@ -78,8 +126,25 @@ export class HtmlGenerator implements IHtmlGenerator {
     tags: ITag[] &#x3D; [];
     externalReferences: IExternalReference[];
     readme: string;
-    projectName: string;
-    constructor(config: Config) {
+    projectName: string;</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h3 id="creates-an-instance-of-classes-htmlgenerator-ts-generators-htmlgenerator-ts-html-classes-htmlgenerator-">Creates an instance of <a href="../.././ts/generators/htmlGenerator.ts.html#classes/HtmlGenerator">classes/HtmlGenerator</a></h3>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    constructor(config: Config, logLevel?: string) {
+        logger.setLevel(logLevel || &quot;DEBUG&quot;);
         this.outputDir &#x3D; config.outputDir;
         this.collection &#x3D; JSON.parse(readFileSync(path.join(parseLoc, &quot;internalReferences.json&quot;)).toString());
         this.anchorRegExp &#x3D; new RegExp(config.anchorRegExp);
@@ -96,24 +161,56 @@ export class HtmlGenerator implements IHtmlGenerator {
         this.readme &#x3D; config.readme;
         handlebars.registerHelper(&quot;md&quot;, this.markdownHelper);
         handlebars.registerHelper(&quot;ifCond&quot;, this.ifCondHelper);
-    }
-    public generate(cleanUp?: boolean): void {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="generate-html-docs">Generate HTML Docs</h2>
+<p> Creates HTML docs for a set of file maps and reference maps set on <a href="../.././ts/generators/htmlGenerator.ts.html#classes/HtmlGenerator">classes/HtmlGenerator</a>  construction.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    public generate(): void {
+        logger.info(&quot;Generating HTML Documents&quot;);
         let that &#x3D; this;
-        let clean &#x3D; cleanUp || false;
         readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) &#x3D;&gt; {
             that.proccessFile(err, content, next, that.outputDir);
         }, (err, files) &#x3D;&gt; {
             that.generateIndexPage();
-            if (clean) {
-                that.cleanUp(err, files);
-            }
         });
         fse.copySync(path.join(this.projectPath, &quot;templates&quot;, &quot;highlight.pack.js&quot;), path.join(this.outputDir, &quot;scripts/highlight.js&quot;));
         fse.copySync(path.join(this.projectPath, &quot;templates&quot;, &quot;css&quot;, &quot;default.css&quot;), path.join(this.outputDir, &quot;css/default.css&quot;));
-    }
-    proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="process-files">Process Files</h2>
+<p> Processes the file map for a file, making output decisions based on
+ code, comment, long comment presence</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
         let file: IFile &#x3D; JSON.parse(content);
-        logger.info(&quot;Processing &quot; + file.name);
+        logger.debug(&quot;Processing &quot; + file.name);
         for (let i &#x3D; 0; i &lt; file.lines.length; i++) {
             if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
                 file.lines[i].comment &#x3D; this.replaceAnchors(file.lines[i].comment, file.name, i);
@@ -144,75 +241,7 @@ export class HtmlGenerator implements IHtmlGenerator {
                 }
             }
          }
-        let output &#x3D; this.template(outputMap);</code>
-                        </pre>
-                    </div>
-            </div>
-            <div class="row">    
-            
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> let outputMap = file;</p>
-
-                    </div>
-
-            </div>
-            <div class="row">    
-            
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <pre>
-                            <code class="typescript">       </code>
-                        </pre>
-                    </div>
-            </div>
-            <div class="row">    
-            
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> outputMap.linkPrefix = this.getLinkPrefix(file.name);</p>
-
-                    </div>
-
-            </div>
-            <div class="row">    
-            
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <pre>
-                            <code class="typescript">       </code>
-                        </pre>
-                    </div>
-            </div>
-            <div class="row">    
-            
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> outputMap.project = this.projectName;</p>
-
-                    </div>
-
-            </div>
-            <div class="row">    
-            
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <pre>
-                            <code class="typescript">       </code>
-                        </pre>
-                    </div>
-            </div>
-            <div class="row">    
-            
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> let output = this.template(outputMap);</p>
-
-                    </div>
-
-            </div>
-            <div class="row">    
-            
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <pre>
-                            <code class="typescript">       
+        let output &#x3D; this.template(outputMap);
         let filePathArray &#x3D; path.join(outputDir, file.name + &quot;.md&quot;).split(&quot;/&quot;);
         filePathArray.pop();
         let filePath &#x3D; filePathArray.join(&quot;/&quot;);
@@ -221,13 +250,30 @@ export class HtmlGenerator implements IHtmlGenerator {
                 logger.fatal(err.message);
             }
             else {
-                logger.info(&quot;Saving output for &quot; + file.type + &quot; file &quot; + file.name);
+                logger.debug(&quot;Saving output for &quot; + file.type + &quot; file &quot; + file.name &quot; as &quot; file.name + &quot;.html&quot;);
                 writeFileSync(path.join(outputDir, file.name + &quot;.html&quot;), output, { flag: &quot;w&quot; });
                 next();
             }
         });
-    }
-    replaceAnchors(comment: string,  fileName: string, line: number) {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="replace-anchors">Replace Anchors</h2>
+<p> Processes a comment line, replacing anchors with a:href anchor tags</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    replaceAnchors(comment: string,  fileName: string, line: number) {
         let pos &#x3D; 0;
         let match;
         let newComment: string &#x3D; comment;</code>
@@ -255,8 +301,28 @@ export class HtmlGenerator implements IHtmlGenerator {
             pos &#x3D; match.index + match[0].length;
         }
         return newComment;
-    }
-    replaceInternalLinks(comment: string, fileName: string, line: number) {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="replace-links">Replace Links</h2>
+<blockquote>
+<p>Run this AFTER external link replacement to ensure warning accuracy
+ Processes a comment line, replacing links with links</p>
+</blockquote>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    replaceInternalLinks(comment: string, fileName: string, line: number) {
         let pos &#x3D; 0;
         let match;
         let newComment: string &#x3D; comment;
@@ -281,7 +347,7 @@ export class HtmlGenerator implements IHtmlGenerator {
         while (match &#x3D; XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             let tag &#x3D;  _.findWhere(this.tags, {anchor: match[1]});
             if (!tag) {
-                logger.error(&quot;link: &quot; + match[1] + &quot; in &quot; + fileName + &quot;:&quot; + line + &quot; does not have a cooresponding anchor, so link cannot be created.&quot;);
+                logger.warn(&quot;link: &quot; + match[1] + &quot; in &quot; + fileName + &quot;:&quot; + line + &quot; does not have a cooresponding anchor, so link cannot be created.&quot;);
             } else {
                 logger.debug(&quot;found internal link: &quot; + match[1]);
                 newComment &#x3D;  comment.substr(0, match.index) +
@@ -291,8 +357,28 @@ export class HtmlGenerator implements IHtmlGenerator {
             pos &#x3D; match.index + match[0].length;
         }
         return newComment;
-    }
-    replaceExternalLinks(comment: string, fileName: string, line: number) {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="replace-external-links">Replace External Links</h2>
+<blockquote>
+<p>Run this BEFORE internal link replacement
+ Processes a comment line, replacing links with links to external urls</p>
+</blockquote>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    replaceExternalLinks(comment: string, fileName: string, line: number) {
         let pos &#x3D; 0;
         let match;
         let newComment: string &#x3D; comment;</code>
@@ -328,8 +414,26 @@ export class HtmlGenerator implements IHtmlGenerator {
             pos &#x3D; match.index + match[0].length;
         }
         return newComment;
-    }
-    generateIndexPage(): void {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="generates-the-index-page-">Generates the &quot;Index Page&quot;</h2>
+<p> This generates the index page, listing all the link collections,
+ and sucks in the README.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    generateIndexPage(): void {
         logger.info(&quot;generating index.html&quot;);
         let that &#x3D; this;
         let outputMap &#x3D; {
@@ -362,8 +466,12 @@ export class HtmlGenerator implements IHtmlGenerator {
                 let linkPrefix &#x3D; that.getLinkPrefix(anchors[x].path);
                 anchors[x].path &#x3D; anchors[x].path + &quot;.html#&quot; + anchors[x].linkStub;
             }
+            let name &#x3D; collections[i].name.split(&quot;/&quot;);
+            name.shift();
+            name.shift();
+            name &#x3D; name.join(&quot;/&quot;);
             outputMap.collections.push({
-                name: collections[i].name,
+                name: name,
                 anchors: anchors
             });
         }
@@ -415,15 +523,6 @@ export class HtmlGenerator implements IHtmlGenerator {
             let output &#x3D; this.indexTemplate(outputMap);
             writeFileSync(path.join(that.outputDir, &quot;index.html&quot;), output, { flag: &quot;w&quot; });
         });
-    }
-    cleanUp(err, files) {
-         if (err) {
-            logger.error(err.message);
-        } else {
-            for (let i &#x3D; 0; i &lt; files.length; i++) {
-                unlinkSync(files[i]);
-            }
-        }
     }</code>
                         </pre>
                     </div>
@@ -431,8 +530,9 @@ export class HtmlGenerator implements IHtmlGenerator {
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <blockquote>
-<p>NOTE: Without this code, the link will not properly navigated deeply nested pages with relative linking.</p>
+                    <p> Generate a link Prefix from a fileName</p>
+<blockquote>
+<p>NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.</p>
 </blockquote>
 
                     </div>
@@ -443,8 +543,7 @@ export class HtmlGenerator implements IHtmlGenerator {
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
-    getLinkPrefix(fileName: string): string {
+                            <code class="typescript">    getLinkPrefix(fileName: string): string {
         let fileNameAsArray &#x3D; fileName.split(&quot;/&quot;);
         let linkPrefix &#x3D; &quot;&quot;;
         for (let i &#x3D; 0; i &lt; fileNameAsArray.length - 2; i++) {

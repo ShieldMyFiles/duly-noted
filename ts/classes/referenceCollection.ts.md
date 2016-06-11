@@ -51,11 +51,14 @@ export class ReferenceCollection implements IReferenceCollection {
     id: string;
     anchors: IAnchor[];
     subcollections: IReferenceCollection[];
+    logLevel: string;
 ```
- ### Creates an instance of ReferenceCollection.
+ ### Creates an instance of [ReferenceCollection](../.././ts/classes/referenceCollection.ts.md#ReferenceCollection) 
 
 ```typescript
-    constructor(id: string) {
+    constructor(id: string, logLevel?: string) {
+        this.logLevel = logLevel || "DEBUG";
+        logger.setLevel(logLevel);
         this.id = id;
         this.anchors = [];
         this.subcollections = [];
@@ -68,12 +71,12 @@ export class ReferenceCollection implements IReferenceCollection {
         this.id = collection.id;
         this.anchors = collection.anchors;
         for (let i = 0; i < collection.subcollections.length; i++) {
-            this.subcollections.push(new ReferenceCollection(collection.subcollections[i].id).inflate(collection.subcollections[i]));
+            this.subcollections.push(new ReferenceCollection(collection.subcollections[i].id, this.logLevel).inflate(collection.subcollections[i]));
         }
         return this;
     }
 ```
- ## Add an @interface/IAnchor to collection
+ ## Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#interfaces/IAnchor)  to collection
 
 ```typescript
     public addAnchor(anchor: IAnchor): void {

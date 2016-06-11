@@ -15,14 +15,13 @@ export declare class HtmlGenerator implements IHtmlGenerator {
     externalReferences: IExternalReference[];
     readme: string;
     projectName: string;
-    constructor(config: Config);
-    generate(cleanUp?: boolean): void;
+    constructor(config: Config, logLevel?: string);
+    generate(): void;
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void;
     replaceAnchors(comment: string, fileName: string, line: number): string;
     replaceInternalLinks(comment: string, fileName: string, line: number): string;
     replaceExternalLinks(comment: string, fileName: string, line: number): string;
     generateIndexPage(): void;
-    cleanUp(err: any, files: any): void;
     getLinkPrefix(fileName: string): string;
     markdownHelper(context: any, options: any): string;
     ifCondHelper(v1: any, v2: any, options: any): any;

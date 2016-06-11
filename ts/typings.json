@@ -5,6 +5,7 @@
     "mkdirp": "registry:npm/mkdirp#0.5.0+20160222053049"
   },
   "globalDependencies": {
+    "commander": "registry:dt/commander#2.3.0+20160317120654",
     "fs-extra": "registry:dt/fs-extra#0.0.0+20160319124112",
     "handlebars": "registry:dt/handlebars#3.0.3+20160317120654",
     "line-reader": "registry:dt/line-reader#0.0.0+20160316155526",

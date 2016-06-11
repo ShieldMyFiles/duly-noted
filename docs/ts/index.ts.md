@@ -34,7 +34,7 @@ let logger = log4js.getLogger("duly-noted::run");
 
  2. get the files, and pass those to the [ReferenceParser](.././ts/modules/referenceParser.ts.md#ReferenceParser) 
 
- 3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator [MarkdownGenerator](.././ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
+ 3. output the reponse to either/both @Htmlgenerator or @MarkdownGenerator
 
 ```typescript
 export function run () {
@@ -44,7 +44,7 @@ export function run () {
     program
     .version("0.0.1")
     .option("-c, --config <file>", "Path to duly-noted.json", "duly-noted.json")
-    .option("-o, --outputDir <path>", "Path to output docs to")
+    .option("-o, --outputDir <path>", "Path to output docs to", "./docs")
     .option("-g, --generator <generator>", "Generator to use.")
     .option("-i, --init", "Creates a default duly-noted.json file")
     .option("-v, --verbose", "Chatty Cathy mode")

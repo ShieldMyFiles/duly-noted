@@ -11,9 +11,10 @@ var lineReader = require("line-reader");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::MarkdownGenerator");
 var MarkdownGenerator = (function () {
-    function MarkdownGenerator(config) {
+    function MarkdownGenerator(config, logLevel) {
         this.tags = [];
         this.outputFiles = [];
+        logger.setLevel(logLevel || "DEBUG");
         this.outputDir = config.outputDir;
         this.externalReferences = JSON.parse(fs_1.readFileSync(path.join(referenceParser_1.parseLoc, "externalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
@@ -23,9 +24,9 @@ var MarkdownGenerator = (function () {
         this.readme = config.readme;
         this.projectName = config.projectName;
     }
-    MarkdownGenerator.prototype.generate = function (cleanUp) {
+    MarkdownGenerator.prototype.generate = function () {
+        logger.info("Generating Markdown Docs.");
         var that = this;
-        var clean = cleanUp || false;
         this.outputFiles = [];
         node_dir_1.readFiles(referenceParser_1.parseLoc, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
             that.proccessFile(err, content, next, that.outputDir);
@@ -46,7 +47,7 @@ var MarkdownGenerator = (function () {
     MarkdownGenerator.prototype.proccessFile = function (err, content, next, outputDir) {
         var file = JSON.parse(content);
         var that = this;
-        logger.info("Processing " + file.name);
+        logger.debug("Processing " + file.name);
         if (err) {
             logger.error(err.message);
         }
@@ -89,9 +90,9 @@ var MarkdownGenerator = (function () {
                     logger.fatal(err.message);
                 }
                 else {
-                    logger.info("Saving output for " + file_1.type + " file " + file_1.name);
                     var fileName = path.join(outputDir, file_1.name + ".md");
                     that.outputFiles.push(fileName);
+                    logger.debug("Saving output for " + file_1.type + " file " + file_1.name + " as " + fileName);
                     fs_1.writeFileSync(fileName, output_1, { flag: "w" });
                 }
             });
@@ -118,7 +119,7 @@ var MarkdownGenerator = (function () {
         while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             var tag = _.findWhere(this.tags, { anchor: match[1] });
             if (!tag) {
-                logger.error("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
+                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             }
             else {
                 logger.debug("found internal link: " + match[1]);
@@ -199,16 +200,6 @@ var MarkdownGenerator = (function () {
             linkPrefix += "../";
         }
         return linkPrefix;
-    };
-    MarkdownGenerator.prototype.cleanUp = function (err, files) {
-        if (err) {
-            logger.error(err.message);
-        }
-        else {
-            for (var i = 0; i < files.length; i++) {
-                fs_1.unlinkSync(files[i]);
-            }
-        }
     };
     return MarkdownGenerator;
 }());

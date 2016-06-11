@@ -4,13 +4,15 @@ export interface IConfig {
     files: string[];
     outputDir: string;
     anchorRegExp: string;
-    commentRegExp: string;
+    commentRegExp: string; // !TODO/commentRegExp We should associate comment RegExp with file type - so we can support HTML comments
     longCommentOpenRegExp: string;
     longCommentCloseRegExp: string;
     longCommentLineRegExp: string;
     linkRegExp: string;
     externalReferences: IExternalReference[];
     readme: string;
+    generators: string[];
+
 }
 
 export interface IExternalReference {

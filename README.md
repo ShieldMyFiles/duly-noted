@@ -3,9 +3,43 @@
 > Code documentation for the modern world. 
 
 ## Goal of this project
-The goal of this project is to provide an easy, flexible way to comment source code. 
+The goal of this project is to provide an easy, flexible way to comment source code, leveraging links! 
 
-## You can link to what matters
+## Installing
+```
+npm install duly-noted -g
+```
+
+## Running
+Duly noted runs from the command line as `duly-noted [options]`
+``` bash
+    Usage: duly-noted [options]
+ 
+  Options:
+
+ 
+    -h, --help                   output usage information
+    -V, --version                output the version number
+    -c, --config <file>          Path to duly-noted.json
+    -o, --outputDir <path>       Path to output docs to
+    -g, --generator <generator>  Generator to use.
+    -i, --init                   Creates a default duly-noted.json file
+    -v, --verbose                Chatty Cathy mode
+```
+
+## Using
+
+### duly-noted.json
+Configuration options for duly noted are stored in a dedicated configuration file.  
+
+To generate a template duly-noted.json.
+```
+duly-noted -i
+```
+
+> NOTE: You need to modify the template settings file - duly-noted will not work off-the-shelf at this time.
+
+### You can link to what matters
 Duly noted allows you to create both *internal* and *external* links.
 
 #### Internal Links
@@ -22,7 +56,7 @@ You can link to another place in your source comments like follows:
 
 ```
 
-### External Links
+#### External Links
 
 You can define an external link in your config file in the format:
 
@@ -41,6 +75,9 @@ For example, using  `@wiki/Software_documentation` in a comment will render to: 
 
 You can link to your scrum manager, your ticket system, github, anywhere on the Internet or your Intranet, without cluttering your source control will length pasted urls. 
 
+
+________________________________
+
 ## How the Code is Organized
 
 This code is generally organized into a three parts:
@@ -53,7 +90,8 @@ This code is generally organized into a three parts:
     * Markdown 
     * HTML
 
-## Parsing
+### Parsing
+coming soon. 
 
-
-## Output
+### Output
+coming soon.

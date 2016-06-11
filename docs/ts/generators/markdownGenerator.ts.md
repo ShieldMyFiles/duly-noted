@@ -1,9 +1,4 @@
-/**
- * # !MarkdownGenerator
- *  @authors/chris
- *  @license
- */
-
+```typescript
 import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
 import {parseLoc} from "../modules/referenceParser";
 import {IConfig, IExternalReference} from "../classes/IConfig";
@@ -15,21 +10,11 @@ import mkdirp = require("mkdirp");
 import * as path from "path";
 import _ = require("underscore");
 import lineReader = require("line-reader");
-
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::MarkdownGenerator");
-
-
-/**
- * !interfaces/IMarkdownGenerator
- */
 export interface IMarkdownGenerator {
     generate(): void;
 }
-
-/**
- * ## !classes/MarkdownGenerator
- */
 export class MarkdownGenerator implements IMarkdownGenerator {
     outputDir: string;
     externalReferences: IExternalReference[];
@@ -40,10 +25,6 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     readme: string;
     projectName: string;
     outputFiles: string[] = [];
-
-    /**
-     * ### Creates an instance of @classes/MarkdownGenerator
-     */
     constructor(config: IConfig, logLevel?: string) {
         logger.setLevel(logLevel || "DEBUG");
         this.outputDir = config.outputDir;
@@ -55,14 +36,10 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.readme = config.readme;
         this.projectName = config.projectName;
     }
-
-    /**
-     * ## Generate Markdown Docs
-     * Creates Markdown docs for a set of file maps and reference maps set on @classes/MarkdownGenerator construction.
-     */
-    public generate(): void {
+    public generate(cleanUp?: boolean): void {
         logger.info("Generating Markdown Docs.");
         let that = this;
+        let clean = cleanUp || false;
         this.outputFiles = [];
         readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
             that.proccessFile(err, content, next, that.outputDir);
@@ -80,24 +57,16 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             });
         });
     }
-
-    /**
-     * ## Process Files
-     * Processes the file map for a file, making output decisions based on 
-     * code, comment, long comment presence 
-     */
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
         let file: IFile = JSON.parse(content);
         let that = this;
         logger.debug("Processing " + file.name);
-
         if (err) {
             logger.error(err.message);
         } else {
             let file: IFile = JSON.parse(content);
             let output: string = "";
             let inCodeBlock = false;
-
             for (let i = 0; i < file.lines.length; i++) {
                 if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
                     file.lines[i].comment = this.replaceAnchors(file.lines[i].comment, file.name, i);
@@ -105,87 +74,92 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                     file.lines[i].comment = this.replaceInternalLinks(file.lines[i].comment, file.name, i);
                 }
             }
-
             for (let i = 0; i < file.lines.length; i++) {
+```
+ Comment
 
-                // Comment
+```typescript
+               
                 if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
                     if (inCodeBlock) {
-                        output += "```" + "\n"; // Close the current block of code. 
+```
+ Close the current block of code. 
+
+```typescript
+                        output += "```" + "\n";
                         inCodeBlock = false;
                     }
-
                     output += file.lines[i].comment + "\n" + "\n";
                 }
+```
+ Code
 
-                // Code
+```typescript
+               
                 if (typeof(file.lines[i].code) === "string" && file.lines[i].code !== "" && file.lines[i].code !== null) {
                     if (!inCodeBlock) {
-                        output += "```" + file.type +  "\n"; // Open new code block. 
+```
+ Open new code block. 
+
+```typescript
+                        output += "```" + file.type +  "\n";
                         inCodeBlock = true;
                     }
                     output += file.lines[i].code + "\n";
                 }
             }
-
             if (inCodeBlock) {
-                output += "```" + "\n"; // Close the current block of code. 
+```
+ Close the current block of code. 
+
+```typescript
+                output += "```" + "\n";
                 inCodeBlock = false;
             }
-
             let filePathArray = path.join(outputDir, file.name + ".md").split("/");
             filePathArray.pop();
             let filePath = filePathArray.join("/");
-
             mkdirp(filePath, function (err) {
                 if (err) {
                     logger.fatal(err.message);
                 }
                 else {
                     let fileName = path.join(outputDir, file.name + ".md");
+                    logger.info("Saving output for " + file.type + " file " + file.name + " as " + fileName);
                     that.outputFiles.push(fileName);
-                    logger.debug("Saving output for " + file.type + " file " + file.name + " as " + fileName);
                     writeFileSync(fileName, output, { flag: "w" });
                 }
             });
-
             next();
         }
     }
-
-    /**
-     * ## Replace Anchors
-     * Processes a comment line, replacing anchors with markdown anchor link tags
-     */
     replaceAnchors(comment: string,  fileName: string, line: number) {
         let pos = 0;
         let match;
         let newComment: string = comment;
-        // Look at the line for anchors - replace them with links. 
+```
+ Look at the line for anchors - replace them with links. 
+
+```typescript
+       
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
             newComment =  newComment.substr(0, match.index) +
             "[" + match[1] + "](#" + match[1] + ")" +
             newComment.substr(match.index + match[0].length);
-
             pos = match.index + match[0].length;
         }
-
         return newComment;
     }
-
-    /**
-     * ## Replace Links
-     * > Run this AFTER external link replacement to ensure warning accuracy
-     * Processes a comment line, replacing links with markdown links
-     */
     replaceInternalLinks(comment: string, fileName: string, line: number) {
         let pos = 0;
         let match;
         let newComment: string = comment;
-
         let linkPrefix = this.getLinkPrefix(fileName);
+```
+ Look at the line for anchors - replace them with links. 
 
-        // Look at the line for anchors - replace them with links. 
+```typescript
+       
         while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             let tag =  _.findWhere(this.tags, {anchor: match[1]});
             if (!tag) {
@@ -198,113 +172,101 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             }
             pos = match.index + match[0].length;
         }
-
         return newComment;
     }
-
-    /**
-     * ## Replace External Links
-     * > Run this BEFORE internal link replacement
-     * Processes a comment line, replacing links with markdown links to external urls
-     */
     replaceExternalLinks(comment: string, fileName: string, line: number) {
         let pos = 0;
         let match;
         let newComment: string = comment;
+```
+ Look at the line for external references - replace them with links. 
 
-        // Look at the line for external references - replace them with links. 
+```typescript
+       
         while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             let tagArray = match[1].split("/");
             let tag =  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
-
             if (tag) {
                 logger.debug("found external link: " + match[1]);
                 for (let i = 1; i < tagArray.length; i++) {
                     tag.path = tag.path.replace("::", tagArray[i]);
                 }
-
                 newComment =  comment.substr(0, match.index - 1) +
                 " [" + match[1] + "](" + tag.path + ") " +
                 newComment.substr(match.index + match[0].length);
             }
-
             pos = match.index + match[0].length;
         }
         return newComment;
     }
-
-    /**
-     * ## Generates the "Index Page"
-     * This generates the index page, listing all the link collections, 
-     * and sucks in the README. 
-     */
     generateIndexPage(readmeText?): void {
         logger.info("generating Duly Noted.md");
         let that = this;
-
         let outputMap = {
             project: this.projectName,
             collections: [],
             files: this.outputFiles,
             readme: readmeText
         };
+```
+ collections
 
+```typescript
+       
         let collections = that.referenceCollection.getTagsByCollection();
-
         for (let i = 0; i < collections.length; i++) {
             let anchors = _.clone(collections[i].anchors);
             for (let x = 0; x < anchors.length; x++) {
                 let linkPrefix = that.getLinkPrefix(anchors[x].path);
                 anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
             }
-
             let name = collections[i].name.split("/");
             name.shift();
             name.shift();
             name = name.join("/");
-
             outputMap.collections.push({
                 name: name,
                 anchors: anchors
             });
         }
-
         let md = "# " + this.projectName + " documentation \n";
-
         md += "### Collections \n";
         for (let i = 0; i < outputMap.collections.length; i++) {
            md += "\n#### " + outputMap.collections[i].name + " \n";
-
            for (let x = 0; x < outputMap.collections[i].anchors.length; x++) {
                md += "* [" + outputMap.collections[i].anchors[x].anchor + "]" + "(" + outputMap.collections[i].anchors[x].path + ") \n";
            }
         }
-
         md += "\n------------------------------ \n";
         md += "\n### Files \n";
-
         for (let i = 0; i < outputMap.files.length; i++) {
             md += "* [" + outputMap.files[i] + "](" + outputMap.files[i] + ") \n";
         }
         md += "\n------------------------------ \n";
-
         md += outputMap.readme;
-
         writeFileSync(path.join(that.outputDir, "Duly Noted.md"), md, { flag: "w" });
     }
+```
+ > NOTE: Without this code, the link will not properly navigated deeply nested pages with relative linking.
 
-    /**
-     * Generate a link Prefix from a fileName
-     * > NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.
-     */
+```typescript
+   
     getLinkPrefix(fileName: string): string {
         let fileNameAsArray = fileName.split("/");
         let linkPrefix = "";
         for (let i = 0; i < fileNameAsArray.length - 2; i++) {
             linkPrefix += "../";
         }
-
         return linkPrefix;
     }
+    cleanUp(err, files) {
+        if (err) {
+            logger.error(err.message);
+        } else {
+            for (let i = 0; i < files.length; i++) {
+                unlinkSync(files[i]);
+            }
+        }
+    }
 }
-
+```

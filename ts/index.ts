@@ -6,8 +6,9 @@
  * This is the entry file to Duly Noted
  */
 import {IConfig} from "./classes/IConfig";
+import program = require("commander");
+import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} from "fs";
 import {ReferenceParser} from "./modules/referenceParser";
-import parseArgs = require("minimist");
 import _ = require("underscore");
 import * as path from "path";
 import glob = require("glob");
@@ -25,18 +26,51 @@ let logger = log4js.getLogger("duly-noted::run");
  * Basic code flow is:
  *  1. parse the cofiguration options
  *  2. get the files, and pass those to the @ReferenceParser
- *  3. output the reponse to either/both @Htmlgenerator or @MarkdownGenerator
+ *  3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator
  */
 export function run () {
     logger.info("Welcome to Duly Noted.");
-    let args = parseArgs(process.argv.slice(2));
+    let logLevel: string;
     let config: IConfig;
 
-    // !TODO/config > This needs more flexible support for command line options
-     if (args["c"]) {
-        config = require(args["c"]);
-     } else {
-        config = require(process.cwd() + "/duly-noted.json");
+    program
+    .version("0.0.1")
+    .option("-c, --config <file>", "Path to duly-noted.json", "duly-noted.json")
+    .option("-o, --outputDir <path>", "Path to output docs to")
+    .option("-g, --generator <generator>", "Generator to use.")
+    .option("-i, --init", "Creates a default duly-noted.json file")
+    .option("-v, --verbose", "Chatty Cathy mode")
+    .parse(process.argv);
+
+     // ### Init - copies example duly-noted.json
+     if (program.init) {
+        try {
+          let config = JSON.parse(readFileSync("duly-noted.json").toString());
+          logger.fatal("It looks like you already have a 'duly-noted.json' file. Please just update that one.");
+          return;
+        } catch (err) {
+            let projectPathArray = __dirname.split("/");
+            let projectPath = projectPathArray.join("/");
+            let dnJSON = readFileSync(path.join(projectPath, "default.duly-noted.json")).toString();
+            writeFileSync("duly-noted.json", dnJSON);
+            logger.info("duly-noted.json file created. YOU NEED TO UPDATE IT TO FIT YOUR NEEDS. Duly Noted will not work off-the-shelf.");
+            logger.info("Seriously, stop reading the console, and go update your brand new duly-noted.json file aleady!");
+            return;
+        }
+     }
+
+     try {
+        config = JSON.parse(readFileSync(program.config).toString());
+     } catch (error) {
+         logger.error(error.message);
+         logger.fatal("Error reading config file: " + program.config);
+         return;
+     }
+
+     config.outputDir = program.outputDir || config.outputDir;
+
+     if (program.generator) {
+         config.generators = [program.generator];
      }
 
      let getFiles: Q.IPromise<string[]>[] = [];
@@ -45,17 +79,32 @@ export function run () {
         getFiles.push(getFilesFromGlob(config.files[i]));
      }
 
+     if (program.verbose) {
+         logLevel = "DEUBG";
+     } else {
+         logLevel = "INFO";
+     }
+
+     logger.setLevel(logLevel);
+
+    logger.debug("Starting Reference Parsing.");
      Q.all(getFiles)
      .then((results) => {
          let files = _.flatten(results);
-         let referenceParser = new ReferenceParser(config);
+         let referenceParser = new ReferenceParser(config, logLevel);
 
          referenceParser.parse()
          .then((response) => {
-             // !TODO/set-generators > This needs more flexible support selecting the generators from the command line / config
-             logger.info("parsing complete, beginning export of HTML");
-             //new HtmlGenerator(config).generate();
-             new MarkdownGenerator(config).generate(true);
+             logger.info("Parsing complete, beginning export.");
+
+             if (_.contains(config.generators, "html")) {
+                new HtmlGenerator(config, logLevel).generate();
+             }
+
+             if (_.contains(config.generators, "markdown")) {
+                new MarkdownGenerator(config, logLevel).generate();
+             }
+
          })
          .catch( (err: Error) => {
              // !TODO/errors > An overall stratefy is needed to identify errors.

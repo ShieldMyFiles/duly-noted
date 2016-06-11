@@ -3,7 +3,9 @@ var underscore_1 = require("underscore");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceCollection");
 var ReferenceCollection = (function () {
-    function ReferenceCollection(id) {
+    function ReferenceCollection(id, logLevel) {
+        this.logLevel = logLevel || "DEBUG";
+        logger.setLevel(logLevel);
         this.id = id;
         this.anchors = [];
         this.subcollections = [];
@@ -12,7 +14,7 @@ var ReferenceCollection = (function () {
         this.id = collection.id;
         this.anchors = collection.anchors;
         for (var i = 0; i < collection.subcollections.length; i++) {
-            this.subcollections.push(new ReferenceCollection(collection.subcollections[i].id).inflate(collection.subcollections[i]));
+            this.subcollections.push(new ReferenceCollection(collection.subcollections[i].id, this.logLevel).inflate(collection.subcollections[i]));
         }
         return this;
     };

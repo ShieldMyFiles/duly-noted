@@ -11,16 +11,17 @@ var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceParser");
 exports.parseLoc = "duly-noted";
 var ReferenceParser = (function () {
-    function ReferenceParser(config) {
-        logger.debug("ready");
+    function ReferenceParser(config, logLevel) {
         this.files = config.files;
-        this.rootCollection = new referenceCollection_1.ReferenceCollection(exports.parseLoc);
+        this.rootCollection = new referenceCollection_1.ReferenceCollection(exports.parseLoc, logLevel);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
         this.commentRegExp = new RegExp(config.commentRegExp);
         this.longCommentOpenRegExp = new RegExp(config.longCommentOpenRegExp);
         this.longCommentLineRegExp = new RegExp(config.longCommentLineRegExp);
         this.longCommentCloseRegExp = new RegExp(config.longCommentCloseRegExp);
         this.externalReferences = config.externalReferences;
+        logger.setLevel(logLevel || "DEBUG");
+        logger.debug("ready");
     }
     ReferenceParser.prototype.parse = function () {
         var that = this;
@@ -39,7 +40,7 @@ var ReferenceParser = (function () {
             }
             Q.all(parseActions)
                 .then(function () {
-                logger.info("Saving out internalReferences.json");
+                logger.debug("Saving out internalReferences.json & externalReferences.json");
                 fs_1.writeFileSync(path.join(exports.parseLoc, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
                 fs_1.writeFileSync(path.join(exports.parseLoc, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
                 resolve(that.rootCollection);
@@ -47,7 +48,7 @@ var ReferenceParser = (function () {
         });
     };
     ReferenceParser.prototype.parseAsMarkdown = function (fileName) {
-        logger.info("parsing markdown file: " + fileName);
+        logger.debug("parsing markdown file: " + fileName);
         var that = this;
         var file = {
             name: fileName,
@@ -81,12 +82,12 @@ var ReferenceParser = (function () {
     };
     ReferenceParser.prototype.parseFile = function (fileName) {
         var _this = this;
-        logger.info("parsing code file: " + fileName);
+        logger.debug("parsing code file: " + fileName);
         var that = this;
         var file;
         var insideLongComment = false;
         return Q.Promise(function (resolve, reject) {
-            logger.info("Working on file: " + fileName);
+            logger.debug("Working on file: " + fileName);
             file = {
                 name: fileName,
                 lines: [],
@@ -191,17 +192,11 @@ var ReferenceParser = (function () {
                     reject(err);
                 }
                 else {
-                    logger.info("Saving output for: " + file.name);
+                    logger.debug("Saving output for: " + file.name);
                     fs_1.writeFileSync(path.join(exports.parseLoc, file.name + ".json"), JSON.stringify(file), { flag: "w" });
                     resolve(null);
                 }
             });
-        });
-    };
-    ReferenceParser.prototype.parseLine = function (line, fileName, lineNumber, insideLongComment) {
-        var that = this;
-        return Q.Promise(function (resolve, reject) {
-            var commentStart = line.search(that.commentRegExp);
         });
     };
     ReferenceParser.prototype.parseComment = function (comment, fileName, lineNumber) {

@@ -10,6 +10,7 @@ export interface IConfig {
     linkRegExp: string;
     externalReferences: IExternalReference[];
     readme: string;
+    generators: string[];
 }
 export interface IExternalReference {
     anchorRegExp: string;

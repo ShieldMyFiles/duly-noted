@@ -46,6 +46,12 @@
                                     <a href="ts/classes/referenceCollection.ts.html">ts/classes/referenceCollection.ts.html</a>
                                 </li>
                                 <li>
+                                    <a href="ts/typings/index.d.ts.html">ts/typings/index.d.ts.html</a>
+                                </li>
+                                <li>
+                                    <a href="ts/modules/referenceParser.ts.html">ts/modules/referenceParser.ts.html</a>
+                                </li>
+                                <li>
                                     <a href="ts/generators/htmlGenerator.ts.html">ts/generators/htmlGenerator.ts.html</a>
                                 </li>
                                 <li>
@@ -57,12 +63,6 @@
                                 <li>
                                     <a href="ts/helpers/helpers.ts.html">ts/helpers/helpers.ts.html</a>
                                 </li>
-                                <li>
-                                    <a href="ts/modules/referenceParser.ts.html">ts/modules/referenceParser.ts.html</a>
-                                </li>
-                                <li>
-                                    <a href="ts/typings/index.d.ts.html">ts/typings/index.d.ts.html</a>
-                                </li>
                         </ul>
                     </div>
                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -70,9 +70,15 @@
                             Tag Collections
                         </h3>
                         <ul>
-                                <h4>/duly-noted</h4>
+                                <h4></h4>
                                 <li>
                                     <a href="./ts/index.ts.html#Index">Index</a>
+                                </li>
+                                <li>
+                                    <a href="./ts/generators/htmlGenerator.ts.html#HtmlGenerator">HtmlGenerator</a>
+                                </li>
+                                <li>
+                                    <a href="./ts/generators/markdownGenerator.ts.html#MarkdownGenerator">MarkdownGenerator</a>
                                 </li>
                                 <li>
                                     <a href="./ts/modules/referenceParser.ts.html#ReferenceParser">ReferenceParser</a>
@@ -86,16 +92,32 @@
                                 <li>
                                     <a href="./ts/classes/IConfig.ts.html#IConfig">IConfig</a>
                                 </li>
-                                <h4>/duly-noted/authors</h4>
+                                <li>
+                                    <a href="./ts/modules/referenceParser.ts.html#ParseFile">ParseFile</a>
+                                </li>
+                                <h4>authors</h4>
                                 <li>
                                     <a href="./authors.md.html#chris">chris</a>
                                 </li>
                                 <li>
                                     <a href="./authors.md.html#joe">joe</a>
                                 </li>
-                                <h4>/duly-noted/interfaces</h4>
+                                <h4>TODO</h4>
+                                <li>
+                                    <a href="./ts/classes/IConfig.ts.html#commentRegExp">commentRegExp</a>
+                                </li>
+                                <li>
+                                    <a href="./ts/index.ts.html#errors">errors</a>
+                                </li>
+                                <h4>interfaces</h4>
                                 <li>
                                     <a href="./ts/classes/referenceCollection.ts.html#IReferenceCollection">IReferenceCollection</a>
+                                </li>
+                                <li>
+                                    <a href="./ts/modules/referenceParser.ts.html#IReferenceParser">IReferenceParser</a>
+                                </li>
+                                <li>
+                                    <a href="./ts/generators/markdownGenerator.ts.html#IMarkdownGenerator">IMarkdownGenerator</a>
                                 </li>
                                 <li>
                                     <a href="./ts/classes/referenceCollection.ts.html#IAnchor">IAnchor</a>
@@ -103,17 +125,23 @@
                                 <li>
                                     <a href="./ts/classes/referenceCollection.ts.html#ITag">ITag</a>
                                 </li>
-                                <h4>/duly-noted/TODO</h4>
                                 <li>
-                                    <a href="./ts/index.ts.html#config">config</a>
+                                    <a href="./ts/generators/htmlGenerator.ts.html#IHtmlGenerator">IHtmlGenerator</a>
+                                </li>
+                                <h4>constant</h4>
+                                <li>
+                                    <a href="./ts/modules/referenceParser.ts.html#parseLoc">parseLoc</a>
+                                </li>
+                                <h4>classes</h4>
+                                <li>
+                                    <a href="./ts/generators/markdownGenerator.ts.html#MarkdownGenerator">MarkdownGenerator</a>
                                 </li>
                                 <li>
-                                    <a href="./ts/index.ts.html#set-generators">set-generators</a>
+                                    <a href="./ts/modules/referenceParser.ts.html#ReferenceParser">ReferenceParser</a>
                                 </li>
                                 <li>
-                                    <a href="./ts/index.ts.html#errors">errors</a>
+                                    <a href="./ts/generators/htmlGenerator.ts.html#HtmlGenerator">HtmlGenerator</a>
                                 </li>
-                                <h4>/duly-noted/classes</h4>
                                 <li>
                                     <a href="./ts/classes/referenceCollection.ts.html#ReferenceCollection">ReferenceCollection</a>
                                 </li>
@@ -129,8 +157,33 @@
 <p>Code documentation for the modern world. </p>
 </blockquote>
 <h2 id="goal-of-this-project">Goal of this project</h2>
-<p>The goal of this project is to provide an easy, flexible way to comment source code. </p>
-<h2 id="you-can-link-to-what-matters">You can link to what matters</h2>
+<p>The goal of this project is to provide an easy, flexible way to comment source code, leveraging links! </p>
+<h2 id="installing">Installing</h2>
+<pre><code>npm install duly-noted -g
+</code></pre><h2 id="running">Running</h2>
+<p>Duly noted runs from the command line as <code>duly-noted [options]</code></p>
+<pre><code class="lang-bash">    Usage: duly-noted [options]
+
+  Options:
+
+
+    -h, --help                   output usage information
+    -V, --version                output the version number
+    -c, --config &lt;file&gt;          Path to duly-noted.json
+    -o, --outputDir &lt;path&gt;       Path to output docs to
+    -g, --generator &lt;generator&gt;  Generator to use.
+    -i, --init                   Creates a default duly-noted.json file
+    -v, --verbose                Chatty Cathy mode
+</code></pre>
+<h2 id="using">Using</h2>
+<h3 id="duly-noted-json">duly-noted.json</h3>
+<p>Configuration options for duly noted are stored in a dedicated configuration file.  </p>
+<p>To generate a template duly-noted.json.</p>
+<pre><code>duly-noted -i
+</code></pre><blockquote>
+<p>NOTE: You need to modify the template settings file - duly-noted will not work off-the-shelf at this time.</p>
+</blockquote>
+<h3 id="you-can-link-to-what-matters">You can link to what matters</h3>
 <p>Duly noted allows you to create both <em>internal</em> and <em>external</em> links.</p>
 <h4 id="internal-links">Internal Links</h4>
 <p>You can link to another place in your source comments like follows:</p>
@@ -141,7 +194,7 @@
 
 // You can link to that than anchor from anywhere simply by adding &#39;@&#39; to the name you picked. 
 // This is a link to @example. You can place this link in any file.
-</code></pre><h3 id="external-links">External Links</h3>
+</code></pre><h4 id="external-links">External Links</h4>
 <p>You can define an external link in your config file in the format:</p>
 <pre><code class="lang-json">// duly-noted.json
 {
@@ -154,6 +207,7 @@
 <p>External links will just like internal links - <code>@wiki</code>. Note that each of the <code>::</code> in external reference path will be replace in order by items in the link. 
 For example, using  <code>@wiki/Software_documentation</code> in a comment will render to: <code>https://en.wikipedia.org/wiki/Software_documentation</code></p>
 <p>You can link to your scrum manager, your ticket system, github, anywhere on the Internet or your Intranet, without cluttering your source control will length pasted urls. </p>
+<hr>
 <h2 id="how-the-code-is-organized">How the Code is Organized</h2>
 <p>This code is generally organized into a three parts:</p>
 <ol>
@@ -172,8 +226,10 @@ For example, using  <code>@wiki/Software_documentation</code> in a comment will 
 </ul>
 </li>
 </ol>
-<h2 id="parsing">Parsing</h2>
-<h2 id="output">Output</h2>
+<h3 id="parsing">Parsing</h3>
+<p>coming soon. </p>
+<h3 id="output">Output</h3>
+<p>coming soon.</p>
         </div>
     </body>
 </html>

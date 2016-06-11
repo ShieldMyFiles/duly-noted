@@ -46,6 +46,16 @@
         <div class="container">
             <div class="row">    
             
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h1 id="-a-name-markdowngenerator-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-markdowngenerator-a-"><a name="MarkdownGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>MarkdownGenerator</a></h1>
+<p> <a href="../.././authors.md.html#authors/chris">authors/chris</a> 
+ <a href="../.././license.md.html#license">license</a> </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
@@ -61,11 +71,43 @@ import * as path from &quot;path&quot;;
 import _ &#x3D; require(&quot;underscore&quot;);
 import lineReader &#x3D; require(&quot;line-reader&quot;);
 import log4js &#x3D; require(&quot;log4js&quot;);
-let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);
-export interface IMarkdownGenerator {
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>  <a name="interfaces/IMarkdownGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>interfaces/IMarkdownGenerator</a> </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export interface IMarkdownGenerator {
     generate(): void;
-}
-export class MarkdownGenerator implements IMarkdownGenerator {
+}</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="-a-name-classes-markdowngenerator-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-classes-markdowngenerator-a-"><a name="classes/MarkdownGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>classes/MarkdownGenerator</a></h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export class MarkdownGenerator implements IMarkdownGenerator {
     outputDir: string;
     externalReferences: IExternalReference[];
     anchorRegExp: RegExp;
@@ -74,8 +116,25 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     tags: ITag[] &#x3D; [];
     readme: string;
     projectName: string;
-    outputFiles: string[] &#x3D; [];
-    constructor(config: IConfig) {
+    outputFiles: string[] &#x3D; [];</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h3 id="creates-an-instance-of-classes-markdowngenerator-ts-generators-markdowngenerator-ts-html-classes-markdowngenerator-">Creates an instance of <a href="../.././ts/generators/markdownGenerator.ts.html#classes/MarkdownGenerator">classes/MarkdownGenerator</a></h3>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    constructor(config: IConfig, logLevel?: string) {
+        logger.setLevel(logLevel || &quot;DEBUG&quot;);
         this.outputDir &#x3D; config.outputDir;
         this.externalReferences &#x3D; JSON.parse(readFileSync(path.join(parseLoc, &quot;externalReferences.json&quot;)).toString());
         this.anchorRegExp &#x3D; new RegExp(config.anchorRegExp);
@@ -84,10 +143,27 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.tags &#x3D; this.referenceCollection.getAllTags();
         this.readme &#x3D; config.readme;
         this.projectName &#x3D; config.projectName;
-    }
-    public generate(cleanUp?: boolean): void {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="generate-markdown-docs">Generate Markdown Docs</h2>
+<p> Creates Markdown docs for a set of file maps and reference maps set on <a href="../.././ts/generators/markdownGenerator.ts.html#classes/MarkdownGenerator">classes/MarkdownGenerator</a>  construction.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    public generate(): void {
+        logger.info(&quot;Generating Markdown Docs.&quot;);
         let that &#x3D; this;
-        let clean &#x3D; cleanUp || false;
         this.outputFiles &#x3D; [];
         readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) &#x3D;&gt; {
             that.proccessFile(err, content, next, that.outputDir);
@@ -104,11 +180,29 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 that.generateIndexPage(readme);
             });
         });
-    }
-    proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="process-files">Process Files</h2>
+<p> Processes the file map for a file, making output decisions based on
+ code, comment, long comment presence</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
         let file: IFile &#x3D; JSON.parse(content);
         let that &#x3D; this;
-        logger.info(&quot;Processing &quot; + file.name);
+        logger.debug(&quot;Processing &quot; + file.name);
         if (err) {
             logger.error(err.message);
         } else {
@@ -232,16 +326,33 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                     logger.fatal(err.message);
                 }
                 else {
-                    logger.info(&quot;Saving output for &quot; + file.type + &quot; file &quot; + file.name);
                     let fileName &#x3D; path.join(outputDir, file.name + &quot;.md&quot;);
                     that.outputFiles.push(fileName);
+                    logger.debug(&quot;Saving output for &quot; + file.type + &quot; file &quot; + file.name + &quot; as &quot; + fileName);
                     writeFileSync(fileName, output, { flag: &quot;w&quot; });
                 }
             });
             next();
         }
-    }
-    replaceAnchors(comment: string,  fileName: string, line: number) {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="replace-anchors">Replace Anchors</h2>
+<p> Processes a comment line, replacing anchors with markdown anchor link tags</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    replaceAnchors(comment: string,  fileName: string, line: number) {
         let pos &#x3D; 0;
         let match;
         let newComment: string &#x3D; comment;</code>
@@ -269,8 +380,28 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             pos &#x3D; match.index + match[0].length;
         }
         return newComment;
-    }
-    replaceInternalLinks(comment: string, fileName: string, line: number) {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="replace-links">Replace Links</h2>
+<blockquote>
+<p>Run this AFTER external link replacement to ensure warning accuracy
+ Processes a comment line, replacing links with markdown links</p>
+</blockquote>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    replaceInternalLinks(comment: string, fileName: string, line: number) {
         let pos &#x3D; 0;
         let match;
         let newComment: string &#x3D; comment;
@@ -295,7 +426,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         while (match &#x3D; XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             let tag &#x3D;  _.findWhere(this.tags, {anchor: match[1]});
             if (!tag) {
-                logger.error(&quot;link: &quot; + match[1] + &quot; in &quot; + fileName + &quot;:&quot; + line + &quot; does not have a cooresponding anchor, so link cannot be created.&quot;);
+                logger.warn(&quot;link: &quot; + match[1] + &quot; in &quot; + fileName + &quot;:&quot; + line + &quot; does not have a cooresponding anchor, so link cannot be created.&quot;);
             } else {
                 logger.debug(&quot;found internal link: &quot; + match[1]);
                 newComment &#x3D;  comment.substr(0, match.index) +
@@ -305,8 +436,28 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             pos &#x3D; match.index + match[0].length;
         }
         return newComment;
-    }
-    replaceExternalLinks(comment: string, fileName: string, line: number) {
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="replace-external-links">Replace External Links</h2>
+<blockquote>
+<p>Run this BEFORE internal link replacement
+ Processes a comment line, replacing links with markdown links to external urls</p>
+</blockquote>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    replaceExternalLinks(comment: string, fileName: string, line: number) {
         let pos &#x3D; 0;
         let match;
         let newComment: string &#x3D; comment;</code>
@@ -342,23 +493,16 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             pos &#x3D; match.index + match[0].length;
         }
         return newComment;
-    }
-    generateIndexPage(readmeText?): void {
-        logger.info(&quot;generating Duly Noted.md&quot;);
-        let that &#x3D; this;
-        let outputMap &#x3D; {
-            project: this.projectName,
-            collections: [],
-            files: this.outputFiles,
-            readme: readmeText
-        };</code>
+    }</code>
                         </pre>
                     </div>
             </div>
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> collections</p>
+                    <h2 id="generates-the-index-page-">Generates the &quot;Index Page&quot;</h2>
+<p> This generates the index page, listing all the link collections,
+ and sucks in the README.</p>
 
                     </div>
 
@@ -368,7 +512,15 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">       
+                            <code class="typescript">    generateIndexPage(readmeText?): void {
+        logger.info(&quot;generating Duly Noted.md&quot;);
+        let that &#x3D; this;
+        let outputMap &#x3D; {
+            project: this.projectName,
+            collections: [],
+            files: this.outputFiles,
+            readme: readmeText
+        };
         let collections &#x3D; that.referenceCollection.getTagsByCollection();
         for (let i &#x3D; 0; i &lt; collections.length; i++) {
             let anchors &#x3D; _.clone(collections[i].anchors);
@@ -408,8 +560,9 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <blockquote>
-<p>NOTE: Without this code, the link will not properly navigated deeply nested pages with relative linking.</p>
+                    <p> Generate a link Prefix from a fileName</p>
+<blockquote>
+<p>NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.</p>
 </blockquote>
 
                     </div>
@@ -420,23 +573,13 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
-    getLinkPrefix(fileName: string): string {
+                            <code class="typescript">    getLinkPrefix(fileName: string): string {
         let fileNameAsArray &#x3D; fileName.split(&quot;/&quot;);
         let linkPrefix &#x3D; &quot;&quot;;
         for (let i &#x3D; 0; i &lt; fileNameAsArray.length - 2; i++) {
             linkPrefix +&#x3D; &quot;../&quot;;
         }
         return linkPrefix;
-    }
-    cleanUp(err, files) {
-        if (err) {
-            logger.error(err.message);
-        } else {
-            for (let i &#x3D; 0; i &lt; files.length; i++) {
-                unlinkSync(files[i]);
-            }
-        }
     }
 }</code>
                         </pre>

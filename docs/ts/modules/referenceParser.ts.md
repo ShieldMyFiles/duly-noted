@@ -62,7 +62,7 @@ export class ReferenceParser implements IReferenceParser {
 ```
  ## Parse
 
- Parser all files for anchors - produce a [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
+ Parser all files for anchors - produce a @IReferenceCollection
 
 ```typescript
     public parse(): Q.Promise<IReferenceCollection> {
@@ -320,7 +320,7 @@ export class ReferenceParser implements IReferenceParser {
 
  Once a comment is found (see [ParseFile](../.././ts/modules/referenceParser.ts.md#ParseFile)  above for example) this will parse
 
- that commant for anchors. It will add those anchors to the [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
+ that commant for anchors. It will add those anchors to the @IReferenceCollection
 
  for the entire project.
 
