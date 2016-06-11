@@ -126,7 +126,7 @@ export class HtmlGenerator implements IHtmlGenerator {
         let newComment: string = comment;
         // Look at the line for anchors - replace them with links. 
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
-            newComment =  newComment.substr(0, match.index - 1) +
+            newComment =  newComment.substr(0, match.index) +
             " <a name=\"" + match[1] + "\">&#187; " + match[1] + "</a> " +
             newComment.substr(match.index + match[0].length);
 
@@ -150,7 +150,7 @@ export class HtmlGenerator implements IHtmlGenerator {
                 logger.error("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             } else {
                 logger.debug("found internal link: " + match[1]);
-                newComment =  comment.substr(0, match.index - 1) +
+                newComment =  comment.substr(0, match.index) +
                 " [" + match[1] + "](" + linkPrefix + tag.path + ".html#" + match[1] + ") " +
                 newComment.substr(match.index + match[0].length);
             }
@@ -204,7 +204,7 @@ export class HtmlGenerator implements IHtmlGenerator {
             let anchors = _.clone(collections[i].anchors);
             for (let x = 0; x < anchors.length; x++) {
                 let linkPrefix = that.getLinkPrefix(anchors[x].path);
-                anchors[x].path = anchors[x].path + ".html#" + anchors[x].linkstub;
+                anchors[x].path = anchors[x].path + ".html#" + anchors[x].linkStub;
             }
             outputMap.collections.push({
                 name: collections[i].name,

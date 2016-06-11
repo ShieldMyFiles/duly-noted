@@ -1,10 +1,10 @@
- #[ReferenceParser](#ReferenceParser)
+ # [ReferenceParser](#ReferenceParser)
 
  [authors/chris](../.././authors.md.md#authors/chris) 
 
 ```typescript
 import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";
-import {IConfig, IExternalReference} from "../classes/IConfig";
+import {Config, IExternalReference} from "../classes/IConfig";
 import {IFile, ILine} from "../classes/IFile";
 import {getFileType} from "../helpers/fileType";
 import {writeFileSync, mkdirSync, accessSync, F_OK, openSync} from "fs";
@@ -30,7 +30,7 @@ export class ReferenceParser implements IReferenceParser {
     longCommentLineRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
     externalReferences: IExternalReference[];
-    constructor(config: IConfig) {
+    constructor(config: Config) {
         logger.debug("ready");
         this.files = config.files;
         this.rootCollection = new ReferenceCollection(parseLoc);

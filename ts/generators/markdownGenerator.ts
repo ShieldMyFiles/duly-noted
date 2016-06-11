@@ -1,7 +1,7 @@
 import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
 import {parseLoc} from "../modules/referenceParser";
-import {Config, IExternalReference} from "../classes/IConfig";
-import {readFiles} from "node-dir";
+import {IConfig, IExternalReference} from "../classes/IConfig";
+import {readFiles, files} from "node-dir";
 import {IFile, ILine} from "../classes/IFile";
 import XRegExp = require("xregexp");
 import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} from "fs";
@@ -9,6 +9,7 @@ import mkdirp = require("mkdirp");
 import * as path from "path";
 import _ = require("underscore");
 import lineReader = require("line-reader");
+
 
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::MarkdownGenerator");
@@ -26,8 +27,10 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     referenceCollection: ReferenceCollection;
     tags: ITag[] = [];
     readme: string;
+    projectName: string;
+    outputFiles: string[] = [];
 
-    constructor(config: Config) {
+    constructor(config: IConfig) {
         this.outputDir = config.outputDir;
         this.externalReferences = JSON.parse(readFileSync(path.join(parseLoc, "externalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
@@ -35,12 +38,13 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.referenceCollection = new ReferenceCollection("").inflate(JSON.parse(readFileSync(path.join(parseLoc, "internalReferences.json")).toString()));
         this.tags = this.referenceCollection.getAllTags();
         this.readme = config.readme;
+        this.projectName = config.projectName;
     }
 
     public generate(cleanUp?: boolean): void {
         let that = this;
         let clean = cleanUp || false;
-
+        this.outputFiles = [];
         readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
             that.proccessFile(err, content, next, that.outputDir);
         }, (err, files) => {
@@ -52,12 +56,15 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 newLine = that.replaceInternalLinks(newLine, that.readme, i);
                 readme +=  "\n" + newLine;
                 i++;
+            }, () => {
+                that.generateIndexPage(readme);
             });
         });
     }
 
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
         let file: IFile = JSON.parse(content);
+        let that = this;
         logger.info("Processing " + file.name);
 
         if (err) {
@@ -112,7 +119,9 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 }
                 else {
                     logger.info("Saving output for " + file.type + " file " + file.name);
-                    writeFileSync(path.join(outputDir, file.name + ".md"), output, { flag: "w" });
+                    let fileName = path.join(outputDir, file.name + ".md");
+                    that.outputFiles.push(fileName);
+                    writeFileSync(fileName, output, { flag: "w" });
                 }
             });
 
@@ -127,7 +136,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         let newComment: string = comment;
         // Look at the line for anchors - replace them with links. 
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
-            newComment =  newComment.substr(0, match.index - 1) +
+            newComment =  newComment.substr(0, match.index) +
             "[" + match[1] + "](#" + match[1] + ")" +
             newComment.substr(match.index + match[0].length);
 
@@ -151,7 +160,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 logger.error("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             } else {
                 logger.debug("found internal link: " + match[1]);
-                newComment =  comment.substr(0, match.index - 1) +
+                newComment =  comment.substr(0, match.index) +
                 " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + match[1] + ") " +
                 newComment.substr(match.index + match[0].length);
             }
@@ -187,6 +196,60 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         return newComment;
     }
 
+    generateIndexPage(readmeText?): void {
+        logger.info("generating Duly Noted.md");
+        let that = this;
+
+        let outputMap = {
+            project: this.projectName,
+            collections: [],
+            files: this.outputFiles,
+            readme: readmeText
+        };
+
+        // collections
+        let collections = that.referenceCollection.getTagsByCollection();
+
+        for (let i = 0; i < collections.length; i++) {
+            let anchors = _.clone(collections[i].anchors);
+            for (let x = 0; x < anchors.length; x++) {
+                let linkPrefix = that.getLinkPrefix(anchors[x].path);
+                anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
+            }
+
+            let name = collections[i].name.split("/");
+            name.shift();
+            name.shift();
+            name = name.join("/");
+            outputMap.collections.push({
+                name: name,
+                anchors: anchors
+            });
+        }
+
+        let md = "# " + this.projectName + " documentation \n";
+
+        md += "### Collections \n";
+        for (let i = 0; i < outputMap.collections.length; i++) {
+           md += "\n#### " + outputMap.collections[i].name + " \n";
+
+           for (let x = 0; x < outputMap.collections[i].anchors.length; x++) {
+               md += "* [" + outputMap.collections[i].anchors[x].anchor + "]" + "(" + outputMap.collections[i].anchors[x].path + ") \n";
+           }
+        }
+
+        md += "\n------------------------------ \n";
+        md += "\n### Files \n";
+
+        for (let i = 0; i < outputMap.files.length; i++) {
+            md += "* [" + outputMap.files[i] + "](" + outputMap.files[i] + ") \n";
+        }
+        md += "\n------------------------------ \n";
+
+        md += outputMap.readme;
+
+        writeFileSync(path.join(that.outputDir, "Duly Noted.md"), md, { flag: "w" });
+    }
 
     // > NOTE: Without this code, the link will not properly navigated deeply nested pages with relative linking.
     getLinkPrefix(fileName: string): string {

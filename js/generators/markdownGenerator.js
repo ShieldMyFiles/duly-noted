@@ -13,6 +13,7 @@ var logger = log4js.getLogger("duly-noted::MarkdownGenerator");
 var MarkdownGenerator = (function () {
     function MarkdownGenerator(config) {
         this.tags = [];
+        this.outputFiles = [];
         this.outputDir = config.outputDir;
         this.externalReferences = JSON.parse(fs_1.readFileSync(path.join(referenceParser_1.parseLoc, "externalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
@@ -20,10 +21,12 @@ var MarkdownGenerator = (function () {
         this.referenceCollection = new referenceCollection_1.ReferenceCollection("").inflate(JSON.parse(fs_1.readFileSync(path.join(referenceParser_1.parseLoc, "internalReferences.json")).toString()));
         this.tags = this.referenceCollection.getAllTags();
         this.readme = config.readme;
+        this.projectName = config.projectName;
     }
     MarkdownGenerator.prototype.generate = function (cleanUp) {
         var that = this;
         var clean = cleanUp || false;
+        this.outputFiles = [];
         node_dir_1.readFiles(referenceParser_1.parseLoc, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
             that.proccessFile(err, content, next, that.outputDir);
         }, function (err, files) {
@@ -35,11 +38,14 @@ var MarkdownGenerator = (function () {
                 newLine = that.replaceInternalLinks(newLine, that.readme, i);
                 readme += "\n" + newLine;
                 i++;
+            }, function () {
+                that.generateIndexPage(readme);
             });
         });
     };
     MarkdownGenerator.prototype.proccessFile = function (err, content, next, outputDir) {
         var file = JSON.parse(content);
+        var that = this;
         logger.info("Processing " + file.name);
         if (err) {
             logger.error(err.message);
@@ -84,7 +90,9 @@ var MarkdownGenerator = (function () {
                 }
                 else {
                     logger.info("Saving output for " + file_1.type + " file " + file_1.name);
-                    fs_1.writeFileSync(path.join(outputDir, file_1.name + ".md"), output_1, { flag: "w" });
+                    var fileName = path.join(outputDir, file_1.name + ".md");
+                    that.outputFiles.push(fileName);
+                    fs_1.writeFileSync(fileName, output_1, { flag: "w" });
                 }
             });
             next();
@@ -95,7 +103,7 @@ var MarkdownGenerator = (function () {
         var match;
         var newComment = comment;
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
-            newComment = newComment.substr(0, match.index - 1) +
+            newComment = newComment.substr(0, match.index) +
                 "[" + match[1] + "](#" + match[1] + ")" +
                 newComment.substr(match.index + match[0].length);
             pos = match.index + match[0].length;
@@ -114,7 +122,7 @@ var MarkdownGenerator = (function () {
             }
             else {
                 logger.debug("found internal link: " + match[1]);
-                newComment = comment.substr(0, match.index - 1) +
+                newComment = comment.substr(0, match.index) +
                     " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + match[1] + ") " +
                     newComment.substr(match.index + match[0].length);
             }
@@ -141,6 +149,48 @@ var MarkdownGenerator = (function () {
             pos = match.index + match[0].length;
         }
         return newComment;
+    };
+    MarkdownGenerator.prototype.generateIndexPage = function (readmeText) {
+        logger.info("generating Duly Noted.md");
+        var that = this;
+        var outputMap = {
+            project: this.projectName,
+            collections: [],
+            files: this.outputFiles,
+            readme: readmeText
+        };
+        var collections = that.referenceCollection.getTagsByCollection();
+        for (var i = 0; i < collections.length; i++) {
+            var anchors = _.clone(collections[i].anchors);
+            for (var x = 0; x < anchors.length; x++) {
+                var linkPrefix = that.getLinkPrefix(anchors[x].path);
+                anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
+            }
+            var name_1 = collections[i].name.split("/");
+            name_1.shift();
+            name_1.shift();
+            name_1 = name_1.join("/");
+            outputMap.collections.push({
+                name: name_1,
+                anchors: anchors
+            });
+        }
+        var md = "# " + this.projectName + " documentation \n";
+        md += "### Collections \n";
+        for (var i = 0; i < outputMap.collections.length; i++) {
+            md += "\n#### " + outputMap.collections[i].name + " \n";
+            for (var x = 0; x < outputMap.collections[i].anchors.length; x++) {
+                md += "* [" + outputMap.collections[i].anchors[x].anchor + "]" + "(" + outputMap.collections[i].anchors[x].path + ") \n";
+            }
+        }
+        md += "\n------------------------------ \n";
+        md += "\n### Files \n";
+        for (var i = 0; i < outputMap.files.length; i++) {
+            md += "* [" + outputMap.files[i] + "](" + outputMap.files[i] + ") \n";
+        }
+        md += "\n------------------------------ \n";
+        md += outputMap.readme;
+        fs_1.writeFileSync(path.join(that.outputDir, "Duly Noted.md"), md, { flag: "w" });
     };
     MarkdownGenerator.prototype.getLinkPrefix = function (fileName) {
         var fileNameAsArray = fileName.split("/");

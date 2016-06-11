@@ -89,7 +89,7 @@ var HtmlGenerator = (function () {
         var match;
         var newComment = comment;
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
-            newComment = newComment.substr(0, match.index - 1) +
+            newComment = newComment.substr(0, match.index) +
                 " <a name=\"" + match[1] + "\">&#187; " + match[1] + "</a> " +
                 newComment.substr(match.index + match[0].length);
             pos = match.index + match[0].length;
@@ -108,7 +108,7 @@ var HtmlGenerator = (function () {
             }
             else {
                 logger.debug("found internal link: " + match[1]);
-                newComment = comment.substr(0, match.index - 1) +
+                newComment = comment.substr(0, match.index) +
                     " [" + match[1] + "](" + linkPrefix + tag.path + ".html#" + match[1] + ") " +
                     newComment.substr(match.index + match[0].length);
             }
@@ -151,7 +151,7 @@ var HtmlGenerator = (function () {
             var anchors = _.clone(collections[i].anchors);
             for (var x = 0; x < anchors.length; x++) {
                 var linkPrefix = that.getLinkPrefix(anchors[x].path);
-                anchors[x].path = anchors[x].path + ".html#" + anchors[x].linkstub;
+                anchors[x].path = anchors[x].path + ".html#" + anchors[x].linkStub;
             }
             outputMap.collections.push({
                 name: collections[i].name,

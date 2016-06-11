@@ -5,7 +5,7 @@
  * 
  * This is the entry file to Duly Noted
  */
-import {Config} from "./classes/IConfig";
+import {IConfig} from "./classes/IConfig";
 import {ReferenceParser} from "./modules/referenceParser";
 import parseArgs = require("minimist");
 import _ = require("underscore");

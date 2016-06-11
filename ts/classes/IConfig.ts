@@ -1,8 +1,8 @@
-// !Config
+// !IConfig
 export interface IConfig {
     projectName: string;
     files: string[];
-    outputDir: string,
+    outputDir: string;
     anchorRegExp: string;
     commentRegExp: string;
     longCommentOpenRegExp: string;

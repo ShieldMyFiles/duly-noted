@@ -1,4 +1,4 @@
- #[Index](#Index).ts
+ # [Index.ts](#Index.ts)
 
  [authors/chris](.././authors.md.md#authors/chris) 
 
@@ -9,7 +9,7 @@
  This is the entry file to Duly Noted
 
 ```typescript
-import {IConfig} from "./classes/IConfig";
+import {Config} from "./classes/IConfig";
 import {ReferenceParser} from "./modules/referenceParser";
 import parseArgs = require("minimist");
 import _ = require("underscore");
@@ -25,13 +25,13 @@ let logger = log4js.getLogger("duly-noted::run");
 
  
 
- Runs duly-typed using taking the consuing th [Config](.././ts/classes/IConfig.ts.md#Config)  file found as `/duly-noted.json`
+ Runs duly-typed using taking the consuing the @Config file found as `/duly-noted.json`
 
  Basic code flow is:
 
  1. parse the cofiguration options
 
- 2. get the files, and pass those to th [ReferenceParser](.././ts/modules/referenceParser.ts.md#ReferenceParser) 
+ 2. get the files, and pass those to the [ReferenceParser](.././ts/modules/referenceParser.ts.md#ReferenceParser) 
 
  3. output the reponse to either/both @Htmlgenerator or @MarkdownGenerator
 
@@ -39,9 +39,9 @@ let logger = log4js.getLogger("duly-noted::run");
 export function run () {
     logger.info("Welcome to Duly Noted.");
     let args = parseArgs(process.argv.slice(2));
-    let config: IConfig;
+    let config: Config;
 ```
-[TODO/config](#TODO/config) > This needs more flexible support for command line options
+ [TODO/config](#TODO/config) > This needs more flexible support for command line options
 
 ```typescript
    
@@ -61,7 +61,7 @@ export function run () {
          referenceParser.parse()
          .then((response) => {
 ```
-[TODO/set](#TODO/set)-generators > This needs more flexible support selecting the generators from the command line / config
+ [TODO/set-generators](#TODO/set-generators) > This needs more flexible support selecting the generators from the command line / config
 
 ```typescript
             
@@ -75,7 +75,7 @@ export function run () {
          })
          .catch( (err: Error) => {
 ```
-[TODO/errors](#TODO/errors) > An overall stratefy is needed to identify errors.
+ [TODO/errors](#TODO/errors) > An overall stratefy is needed to identify errors.
 
 ```typescript
             
