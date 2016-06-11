@@ -1,9 +1,15 @@
 {
     "projectName":"Duly-Noted",
     "files": [
+        "./ts/typings/index.d.ts",
         "./ts/index.ts",
-        "./ts/classes/IConfig.ts",
+        "./ts/generators/htmlGenerator.ts",
+        "./ts/generators/markdownGenerator.ts",
         "./ts/modules/referenceParser.ts",
+        "./ts/classes/IConfig.ts",
+        "./ts/classes/referenceCollection.ts",
+        "./ts/helpers/helpers.ts",
+        "./ts/helpers/fileType.ts",
         "./authors.md",
         "./license.md"
     ], 

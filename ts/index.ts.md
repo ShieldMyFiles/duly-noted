@@ -1,4 +1,4 @@
- # [Index.ts](#Index.ts)
+ # [Index](#Index)
 
  [authors/chris](.././authors.md.md#authors/chris) 
 
@@ -9,7 +9,7 @@
  This is the entry file to Duly Noted
 
 ```typescript
-import {Config} from "./classes/IConfig";
+import {IConfig} from "./classes/IConfig";
 import {ReferenceParser} from "./modules/referenceParser";
 import parseArgs = require("minimist");
 import _ = require("underscore");
@@ -25,7 +25,7 @@ let logger = log4js.getLogger("duly-noted::run");
 
  
 
- Runs duly-typed using taking the consuing the @Config file found as `/duly-noted.json`
+ Runs duly-typed using taking the consuing the config file (see [IConfig](.././ts/classes/IConfig.ts.md#IConfig) ) found as `/duly-noted.json`
 
  Basic code flow is:
 
@@ -39,7 +39,7 @@ let logger = log4js.getLogger("duly-noted::run");
 export function run () {
     logger.info("Welcome to Duly Noted.");
     let args = parseArgs(process.argv.slice(2));
-    let config: Config;
+    let config: IConfig;
 ```
  [TODO/config](#TODO/config) > This needs more flexible support for command line options
 
