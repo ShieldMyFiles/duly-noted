@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="..//css/default.css">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="..//scripts/highlight.js"></script>
+        <style>
+            body {
+                padding-top: 50px;
+            }
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+            pre {
+                display: block;
+                padding: 0;
+                margin: 0 0 30px 0;
+                font-size: 11px;
+                line-height: 1.42857143;
+                color: #333;
+                word-break: break-all;
+                word-wrap: break-word;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="..//index.html">Duly-Noted</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h1 id="-a-name-index-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-index-a-"><a name="Index"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>Index</a></h1>
+<p> <a href=".././authors.md.html#authors/chris">authors/chris</a> 
+ <a href=".././license.md.html#license">license</a> </p>
+<p> This is the entry file to Duly Noted</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">import {IConfig} from &quot;./classes/IConfig&quot;;
+import {ReferenceParser} from &quot;./modules/referenceParser&quot;;
+import parseArgs &#x3D; require(&quot;minimist&quot;);
+import _ &#x3D; require(&quot;underscore&quot;);
+import * as path from &quot;path&quot;;
+import glob &#x3D; require(&quot;glob&quot;);
+import Q &#x3D; require(&quot;q&quot;);
+import {MarkdownGenerator} from &quot;./generators/markdownGenerator&quot;;
+import {HtmlGenerator} from &quot;./generators/Htmlgenerator&quot;;
+import log4js &#x3D; require(&quot;log4js&quot;);
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="run">Run</h2>
+<p> Runs duly-typed using taking the consuing the config file (see <a href=".././ts/classes/IConfig.ts.html#IConfig">IConfig</a> ) found as <code>/duly-noted.json</code>
+ Basic code flow is:</p>
+<ol>
+<li>parse the cofiguration options</li>
+<li>get the files, and pass those to the <a href=".././ts/modules/referenceParser.ts.html#ReferenceParser">ReferenceParser</a> </li>
+<li>output the reponse to either/both @Htmlgenerator or @MarkdownGenerator</li>
+</ol>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export function run () {
+    logger.info(&quot;Welcome to Duly Noted.&quot;);
+    let args &#x3D; parseArgs(process.argv.slice(2));
+    let config: IConfig;</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>  <a name="TODO/config"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>TODO/config</a>  &gt; This needs more flexible support for command line options</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">   
+     if (args[&quot;c&quot;]) {
+        config &#x3D; require(args[&quot;c&quot;]);
+     } else {
+        config &#x3D; require(process.cwd() + &quot;/duly-noted.json&quot;);
+     }
+     let getFiles: Q.IPromise&lt;string[]&gt;[] &#x3D; [];
+     for (let i &#x3D; 0; i &lt; config.files.length; i++) {
+        getFiles.push(getFilesFromGlob(config.files[i]));
+     }
+     Q.all(getFiles)
+     .then((results) &#x3D;&gt; {
+         let files &#x3D; _.flatten(results);
+         let referenceParser &#x3D; new ReferenceParser(config);
+         referenceParser.parse()
+         .then((response) &#x3D;&gt; {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>  <a name="TODO/set-generators"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>TODO/set-generators</a>  &gt; This needs more flexible support selecting the generators from the command line / config</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">            
+             logger.info(&quot;parsing complete, beginning export of HTML&quot;);
+             new HtmlGenerator(config).generate();</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> new MarkdownGenerator(config).generate(true);</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">            
+         })
+         .catch( (err: Error) &#x3D;&gt; {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>  <a name="TODO/errors"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>TODO/errors</a>  &gt; An overall stratefy is needed to identify errors.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">            
+             logger.error(err.message + err.stack);
+         });
+     });
+}</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="get-files-from-glob">Get Files from Glob</h2>
+<p> This is a simple helper to get a set of files from a glob.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">function getFilesFromGlob(globString: string): Q.Promise&lt;string[]&gt; {
+    return Q.Promise&lt;string[]&gt;((resolve, reject) &#x3D;&gt; {
+        glob(globString, (err, files: string[]) &#x3D;&gt; {
+            if (err) reject(err);
+            resolve(files);
+        });
+    });
+}</code>
+                        </pre>
+                    </div>
+            </div>
+        <script type="text/javascript">
+            (function(){
+                console.log("loaded");
+                hljs.configure({
+                    tabReplace: '  '
+                });
+                hljs.initHighlighting();
+            })();
+        </script>
+    </body>
+</html>

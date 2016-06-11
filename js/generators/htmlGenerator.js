@@ -3,6 +3,7 @@ var referenceCollection_1 = require("../classes/referenceCollection");
 var referenceParser_1 = require("../modules/referenceParser");
 var node_dir_1 = require("node-dir");
 var fs_1 = require("fs");
+var mkdirp = require("mkdirp");
 var path = require("path");
 var XRegExp = require("xregexp");
 var handlebars = require("handlebars");
@@ -81,8 +82,19 @@ var HtmlGenerator = (function () {
             }
         }
         var output = this.template(outputMap);
-        fs_1.writeFileSync(path.join(outputDir, file.name + ".html"), output, { flag: "w" });
-        next();
+        var filePathArray = path.join(outputDir, file.name + ".md").split("/");
+        filePathArray.pop();
+        var filePath = filePathArray.join("/");
+        mkdirp(filePath, function (err) {
+            if (err) {
+                logger.fatal(err.message);
+            }
+            else {
+                logger.info("Saving output for " + file.type + " file " + file.name);
+                fs_1.writeFileSync(path.join(outputDir, file.name + ".html"), output, { flag: "w" });
+                next();
+            }
+        });
     };
     HtmlGenerator.prototype.replaceAnchors = function (comment, fileName, line) {
         var pos = 0;
@@ -90,7 +102,7 @@ var HtmlGenerator = (function () {
         var newComment = comment;
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
             newComment = newComment.substr(0, match.index) +
-                " <a name=\"" + match[1] + "\">&#187; " + match[1] + "</a> " +
+                " <a name=\"" + match[1] + "\"><span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span>" + match[1] + "</a> " +
                 newComment.substr(match.index + match[0].length);
             pos = match.index + match[0].length;
         }

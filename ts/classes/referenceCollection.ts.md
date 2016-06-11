@@ -73,7 +73,7 @@ export class ReferenceCollection implements IReferenceCollection {
         return this;
     }
 ```
- ## Add an [interface/IAnchor](#interface/IAnchor) to collection
+ ## Add an @interface/IAnchor to collection
 
 ```typescript
     public addAnchor(anchor: IAnchor): void {

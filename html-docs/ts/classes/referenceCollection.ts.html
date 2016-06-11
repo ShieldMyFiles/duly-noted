@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="../..//css/default.css">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="../..//scripts/highlight.js"></script>
+        <style>
+            body {
+                padding-top: 50px;
+            }
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+            pre {
+                display: block;
+                padding: 0;
+                margin: 0 0 30px 0;
+                font-size: 11px;
+                line-height: 1.42857143;
+                color: #333;
+                word-break: break-all;
+                word-wrap: break-word;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="../..//index.html">Duly-Noted</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h1 id="-a-name-referencecollection-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-referencecollection-a-"><a name="ReferenceCollection"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>ReferenceCollection</a></h1>
+<p> <a href="../.././authors.md.html#authors/chris">authors/chris</a> 
+ <a href="../.././license.md.html#license">license</a> </p>
+<p> This reference parser that parses all the links and anchors in your code - the output of which is two reference collections:</p>
+<ul>
+<li><code>internalReferences.json</code></li>
+<li><code>externalReferences.json</code></li>
+</ul>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">import {findWhere, findIndex} from &quot;underscore&quot;;
+import log4js &#x3D; require(&quot;log4js&quot;);
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="-a-name-interfaces-ireferencecollection-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-interfaces-ireferencecollection-a-"><a name="interfaces/IReferenceCollection"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>interfaces/IReferenceCollection</a></h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export interface IReferenceCollection {
+    id: string;
+    anchors?: IAnchor[];
+    subcollections?: IReferenceCollection[];
+}</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="-a-name-interfaces-ianchor-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-interfaces-ianchor-a-"><a name="interfaces/IAnchor"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>interfaces/IAnchor</a></h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export interface IAnchor {
+    id: string;
+    file: string;
+    line: number;
+}</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="-a-name-interfaces-itag-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-interfaces-itag-a-"><a name="interfaces/ITag"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>interfaces/ITag</a></h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export interface ITag {
+    anchor: string;
+    path: string;
+    linkStub: string;
+}</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="-a-name-classes-referencecollection-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-classes-referencecollection-a-"><a name="classes/ReferenceCollection"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>classes/ReferenceCollection</a></h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export class ReferenceCollection implements IReferenceCollection {
+    id: string;
+    anchors: IAnchor[];
+    subcollections: IReferenceCollection[];</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h3 id="creates-an-instance-of-referencecollection-">Creates an instance of ReferenceCollection.</h3>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    constructor(id: string) {
+        this.id &#x3D; id;
+        this.anchors &#x3D; [];
+        this.subcollections &#x3D; [];
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="recursively-inflate-a-reference-collection-in-the-form-of-interfaces-ireferencecollection-ts-classes-referencecollection-ts-html-interfaces-ireferencecollection-from-flat-data-likely-from-json-file-">Recursively inflate a reference collection in the form of <a href="../.././ts/classes/referenceCollection.ts.html#interfaces/IReferenceCollection">interfaces/IReferenceCollection</a>  from flat data (likely from JSON file)</h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    public inflate(collection: IReferenceCollection) {
+        this.id &#x3D; collection.id;
+        this.anchors &#x3D; collection.anchors;
+        for (let i &#x3D; 0; i &lt; collection.subcollections.length; i++) {
+            this.subcollections.push(new ReferenceCollection(collection.subcollections[i].id).inflate(collection.subcollections[i]));
+        }
+        return this;
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="add-an-interface-ianchor-to-collection">Add an @interface/IAnchor to collection</h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    public addAnchor(anchor: IAnchor): void {
+        let existing &#x3D; findWhere(this.anchors, {id: anchor.id});
+        if (existing) {
+            logger.error(&quot;Cannot add anchor &#x27;&quot; + anchor.id + &quot;&#x27; from &quot; + anchor.file + &quot;:&quot; + anchor.line + &quot; to &#x27;&quot; + this.id + &quot;&#x27; collection because it was already defined at &quot; + existing.file + &quot;:&quot; + existing.line);
+        }
+        this.anchors.push(anchor);
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="add-a-subcollection-to-this-collection-in-the-form-of-an-interfaces-ireferencecollection-ts-classes-referencecollection-ts-html-interfaces-ireferencecollection-">Add a subcollection to this collection in the form of an <a href="../.././ts/classes/referenceCollection.ts.html#interfaces/IReferenceCollection">interfaces/IReferenceCollection</a></h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    public addSubcollection(collection: IReferenceCollection): void {
+        let existingAnchor &#x3D; findWhere(this.anchors, {id: collection.id});
+        if (existingAnchor) {
+            logger.error(&quot;Cannot add collection &#x27;&quot; + collection.id + &quot;&#x27; because it was already defined as an anchor &quot; + existingAnchor.file + &quot;:&quot; + existingAnchor.line);
+            return;
+        }
+        let existingCollection &#x3D; findWhere(this.anchors, {id: collection.id});
+        if (existingCollection) {
+            logger.error(&quot;Cannot add collection &#x27;&quot; + collection.id + &quot;&#x27; because it was already defined as a subcollection of &#x27;&quot; + collection.id +  &quot;&#x27;&quot;);
+            return;
+        }
+        this.subcollections.push(collection);
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="add-anchor-tag-to-the-appropriate-subcollection">Add Anchor Tag to the appropriate subcollection</h2>
+<p> Recursively skims the collection and subcollections to place anchor in the correct place.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    public addAnchorTag(anchorTag: string[], fileName: string, lineNumber: number): void {
+        logger.debug(&quot;processing new anchorTag: &quot; + JSON.stringify(anchorTag));
+        if (anchorTag.length &#x3D;&#x3D;&#x3D; 1) {
+            logger.debug(&quot;Adding anchor tag:&quot; + anchorTag[0]);
+            this.addAnchor({
+                id: anchorTag[0],
+                line: lineNumber,
+                file: fileName
+            });
+            return;
+        } else {
+            let collectionTag &#x3D; anchorTag.shift();
+            let i &#x3D; findIndex(this.subcollections, (item) &#x3D;&gt; {
+                return item.id &#x3D;&#x3D;&#x3D; collectionTag;
+            });
+            if (i &gt; -1) {
+            logger.debug(&quot;Collection present:&quot; + collectionTag);
+            return this.subcollections[i].addAnchorTag(anchorTag, fileName, lineNumber);
+            } else {
+                logger.debug(&quot;Collection not present:&quot; + collectionTag);
+                let newSubCollection &#x3D; new ReferenceCollection(collectionTag);
+                newSubCollection.addAnchorTag(anchorTag, fileName, lineNumber);
+                this.addSubcollection(newSubCollection);
+                return;
+            }
+        }
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="get-all-the-tags-in-a-collection-and-its-subcollections">Get All the tags in a collection and its subcollections</h2>
+<p> Recursively cull all of the tags.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    public getAllTags(parentPath?: string, depth?: number): ITag[] {
+        parentPath &#x3D; parentPath || &quot;&quot;;
+        depth &#x3D; depth || 0;
+        let allTags: ITag[] &#x3D; [];
+        if (depth &gt; 0) {
+            for (let i &#x3D; 0; i &lt; this.anchors.length; i++) {
+                if (parentPath !&#x3D;&#x3D; &quot;&quot; &amp;&amp; parentPath !&#x3D;&#x3D; null) {
+                    allTags.push({
+                        anchor: parentPath + &quot;/&quot; + this.id + &quot;/&quot; + this.anchors[i].id,
+                        path: this.anchors[i].file,
+                        linkStub: this.anchors[i].id
+                    });
+                } else {
+                    allTags.push({
+                        anchor: this.id + &quot;/&quot; + this.anchors[i].id,
+                        path: this.anchors[i].file,
+                        linkStub: this.anchors[i].id
+                    });
+                }
+            }
+            for (let i &#x3D; 0; i &lt; this.subcollections.length; i++) {
+                allTags &#x3D; allTags.concat(this.subcollections[i].getAllTags(parentPath + &quot;/&quot; + this.id,  depth + 1));
+            }
+        } else {
+            for (let i &#x3D; 0; i &lt; this.anchors.length; i++) {
+                allTags.push({
+                    anchor: this.anchors[i].id,
+                    path: this.anchors[i].file,
+                    linkStub: this.anchors[i].id
+                });
+            }
+            for (let i &#x3D; 0; i &lt; this.subcollections.length; i++) {
+                allTags &#x3D; allTags.concat(this.subcollections[i].getAllTags(null, depth + 1));
+            }
+        }
+        return allTags;
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="get-a-list-of-anchors-sorted-by-an-array-of-all-the-collections-">Get a list of anchors sorted by an array of all the collections.</h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    public getTagsByCollection (allCollections?, parentPath?) {
+        allCollections &#x3D; allCollections || [];
+        parentPath &#x3D; parentPath || &quot;&quot;;
+        let id &#x3D; parentPath + &quot;/&quot; + this.id;
+        allCollections.push({
+            name: id,
+            anchors: []
+        });
+        for (let i &#x3D; 0; i &lt; this.anchors.length; i++) {
+            allCollections[allCollections.length - 1].anchors.push({
+                anchor: this.anchors[i].id,
+                path: this.anchors[i].file,
+                linkStub: this.anchors[i].id
+            });
+        }
+        for (let i &#x3D; 0; i &lt; this.subcollections.length; i++) {
+            allCollections &#x3D; this.subcollections[i].getTagsByCollection(allCollections, id);
+        }
+        return allCollections;
+    }
+}</code>
+                        </pre>
+                    </div>
+            </div>
+        <script type="text/javascript">
+            (function(){
+                console.log("loaded");
+                hljs.configure({
+                    tabReplace: '  '
+                });
+                hljs.initHighlighting();
+            })();
+        </script>
+    </body>
+</html>

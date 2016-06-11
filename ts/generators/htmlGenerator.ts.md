@@ -29,7 +29,7 @@ export class HtmlGenerator implements IHtmlGenerator {
     externalReferences: IExternalReference[];
     readme: string;
     projectName: string;
-    constructor(config: Config){
+    constructor(config: Config) {
         this.outputDir = config.outputDir;
         this.collection = JSON.parse(readFileSync(path.join(parseLoc, "internalReferences.json")).toString());
         this.anchorRegExp = new RegExp(config.anchorRegExp);
@@ -115,8 +115,19 @@ export class HtmlGenerator implements IHtmlGenerator {
 
 ```typescript
        
-        writeFileSync(path.join(outputDir, file.name + ".html"), output, { flag: "w" });
-        next();
+        let filePathArray = path.join(outputDir, file.name + ".md").split("/");
+        filePathArray.pop();
+        let filePath = filePathArray.join("/");
+        mkdirp(filePath, function (err) {
+            if (err) {
+                logger.fatal(err.message);
+            }
+            else {
+                logger.info("Saving output for " + file.type + " file " + file.name);
+                writeFileSync(path.join(outputDir, file.name + ".html"), output, { flag: "w" });
+                next();
+            }
+        });
     }
     replaceAnchors(comment: string,  fileName: string, line: number) {
         let pos = 0;
@@ -129,7 +140,7 @@ export class HtmlGenerator implements IHtmlGenerator {
        
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
             newComment =  newComment.substr(0, match.index) +
-            " <a name=\"" + match[1] + "\">&#187; " + match[1] + "</a> " +
+            " <a name=\"" + match[1] + "\"><span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span>" + match[1] + "</a> " +
             newComment.substr(match.index + match[0].length);
             pos = match.index + match[0].length;
         }

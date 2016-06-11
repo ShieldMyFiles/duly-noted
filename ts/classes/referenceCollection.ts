@@ -68,7 +68,7 @@ export class ReferenceCollection implements IReferenceCollection {
     }
 
     /**
-     * ## Add an !interface/IAnchor to collection
+     * ## Add an @interface/IAnchor to collection
      */
     public addAnchor(anchor: IAnchor): void {
         let existing = findWhere(this.anchors, {id: anchor.id});

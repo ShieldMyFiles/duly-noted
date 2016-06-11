@@ -54,7 +54,7 @@ export function run () {
          .then((response) => {
              // !TODO/set-generators > This needs more flexible support selecting the generators from the command line / config
              logger.info("parsing complete, beginning export of HTML");
-             // new HtmlGenerator(config).generate();
+             //new HtmlGenerator(config).generate();
              new MarkdownGenerator(config).generate(true);
          })
          .catch( (err: Error) => {

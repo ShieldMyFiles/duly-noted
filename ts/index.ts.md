@@ -67,7 +67,7 @@ export function run () {
             
              logger.info("parsing complete, beginning export of HTML");
 ```
- new HtmlGenerator(config).generate();
+new HtmlGenerator(config).generate();
 
 ```typescript
             

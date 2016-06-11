@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="../..//css/default.css">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="../..//scripts/highlight.js"></script>
+        <style>
+            body {
+                padding-top: 50px;
+            }
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+            pre {
+                display: block;
+                padding: 0;
+                margin: 0 0 30px 0;
+                font-size: 11px;
+                line-height: 1.42857143;
+                color: #333;
+                word-break: break-all;
+                word-wrap: break-word;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="../..//index.html">Duly-Noted</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">import {IAnchor, ITag, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;
+import {parseLoc} from &quot;../modules/referenceParser&quot;;
+import {Config, IExternalReference} from &quot;../classes/IConfig&quot;;
+import {readFiles, files} from &quot;node-dir&quot;;
+import {IFile, ILine} from &quot;../classes/IFile&quot;;
+import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} from &quot;fs&quot;;
+import mkdirp &#x3D; require(&quot;mkdirp&quot;);
+import * as path from &quot;path&quot;;
+import XRegExp &#x3D; require(&quot;xregexp&quot;);
+import * as handlebars from &quot;handlebars&quot;;
+import * as marked from &quot;marked&quot;;
+import * as fse from &quot;fs-extra&quot;;
+import _ &#x3D; require(&quot;underscore&quot;);
+import log4js &#x3D; require(&quot;log4js&quot;);
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);
+export interface IHtmlGenerator {
+}
+export class HtmlGenerator implements IHtmlGenerator {
+    outputDir: string;
+    collection: ReferenceCollection;
+    anchorRegExp: RegExp;
+    linkRegExp: RegExp;
+    template: any;
+    indexTemplate: any;
+    projectPath: string;
+    referenceCollection: ReferenceCollection;
+    tags: ITag[] &#x3D; [];
+    externalReferences: IExternalReference[];
+    readme: string;
+    projectName: string;
+    constructor(config: Config) {
+        this.outputDir &#x3D; config.outputDir;
+        this.collection &#x3D; JSON.parse(readFileSync(path.join(parseLoc, &quot;internalReferences.json&quot;)).toString());
+        this.anchorRegExp &#x3D; new RegExp(config.anchorRegExp);
+        this.linkRegExp &#x3D; new RegExp(config.linkRegExp);
+        this.referenceCollection &#x3D; new ReferenceCollection(&quot;&quot;).inflate(JSON.parse(readFileSync(path.join(parseLoc, &quot;internalReferences.json&quot;)).toString()));
+        this.externalReferences &#x3D; JSON.parse(readFileSync(path.join(parseLoc, &quot;externalReferences.json&quot;)).toString());
+        this.tags &#x3D; this.referenceCollection.getAllTags();
+        let projectPathArray &#x3D; __dirname.split(&quot;/&quot;);
+        projectPathArray.pop();
+        this.projectPath &#x3D; projectPathArray.join(&quot;/&quot;);
+        this.template &#x3D; handlebars.compile(readFileSync(path.join(this.projectPath, &quot;templates&quot;, &quot;stacked.html&quot;)).toString());
+        this.indexTemplate &#x3D; handlebars.compile(readFileSync(path.join(this.projectPath, &quot;templates&quot;, &quot;index.html&quot;)).toString());
+        this.projectName &#x3D; config.projectName;
+        this.readme &#x3D; config.readme;
+        handlebars.registerHelper(&quot;md&quot;, this.markdownHelper);
+        handlebars.registerHelper(&quot;ifCond&quot;, this.ifCondHelper);
+    }
+    public generate(cleanUp?: boolean): void {
+        let that &#x3D; this;
+        let clean &#x3D; cleanUp || false;
+        readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) &#x3D;&gt; {
+            that.proccessFile(err, content, next, that.outputDir);
+        }, (err, files) &#x3D;&gt; {
+            that.generateIndexPage();
+            if (clean) {
+                that.cleanUp(err, files);
+            }
+        });
+        fse.copySync(path.join(this.projectPath, &quot;templates&quot;, &quot;highlight.pack.js&quot;), path.join(this.outputDir, &quot;scripts/highlight.js&quot;));
+        fse.copySync(path.join(this.projectPath, &quot;templates&quot;, &quot;css&quot;, &quot;default.css&quot;), path.join(this.outputDir, &quot;css/default.css&quot;));
+    }
+    proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
+        let file: IFile &#x3D; JSON.parse(content);
+        logger.info(&quot;Processing &quot; + file.name);
+        for (let i &#x3D; 0; i &lt; file.lines.length; i++) {
+            if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
+                file.lines[i].comment &#x3D; this.replaceAnchors(file.lines[i].comment, file.name, i);
+                file.lines[i].comment &#x3D; this.replaceExternalLinks(file.lines[i].comment, file.name, i);
+                file.lines[i].comment &#x3D; this.replaceInternalLinks(file.lines[i].comment, file.name, i);
+            }
+        }
+        let outputMap &#x3D; {
+            project: this.projectName,
+            items: [],
+            type: file.name,
+            name: file.type,
+            linkPrefix: this.getLinkPrefix(file.name)
+        };
+         for (let i &#x3D; 0; i &lt; file.lines.length; i++) {
+            if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
+                if (outputMap.items.length &gt; 0 &amp;&amp; outputMap.items[outputMap.items.length - 1].type &#x3D;&#x3D;&#x3D; &quot;comment&quot;) {
+                     outputMap.items[outputMap.items.length - 1].content +&#x3D;  &quot;\n&quot; + file.lines[i].comment;
+                } else {
+                     outputMap.items.push({content: file.lines[i].comment, type: &quot;comment&quot;, longComment: file.lines[i].longComment || false });
+                }
+            }
+            if (typeof(file.lines[i].code) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].code !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].code !&#x3D;&#x3D; null) {
+                if (outputMap.items.length &gt; 0 &amp;&amp; outputMap.items[outputMap.items.length - 1].type &#x3D;&#x3D;&#x3D; &quot;code&quot;) {
+                     outputMap.items[outputMap.items.length - 1].content  +&#x3D;  &quot;\n&quot; + file.lines[i].code;
+                } else {
+                    outputMap.items.push({content: file.lines[i].code, type: &quot;code&quot;, lang: file.type});
+                }
+            }
+         }
+        let output &#x3D; this.template(outputMap);</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> let outputMap = file;</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       </code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> outputMap.linkPrefix = this.getLinkPrefix(file.name);</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       </code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> outputMap.project = this.projectName;</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       </code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> let output = this.template(outputMap);</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       
+        let filePathArray &#x3D; path.join(outputDir, file.name + &quot;.md&quot;).split(&quot;/&quot;);
+        filePathArray.pop();
+        let filePath &#x3D; filePathArray.join(&quot;/&quot;);
+        mkdirp(filePath, function (err) {
+            if (err) {
+                logger.fatal(err.message);
+            }
+            else {
+                logger.info(&quot;Saving output for &quot; + file.type + &quot; file &quot; + file.name);
+                writeFileSync(path.join(outputDir, file.name + &quot;.html&quot;), output, { flag: &quot;w&quot; });
+                next();
+            }
+        });
+    }
+    replaceAnchors(comment: string,  fileName: string, line: number) {
+        let pos &#x3D; 0;
+        let match;
+        let newComment: string &#x3D; comment;</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Look at the line for anchors - replace them with links. </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       
+        while (match &#x3D; XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
+            newComment &#x3D;  newComment.substr(0, match.index) +
+            &quot; &lt;a name&#x3D;\&quot;&quot; + match[1] + &quot;\&quot;&gt;&lt;span class&#x3D;\&quot;glyphicon glyphicon-link\&quot; aria-hidden&#x3D;\&quot;true\&quot;&gt;&lt;/span&gt;&quot; + match[1] + &quot;&lt;/a&gt; &quot; +
+            newComment.substr(match.index + match[0].length);
+            pos &#x3D; match.index + match[0].length;
+        }
+        return newComment;
+    }
+    replaceInternalLinks(comment: string, fileName: string, line: number) {
+        let pos &#x3D; 0;
+        let match;
+        let newComment: string &#x3D; comment;
+        let linkPrefix &#x3D; this.getLinkPrefix(fileName);</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Look at the line for anchors - replace them with links. </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       
+        while (match &#x3D; XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
+            let tag &#x3D;  _.findWhere(this.tags, {anchor: match[1]});
+            if (!tag) {
+                logger.error(&quot;link: &quot; + match[1] + &quot; in &quot; + fileName + &quot;:&quot; + line + &quot; does not have a cooresponding anchor, so link cannot be created.&quot;);
+            } else {
+                logger.debug(&quot;found internal link: &quot; + match[1]);
+                newComment &#x3D;  comment.substr(0, match.index) +
+                &quot; [&quot; + match[1] + &quot;](&quot; + linkPrefix + tag.path + &quot;.html#&quot; + match[1] + &quot;) &quot; +
+                newComment.substr(match.index + match[0].length);
+            }
+            pos &#x3D; match.index + match[0].length;
+        }
+        return newComment;
+    }
+    replaceExternalLinks(comment: string, fileName: string, line: number) {
+        let pos &#x3D; 0;
+        let match;
+        let newComment: string &#x3D; comment;</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Look at the line for external references - replace them with links. </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       
+        while (match &#x3D; XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
+            let tagArray &#x3D; match[1].split(&quot;/&quot;);
+            let tag &#x3D;  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
+            if (tag) {
+                logger.debug(&quot;found external link: &quot; + match[1]);
+                for (let i &#x3D; 1; i &lt; tagArray.length; i++) {
+                    tag.path &#x3D; tag.path.replace(&quot;::&quot;, tagArray[i]);
+                }
+                newComment &#x3D;  comment.substr(0, match.index - 1) +
+                &quot; [&quot; + match[1] + &quot;](&quot; + tag.path + &quot;) &quot; +
+                newComment.substr(match.index + match[0].length);
+            }
+            pos &#x3D; match.index + match[0].length;
+        }
+        return newComment;
+    }
+    generateIndexPage(): void {
+        logger.info(&quot;generating index.html&quot;);
+        let that &#x3D; this;
+        let outputMap &#x3D; {
+            project: this.projectName,
+            collections: [],
+            files: [],
+            readme: &quot;&quot;
+        };</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> collections</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       
+        let collections &#x3D; that.referenceCollection.getTagsByCollection();
+        for (let i &#x3D; 0; i &lt; collections.length; i++) {
+            let anchors &#x3D; _.clone(collections[i].anchors);
+            for (let x &#x3D; 0; x &lt; anchors.length; x++) {
+                let linkPrefix &#x3D; that.getLinkPrefix(anchors[x].path);
+                anchors[x].path &#x3D; anchors[x].path + &quot;.html#&quot; + anchors[x].linkStub;
+            }
+            outputMap.collections.push({
+                name: collections[i].name,
+                anchors: anchors
+            });
+        }
+        files(this.outputDir, (error, files) &#x3D;&gt; {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Files</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">           
+            for (let i &#x3D; 0; i &lt; files.length; i++) {
+                let fileNameArray &#x3D; files[i].split(&quot;.&quot;);
+                let extension &#x3D; fileNameArray[fileNameArray.length - 1];
+                if (extension &#x3D;&#x3D;&#x3D; &quot;html&quot;) {
+                    let pathArray: string[] &#x3D; files[i].split(&quot;/&quot;);</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> shift the output dir off the file name.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">                    pathArray.shift();
+                    let path &#x3D; pathArray.join(&quot;/&quot;);
+                    outputMap.files.push({path: path});
+                }
+            }
+            outputMap.readme &#x3D; readFileSync(that.readme).toString();
+            let output &#x3D; this.indexTemplate(outputMap);
+            writeFileSync(path.join(that.outputDir, &quot;index.html&quot;), output, { flag: &quot;w&quot; });
+        });
+    }
+    cleanUp(err, files) {
+         if (err) {
+            logger.error(err.message);
+        } else {
+            for (let i &#x3D; 0; i &lt; files.length; i++) {
+                unlinkSync(files[i]);
+            }
+        }
+    }</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <blockquote>
+<p>NOTE: Without this code, the link will not properly navigated deeply nested pages with relative linking.</p>
+</blockquote>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">   
+    getLinkPrefix(fileName: string): string {
+        let fileNameAsArray &#x3D; fileName.split(&quot;/&quot;);
+        let linkPrefix &#x3D; &quot;&quot;;
+        for (let i &#x3D; 0; i &lt; fileNameAsArray.length - 2; i++) {
+            linkPrefix +&#x3D; &quot;../&quot;;
+        }
+        return linkPrefix;
+    }
+    markdownHelper(context, options) {
+       return marked(context);
+    }
+    ifCondHelper(v1, v2, options) {
+        if (v1 &#x3D;&#x3D;&#x3D; v2) {
+            return options.fn(this);
+        }
+        return options.inverse(this);
+    };
+}</code>
+                        </pre>
+                    </div>
+            </div>
+        <script type="text/javascript">
+            (function(){
+                console.log("loaded");
+                hljs.configure({
+                    tabReplace: '  '
+                });
+                hljs.initHighlighting();
+            })();
+        </script>
+    </body>
+</html>

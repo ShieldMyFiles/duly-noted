@@ -25,9 +25,6 @@
 #### classes 
 * [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
 
-#### interface 
-* [IAnchor](./ts/classes/referenceCollection.ts.md#IAnchor) 
-
 ------------------------------ 
 
 ### Files 
