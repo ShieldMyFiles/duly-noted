@@ -130,10 +130,15 @@ For example, using  `@wiki/Software_documentation` in a comment will render to: 
 
 You can link to your scrum manager, your ticket system, github, anywhere on the Internet or your Intranet, without cluttering your source control will length pasted urls. 
 
+## Examples
+For this project markdown docs were generated in-place with the typescript source code. 
+To see an an example of the Markdown docs you can look at [/Duly Noted.md](/Duly Noted.md), and the ./ts folder.
+
+Example HTML docs live in the [/html-docs](/html-docs) folder.
 
 ________________________________
 
-## How the Code is Organized
+## How the Duly Noted Code is Organized
 
 This code is generally organized into a three parts:
 1. A reference parser that parses all the links and anchors in your code - the output of which is two reference maps:
@@ -144,9 +149,3 @@ This code is generally organized into a three parts:
 3. Generators that turn those line-by-line maps, and reference collections into human-readable output format. 
     * Markdown 
     * HTML
-
-### Parsing
-coming soon. 
-
-### Output
-coming soon.

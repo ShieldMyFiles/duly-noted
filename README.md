@@ -75,6 +75,11 @@ For example, using  `@wiki/Software_documentation` in a comment will render to: 
 
 You can link to your scrum manager, your ticket system, github, anywhere on the Internet or your Intranet, without cluttering your source control will length pasted urls. 
 
+## Examples
+For this project markdown docs were generated in-place with the typescript source code. 
+To see an an example of the Markdown docs you can look at [/Duly Noted.md](/Duly Noted.md), and the ./ts folder.
+
+Example HTML docs live in the [/html-docs](/html-docs) folder.
 
 ________________________________
 
