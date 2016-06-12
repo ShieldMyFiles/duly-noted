@@ -34,7 +34,7 @@ export function run () {
     let config: IConfig;
 
     program
-    .version("1.0.0")
+    .version("1.1.0")
     .option("-c, --config <file>", "Path to duly-noted.json", "duly-noted.json")
     .option("-o, --outputDir <path>", "Path to output docs to")
     .option("-g, --generator <generator>", "Generator to use.")
