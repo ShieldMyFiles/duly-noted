@@ -1,4 +1,5 @@
 .vscode
+.npmrc
 config/development.json
 node_modules
 typings
