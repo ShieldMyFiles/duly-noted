@@ -14,7 +14,7 @@ import * as path from "path";
 import glob = require("glob");
 import Q = require("q");
 import {MarkdownGenerator} from "./generators/markdownGenerator";
-import {HtmlGenerator} from "./generators/Htmlgenerator";
+import {HtmlGenerator} from "./generators/htmlGenerator";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::run");
 

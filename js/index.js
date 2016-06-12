@@ -7,7 +7,7 @@ var path = require("path");
 var glob = require("glob");
 var Q = require("q");
 var markdownGenerator_1 = require("./generators/markdownGenerator");
-var Htmlgenerator_1 = require("./generators/Htmlgenerator");
+var htmlGenerator_1 = require("./generators/htmlGenerator");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::run");
 function run() {
@@ -70,7 +70,7 @@ function run() {
             .then(function (response) {
             logger.info("Parsing complete, beginning export.");
             if (_.contains(config.generators, "html")) {
-                new Htmlgenerator_1.HtmlGenerator(config, logLevel).generate();
+                new htmlGenerator_1.HtmlGenerator(config, logLevel).generate();
             }
             if (_.contains(config.generators, "markdown")) {
                 new markdownGenerator_1.MarkdownGenerator(config, logLevel).generate();
