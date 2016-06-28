@@ -1,26 +1,26 @@
- # [HtmlGenerator](#HtmlGenerator)
+# [HtmlGenerator](#HtmlGenerator)
 
  [authors/chris](../.././authors.md.md#authors/chris) 
 
  [license](../.././license.md.md#license) 
 
- 
+ * 
 
- Generates HTML pages for the source code,
+Generates HTML pages for the source code,
 
- replacing links and anchors as it goes along.
+replacing links and anchors as it goes along.
 
- Builds a nice Index.html page with info and
+Builds a nice Index.html page with info and
 
- README.md content.
+README.md content.
 
- 
+ * 
 
- Uses tempalate that employ handlebars as the
+Uses tempalate that employ handlebars as the
 
- templating engine.
+templating engine.
 
- 
+ * 
 
 ```typescript
 import {IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
@@ -39,13 +39,13 @@ import _ = require("underscore");
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::HtmlGenerator");
 ```
- [interfaces/IHtmlGenerator](#interfaces/IHtmlGenerator)
+[interfaces/IHtmlGenerator](#interfaces/IHtmlGenerator)
 
 ```typescript
 export interface IHtmlGenerator {
 }
 ```
- ## [classes/HtmlGenerator](#classes/HtmlGenerator)
+## [classes/HtmlGenerator](#classes/HtmlGenerator)
 
 ```typescript
 export class HtmlGenerator implements IHtmlGenerator {
@@ -62,7 +62,7 @@ export class HtmlGenerator implements IHtmlGenerator {
     readme: string;
     projectName: string;
 ```
- ### Creates an instance of [classes/HtmlGenerator](../.././ts/generators/htmlGenerator.ts.md#classes/HtmlGenerator) 
+### Creates an instance of [classes/HtmlGenerator](../.././ts/generators/htmlGenerator.ts.md#classes/HtmlGenerator) 
 
 ```typescript
     constructor(config: Config, logLevel?: string) {
@@ -85,9 +85,9 @@ export class HtmlGenerator implements IHtmlGenerator {
         handlebars.registerHelper("ifCond", this.ifCondHelper);
     }
 ```
- ## Generate HTML Docs
+## Generate HTML Docs
 
- Creates HTML docs for a set of file maps and reference maps set on [classes/HtmlGenerator](../.././ts/generators/htmlGenerator.ts.md#classes/HtmlGenerator)  construction.
+Creates HTML docs for a set of file maps and reference maps set on [classes/HtmlGenerator](../.././ts/generators/htmlGenerator.ts.md#classes/HtmlGenerator)  construction.
 
 ```typescript
     public generate(): void {
@@ -102,11 +102,11 @@ export class HtmlGenerator implements IHtmlGenerator {
         fse.copySync(path.join(this.projectPath, "templates", "css", "default.css"), path.join(this.outputDir, "css/default.css"));
     }
 ```
- ## Process Files
+## Process Files
 
- Processes the file map for a file, making output decisions based on
+Processes the file map for a file, making output decisions based on
 
- code, comment, long comment presence
+code, comment, long comment presence
 
 ```typescript
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
@@ -158,9 +158,9 @@ export class HtmlGenerator implements IHtmlGenerator {
         });
     }
 ```
- ## Replace Anchors
+## Replace Anchors
 
- Processes a comment line, replacing anchors with a:href anchor tags
+Processes a comment line, replacing anchors with a:href anchor tags
 
 ```typescript
     replaceAnchors(comment: string,  fileName: string, line: number) {
@@ -181,11 +181,11 @@ export class HtmlGenerator implements IHtmlGenerator {
         return newComment;
     }
 ```
- ## Replace Links
+## Replace Links
 
- > Run this AFTER external link replacement to ensure warning accuracy
+> Run this AFTER external link replacement to ensure warning accuracy
 
- Processes a comment line, replacing links with links
+Processes a comment line, replacing links with links
 
 ```typescript
     replaceInternalLinks(comment: string, fileName: string, line: number) {
@@ -213,11 +213,11 @@ export class HtmlGenerator implements IHtmlGenerator {
         return newComment;
     }
 ```
- ## Replace External Links
+## Replace External Links
 
- > Run this BEFORE internal link replacement
+> Run this BEFORE internal link replacement
 
- Processes a comment line, replacing links with links to external urls
+Processes a comment line, replacing links with links to external urls
 
 ```typescript
     replaceExternalLinks(comment: string, fileName: string, line: number) {
@@ -246,11 +246,11 @@ export class HtmlGenerator implements IHtmlGenerator {
         return newComment;
     }
 ```
- ## Generates the "Index Page"
+## Generates the "Index Page"
 
- This generates the index page, listing all the link collections,
+This generates the index page, listing all the link collections,
 
- and sucks in the README.
+and sucks in the README.
 
 ```typescript
     generateIndexPage(): void {
@@ -309,9 +309,9 @@ export class HtmlGenerator implements IHtmlGenerator {
         });
     }
 ```
- Generate a link Prefix from a fileName
+Generate a link Prefix from a fileName
 
- > NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.
+> NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.
 
 ```typescript
     getLinkPrefix(fileName: string): string {

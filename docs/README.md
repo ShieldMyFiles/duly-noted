@@ -7,8 +7,8 @@
 * [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
 * [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
 * [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
-* [license](./license.md.md#license) 
 * [IConfig](./ts/classes/IConfig.ts.md#IConfig) 
+* [license](./license.md.md#license) 
 * [ParseFile](./ts/modules/referenceParser.ts.md#ParseFile) 
 
 #### authors 

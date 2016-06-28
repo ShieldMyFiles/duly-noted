@@ -1,4 +1,4 @@
- # [MarkdownGenerator](#MarkdownGenerator)
+# [MarkdownGenerator](#MarkdownGenerator)
 
  [authors/chris](../.././authors.md.md#authors/chris) 
 
@@ -19,14 +19,14 @@ import lineReader = require("line-reader");
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::MarkdownGenerator");
 ```
- [interfaces/IMarkdownGenerator](#interfaces/IMarkdownGenerator)
+[interfaces/IMarkdownGenerator](#interfaces/IMarkdownGenerator)
 
 ```typescript
 export interface IMarkdownGenerator {
     generate(): void;
 }
 ```
- ## [classes/MarkdownGenerator](#classes/MarkdownGenerator)
+## [classes/MarkdownGenerator](#classes/MarkdownGenerator)
 
 ```typescript
 export class MarkdownGenerator implements IMarkdownGenerator {
@@ -41,7 +41,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     projectName: string;
     outputFiles: string[] = [];
 ```
- ### Creates an instance of [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator) 
+### Creates an instance of [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator) 
 
 ```typescript
     constructor(config: IConfig, logLevel?: string) {
@@ -57,9 +57,9 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.indexFile = config.indexFile;
     }
 ```
- ## Generate Markdown Docs
+## Generate Markdown Docs
 
- Creates Markdown docs for a set of file maps and reference maps set on [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator)  construction.
+Creates Markdown docs for a set of file maps and reference maps set on [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator)  construction.
 
 ```typescript
     public generate(): void {
@@ -83,11 +83,11 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         });
     }
 ```
- ## Process Files
+## Process Files
 
- Processes the file map for a file, making output decisions based on
+Processes the file map for a file, making output decisions based on
 
- code, comment, long comment presence
+code, comment, long comment presence
 
 ```typescript
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
@@ -167,9 +167,9 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         }
     }
 ```
- ## Replace Anchors
+## Replace Anchors
 
- Processes a comment line, replacing anchors with markdown anchor link tags
+Processes a comment line, replacing anchors with markdown anchor link tags
 
 ```typescript
     replaceAnchors(comment: string,  fileName: string, line: number) {
@@ -190,11 +190,11 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         return newComment;
     }
 ```
- ## Replace Links
+## Replace Links
 
- > Run this AFTER external link replacement to ensure warning accuracy
+> Run this AFTER external link replacement to ensure warning accuracy
 
- Processes a comment line, replacing links with markdown links
+Processes a comment line, replacing links with markdown links
 
 ```typescript
     replaceInternalLinks(comment: string, fileName: string, line: number) {
@@ -222,11 +222,11 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         return newComment;
     }
 ```
- ## Replace External Links
+## Replace External Links
 
- > Run this BEFORE internal link replacement
+> Run this BEFORE internal link replacement
 
- Processes a comment line, replacing links with markdown links to external urls
+Processes a comment line, replacing links with markdown links to external urls
 
 ```typescript
     replaceExternalLinks(comment: string, fileName: string, line: number) {
@@ -255,11 +255,11 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         return newComment;
     }
 ```
- ## Generates the "Index Page"
+## Generates the "Index Page"
 
- This generates the index page, listing all the link collections,
+This generates the index page, listing all the link collections,
 
- and sucks in the README.
+and sucks in the README.
 
 ```typescript
     generateIndexPage(readmeText?): void {
@@ -332,9 +332,9 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         writeFileSync(path.join(that.outputDir, that.indexFile), md, { flag: "w" });
     }
 ```
- Generate a link Prefix from a fileName
+Generate a link Prefix from a fileName
 
- > NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.
+> NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.
 
 ```typescript
     getLinkPrefix(fileName: string): string {

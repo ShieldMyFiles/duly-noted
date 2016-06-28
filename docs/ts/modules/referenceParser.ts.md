@@ -1,4 +1,4 @@
- # [ReferenceParser](#ReferenceParser)
+# [ReferenceParser](#ReferenceParser)
 
  [authors/chris](../.././authors.md.md#authors/chris) 
 
@@ -19,19 +19,19 @@ import {doInOrder, doNext} from "../helpers/helpers";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::ReferenceParser");
 ```
- ## [interfaces/IReferenceParser](#interfaces/IReferenceParser)
+## [interfaces/IReferenceParser](#interfaces/IReferenceParser)
 
 ```typescript
 export interface IReferenceParser {
     parse(): Q.Promise<IReferenceCollection>;
 }
 ```
- ## [constant/parseLoc](#constant/parseLoc)
+## [constant/parseLoc](#constant/parseLoc)
 
 ```typescript
 export const parseLoc = "duly-noted";
 ```
- ## [classes/ReferenceParser](#classes/ReferenceParser)
+## [classes/ReferenceParser](#classes/ReferenceParser)
 
 ```typescript
 export class ReferenceParser implements IReferenceParser {
@@ -44,7 +44,7 @@ export class ReferenceParser implements IReferenceParser {
     longCommentCloseRegExp: RegExp;
     externalReferences: IExternalReference[];
 ```
- ### Creates an instance of [classes/ReferenceParser](../.././ts/modules/referenceParser.ts.md#classes/ReferenceParser) 
+### Creates an instance of [classes/ReferenceParser](../.././ts/modules/referenceParser.ts.md#classes/ReferenceParser) 
 
 ```typescript
     constructor(config: IConfig, logLevel?: string) {
@@ -60,9 +60,9 @@ export class ReferenceParser implements IReferenceParser {
         logger.debug("ready");
     }
 ```
- ## Parse
+## Parse
 
- Parser all files for anchors - produce a [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
+Parser all files for anchors - produce a [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
 
 ```typescript
     public parse(): Q.Promise<IReferenceCollection> {
@@ -89,9 +89,9 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 ```
- ## Parse As Markdown
+## Parse As Markdown
 
- When a file is markdown, we parse the whole thing.
+When a file is markdown, we parse the whole thing.
 
 ```typescript
     parseAsMarkdown(fileName: string): Q.Promise<{}> {
@@ -136,9 +136,9 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 ```
- ## Parse File
+## Parse File
 
- Parse a file to a file map. [ParseFile](#ParseFile)
+Parse a file to a file map. [ParseFile](#ParseFile)
 
 ```typescript
     parseFile(fileName: string): Q.Promise<{}> {
@@ -254,7 +254,7 @@ export class ReferenceParser implements IReferenceParser {
                             file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
                         } else {
                             let match = XRegExp.exec(line, this.longCommentLineRegExp, 0);
-                            file.lines[lineNumber].comment =  " " + match[1].trim() || line;
+                            file.lines[lineNumber].comment = match[1].trim() || line;
                         }
                         that.parseComment(line, fileName, lineNumber)
                         .then(() => {
@@ -291,9 +291,9 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 ```
- ## Write Out File
+## Write Out File
 
- Writes out a file map
+Writes out a file map
 
 ```typescript
     writeOutFile(file: IFile) {
@@ -316,13 +316,13 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 ```
- ## Parse Comment
+## Parse Comment
 
- Once a comment is found (see [ParseFile](../.././ts/modules/referenceParser.ts.md#ParseFile)  above for example) this will parse
+Once a comment is found (see [ParseFile](../.././ts/modules/referenceParser.ts.md#ParseFile)  above for example) this will parse
 
- that commant for anchors. It will add those anchors to the [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
+that commant for anchors. It will add those anchors to the [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
 
- for the entire project.
+for the entire project.
 
 ```typescript
     parseComment(comment: string, fileName: string, lineNumber: number): Q.Promise<{}> {

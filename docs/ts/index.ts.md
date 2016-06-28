@@ -1,12 +1,12 @@
- # [Index](#Index)
+# [Index](#Index)
 
  [authors/chris](.././authors.md.md#authors/chris) 
 
  [license](.././license.md.md#license) 
 
- 
+ * 
 
- This is the entry file to Duly Noted
+This is the entry file to Duly Noted
 
 ```typescript
 import {IConfig} from "./classes/IConfig";
@@ -22,19 +22,19 @@ import {HtmlGenerator} from "./generators/htmlGenerator";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::run");
 ```
- ## Run
+## Run
 
- 
+ * 
 
- Runs duly-typed using taking the consuing the config file (see [IConfig](.././ts/classes/IConfig.ts.md#IConfig) ) found as `/duly-noted.json`
+Runs duly-typed using taking the consuing the config file (see [IConfig](.././ts/classes/IConfig.ts.md#IConfig) ) found as `/duly-noted.json`
 
- Basic code flow is:
+Basic code flow is:
 
- 1. parse the cofiguration options
+1. parse the cofiguration options
 
- 2. get the files, and pass those to the [ReferenceParser](.././ts/modules/referenceParser.ts.md#ReferenceParser) 
+2. get the files, and pass those to the [ReferenceParser](.././ts/modules/referenceParser.ts.md#ReferenceParser) 
 
- 3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator [MarkdownGenerator](.././ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
+3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator [MarkdownGenerator](.././ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
 
 ```typescript
 export function run () {
@@ -116,9 +116,9 @@ export function run () {
      });
 }
 ```
- ## Get Files from Glob
+## Get Files from Glob
 
- This is a simple helper to get a set of files from a glob.
+This is a simple helper to get a set of files from a glob.
 
 ```typescript
 function getFilesFromGlob(globString: string): Q.Promise<string[]> {

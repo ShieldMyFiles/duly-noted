@@ -1,23 +1,23 @@
- # [ReferenceCollection](#ReferenceCollection)
+# [ReferenceCollection](#ReferenceCollection)
 
  [authors/chris](../.././authors.md.md#authors/chris) 
 
  [license](../.././license.md.md#license) 
 
- 
+ * 
 
- This reference parser that parses all the links and anchors in your code - the output of which is two reference collections:
+This reference parser that parses all the links and anchors in your code - the output of which is two reference collections:
 
- * `internalReferences.json`
+* `internalReferences.json`
 
- * `externalReferences.json`
+* `externalReferences.json`
 
 ```typescript
 import {findWhere, findIndex} from "underscore";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::ReferenceCollection");
 ```
- ## [interfaces/IReferenceCollection](#interfaces/IReferenceCollection)
+## [interfaces/IReferenceCollection](#interfaces/IReferenceCollection)
 
 ```typescript
 export interface IReferenceCollection {
@@ -26,7 +26,7 @@ export interface IReferenceCollection {
     subcollections?: IReferenceCollection[];
 }
 ```
- ## [interfaces/IAnchor](#interfaces/IAnchor)
+## [interfaces/IAnchor](#interfaces/IAnchor)
 
 ```typescript
 export interface IAnchor {
@@ -35,7 +35,7 @@ export interface IAnchor {
     line: number;
 }
 ```
- ## [interfaces/ITag](#interfaces/ITag)
+## [interfaces/ITag](#interfaces/ITag)
 
 ```typescript
 export interface ITag {
@@ -44,7 +44,7 @@ export interface ITag {
     linkStub: string;
 }
 ```
- ## [classes/ReferenceCollection](#classes/ReferenceCollection)
+## [classes/ReferenceCollection](#classes/ReferenceCollection)
 
 ```typescript
 export class ReferenceCollection implements IReferenceCollection {
@@ -53,7 +53,7 @@ export class ReferenceCollection implements IReferenceCollection {
     subcollections: IReferenceCollection[];
     logLevel: string;
 ```
- ### Creates an instance of [ReferenceCollection](../.././ts/classes/referenceCollection.ts.md#ReferenceCollection) 
+### Creates an instance of [ReferenceCollection](../.././ts/classes/referenceCollection.ts.md#ReferenceCollection) 
 
 ```typescript
     constructor(id: string, logLevel?: string) {
@@ -64,7 +64,7 @@ export class ReferenceCollection implements IReferenceCollection {
         this.subcollections = [];
     }
 ```
- ## Recursively inflate a reference collection in the form of [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection)  from flat data (likely from JSON file)
+## Recursively inflate a reference collection in the form of [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection)  from flat data (likely from JSON file)
 
 ```typescript
     public inflate(collection: IReferenceCollection) {
@@ -76,7 +76,7 @@ export class ReferenceCollection implements IReferenceCollection {
         return this;
     }
 ```
- ## Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#interfaces/IAnchor)  to collection
+## Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#interfaces/IAnchor)  to collection
 
 ```typescript
     public addAnchor(anchor: IAnchor): void {
@@ -87,7 +87,7 @@ export class ReferenceCollection implements IReferenceCollection {
         this.anchors.push(anchor);
     }
 ```
- ## Add a subcollection to this collection in the form of an [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
+## Add a subcollection to this collection in the form of an [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
 
 ```typescript
     public addSubcollection(collection: IReferenceCollection): void {
@@ -104,9 +104,9 @@ export class ReferenceCollection implements IReferenceCollection {
         this.subcollections.push(collection);
     }
 ```
- ## Add Anchor Tag to the appropriate subcollection
+## Add Anchor Tag to the appropriate subcollection
 
- Recursively skims the collection and subcollections to place anchor in the correct place.
+Recursively skims the collection and subcollections to place anchor in the correct place.
 
 ```typescript
     public addAnchorTag(anchorTag: string[], fileName: string, lineNumber: number): void {
@@ -137,9 +137,9 @@ export class ReferenceCollection implements IReferenceCollection {
         }
     }
 ```
- ## Get All the tags in a collection and its subcollections
+## Get All the tags in a collection and its subcollections
 
- Recursively cull all of the tags.
+Recursively cull all of the tags.
 
 ```typescript
     public getAllTags(parentPath?: string, depth?: number): ITag[] {
@@ -180,7 +180,7 @@ export class ReferenceCollection implements IReferenceCollection {
         return allTags;
     }
 ```
- ## Get a list of anchors sorted by an array of all the collections.
+## Get a list of anchors sorted by an array of all the collections.
 
 ```typescript
     public getTagsByCollection (allCollections?, parentPath?) {

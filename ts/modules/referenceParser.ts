@@ -219,7 +219,7 @@ export class ReferenceParser implements IReferenceParser {
                             file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
                         } else {
                             let match = XRegExp.exec(line, this.longCommentLineRegExp, 0);
-                            file.lines[lineNumber].comment =  " " + match[1].trim() || line;
+                            file.lines[lineNumber].comment = match[1].trim() || line;
                         }
 
                         that.parseComment(line, fileName, lineNumber)
