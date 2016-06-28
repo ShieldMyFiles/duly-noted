@@ -4,8 +4,6 @@
 
  [license](.././license.md.md#license) 
 
- * 
-
 This is the entry file to Duly Noted
 
 ```typescript
@@ -23,8 +21,6 @@ import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::run");
 ```
 ## Run
-
- * 
 
 Runs duly-typed using taking the consuing the config file (see [IConfig](.././ts/classes/IConfig.ts.md#IConfig) ) found as `/duly-noted.json`
 
@@ -50,7 +46,7 @@ export function run () {
     .option("-v, --verbose", "Chatty Cathy mode")
     .parse(process.argv);
 ```
- ### Init - copies example duly-noted.json
+### Init - copies example duly-noted.json
 
 ```typescript
     

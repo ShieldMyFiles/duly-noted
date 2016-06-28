@@ -149,7 +149,12 @@ var ReferenceParser = (function () {
                         }
                         else {
                             var match = XRegExp.exec(line, _this.longCommentLineRegExp, 0);
-                            file.lines[lineNumber].comment = match[1].trim() || line;
+                            if (match && match[1]) {
+                                file.lines[lineNumber].comment = match[1].trim();
+                            }
+                            else {
+                                file.lines[lineNumber].comment = "";
+                            }
                         }
                         that.parseComment(line, fileName, lineNumber)
                             .then(function () {

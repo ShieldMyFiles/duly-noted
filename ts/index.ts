@@ -2,7 +2,7 @@
  * # !Index
  * @authors/chris
  * @license
- * 
+ *
  * This is the entry file to Duly Noted
  */
 import {IConfig} from "./classes/IConfig";
@@ -42,7 +42,7 @@ export function run () {
     .option("-v, --verbose", "Chatty Cathy mode")
     .parse(process.argv);
 
-     // ### Init - copies example duly-noted.json
+     //### Init - copies example duly-noted.json
      if (program.init) {
         try {
           let config = JSON.parse(readFileSync("duly-noted.json").toString());

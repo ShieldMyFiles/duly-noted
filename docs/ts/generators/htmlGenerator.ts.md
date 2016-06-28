@@ -4,8 +4,6 @@
 
  [license](../.././license.md.md#license) 
 
- * 
-
 Generates HTML pages for the source code,
 
 replacing links and anchors as it goes along.
@@ -14,13 +12,9 @@ Builds a nice Index.html page with info and
 
 README.md content.
 
- * 
-
 Uses tempalate that employ handlebars as the
 
 templating engine.
-
- * 
 
 ```typescript
 import {IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";

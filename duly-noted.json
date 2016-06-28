@@ -17,7 +17,7 @@
     "outputDir": "./",
     "commentRegExp": "\\/\\/(.*)",
     "longCommentOpenRegExp": "\\/\\*\\*(.*)",
-    "longCommentLineRegExp": "\\*(.*)",
+    "longCommentLineRegExp": "\\* (.*)",
     "longCommentCloseRegExp": "\\*\/",
     "anchorRegExp": "!([a-zA-Z0-9\\-\\./]+)",
     "linkRegExp": "(?:^|\\W)@([a-zA-Z0-9\\-\\./]+)",

@@ -1,11 +1,3 @@
-# [ReferenceCollection](#ReferenceCollection)
-
- [authors/chris](../.././authors.md.md#authors/chris) 
-
- [license](../.././license.md.md#license) 
-
- * 
-
 This reference parser that parses all the links and anchors in your code - the output of which is two reference collections:
 
 * `internalReferences.json`

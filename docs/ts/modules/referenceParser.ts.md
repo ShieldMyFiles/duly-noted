@@ -254,7 +254,15 @@ Parse a file to a file map. [ParseFile](#ParseFile)
                             file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
                         } else {
                             let match = XRegExp.exec(line, this.longCommentLineRegExp, 0);
-                            file.lines[lineNumber].comment = match[1].trim() || line;
+                            if (match && match[1]) {
+                              file.lines[lineNumber].comment = match[1].trim();
+                            } else {
+```
+ Blank Line inside long comment...
+
+```typescript
+                              file.lines[lineNumber].comment = "";
+                            }
                         }
                         that.parseComment(line, fileName, lineNumber)
                         .then(() => {
