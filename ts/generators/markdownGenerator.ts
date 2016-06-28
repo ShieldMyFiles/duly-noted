@@ -225,7 +225,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                     tag.path = tag.path.replace("::", tagArray[i]);
                 }
 
-                newComment =  comment.substr(0, match.index - 1) +
+                newComment =  comment.substr(0, match.index) +
                 " [" + match[1] + "](" + tag.path + ") " +
                 newComment.substr(match.index + match[0].length);
             }

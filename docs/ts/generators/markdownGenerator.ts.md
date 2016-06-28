@@ -246,7 +246,7 @@ Processes a comment line, replacing links with markdown links to external urls
                 for (let i = 1; i < tagArray.length; i++) {
                     tag.path = tag.path.replace("::", tagArray[i]);
                 }
-                newComment =  comment.substr(0, match.index - 1) +
+                newComment =  comment.substr(0, match.index) +
                 " [" + match[1] + "](" + tag.path + ") " +
                 newComment.substr(match.index + match[0].length);
             }
@@ -301,7 +301,7 @@ and sucks in the README.
 ```
 This shifts off the root folder b/c our index file is inside the output folder,
 
-not one level up. Se [issues/5](https://bitbucket.org/shieldmyfiles/duly-noted/issues/5) 
+not one level up. See [issues/5](https://bitbucket.org/shieldmyfiles/duly-noted/issues/5) 
 
 > EXAMPLE:
 

@@ -144,7 +144,7 @@ var MarkdownGenerator = (function () {
                 for (var i = 1; i < tagArray.length; i++) {
                     tag.path = tag.path.replace("::", tagArray[i]);
                 }
-                newComment = comment.substr(0, match.index - 1) +
+                newComment = comment.substr(0, match.index) +
                     " [" + match[1] + "](" + tag.path + ") " +
                     newComment.substr(match.index + match[0].length);
             }
