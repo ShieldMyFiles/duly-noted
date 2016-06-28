@@ -1,4 +1,4 @@
- # [ReferenceCollection](#ReferenceCollection)
+# [ReferenceCollection](#ReferenceCollection)
 
  [authors/chris](../.././authors.md.md#authors/chris) 
 
@@ -17,7 +17,7 @@ import {findWhere, findIndex} from "underscore";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::ReferenceCollection");
 ```
- ## [interfaces/IReferenceCollection](#interfaces/IReferenceCollection)
+## [interfaces/IReferenceCollection](#interfaces/IReferenceCollection)
 
 ```typescript
 export interface IReferenceCollection {
