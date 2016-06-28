@@ -12,7 +12,8 @@
         "./ts/helpers/fileType.ts",
         "./authors.md",
         "./license.md"
-    ], 
+    ],
+    "indexFile":"README.md",
     "outputDir": "./",
     "commentRegExp": "\\/\\/(.*)",
     "longCommentOpenRegExp": "\\/\\*\\*(.*)",

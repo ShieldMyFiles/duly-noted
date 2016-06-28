@@ -5,6 +5,7 @@ export interface IMarkdownGenerator {
 }
 export declare class MarkdownGenerator implements IMarkdownGenerator {
     outputDir: string;
+    indexFile: string;
     externalReferences: IExternalReference[];
     anchorRegExp: RegExp;
     linkRegExp: RegExp;

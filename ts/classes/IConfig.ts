@@ -3,6 +3,7 @@ export interface IConfig {
     projectName: string;
     files: string[];
     outputDir: string;
+    indexFile: string;
     anchorRegExp: string;
     commentRegExp: string; // !TODO/commentRegExp We should associate comment RegExp with file type - so we can support HTML comments
     longCommentOpenRegExp: string;

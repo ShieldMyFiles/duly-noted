@@ -31,6 +31,7 @@ export interface IMarkdownGenerator {
 ```typescript
 export class MarkdownGenerator implements IMarkdownGenerator {
     outputDir: string;
+    indexFile: string;
     externalReferences: IExternalReference[];
     anchorRegExp: RegExp;
     linkRegExp: RegExp;
@@ -53,6 +54,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.tags = this.referenceCollection.getAllTags();
         this.readme = config.readme;
         this.projectName = config.projectName;
+        this.indexFile = config.indexFile;
     }
 ```
  ## Generate Markdown Docs
@@ -327,7 +329,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         }
         md += "\n------------------------------ \n";
         md += outputMap.readme;
-        writeFileSync(path.join(that.outputDir, "Duly Noted.md"), md, { flag: "w" });
+        writeFileSync(path.join(that.outputDir, that.indexFile), md, { flag: "w" });
     }
 ```
  Generate a link Prefix from a fileName

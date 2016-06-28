@@ -32,6 +32,7 @@ export interface IMarkdownGenerator {
  */
 export class MarkdownGenerator implements IMarkdownGenerator {
     outputDir: string;
+    indexFile: string;
     externalReferences: IExternalReference[];
     anchorRegExp: RegExp;
     linkRegExp: RegExp;
@@ -54,6 +55,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.tags = this.referenceCollection.getAllTags();
         this.readme = config.readme;
         this.projectName = config.projectName;
+        this.indexFile = config.indexFile;
     }
 
     /**
@@ -303,7 +305,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 
         md += outputMap.readme;
 
-        writeFileSync(path.join(that.outputDir, "Duly Noted.md"), md, { flag: "w" });
+        writeFileSync(path.join(that.outputDir, that.indexFile), md, { flag: "w" });
     }
 
     /**

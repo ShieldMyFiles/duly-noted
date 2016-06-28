@@ -23,6 +23,7 @@ var MarkdownGenerator = (function () {
         this.tags = this.referenceCollection.getAllTags();
         this.readme = config.readme;
         this.projectName = config.projectName;
+        this.indexFile = config.indexFile;
     }
     MarkdownGenerator.prototype.generate = function () {
         logger.info("Generating Markdown Docs.");
@@ -198,7 +199,7 @@ var MarkdownGenerator = (function () {
         }
         md += "\n------------------------------ \n";
         md += outputMap.readme;
-        fs_1.writeFileSync(path.join(that.outputDir, "Duly Noted.md"), md, { flag: "w" });
+        fs_1.writeFileSync(path.join(that.outputDir, that.indexFile), md, { flag: "w" });
     };
     MarkdownGenerator.prototype.getLinkPrefix = function (fileName) {
         var fileNameAsArray = fileName.split("/");
