@@ -23,8 +23,8 @@
     "readme": "./README.md",
     "externalReferences": [
         {
-            "anchor": "jira",
-            "path": "https://shieldmyfiles.atlassian.net/browse/::"
+            "anchor": "issues",
+            "path": "https://bitbucket.org/shieldmyfiles/duly-noted/issues/::"
         }
     ],
     "generators": [

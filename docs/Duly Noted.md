@@ -3,10 +3,12 @@
 
 ####  
 * [Index](./ts/index.ts.md#Index) 
+* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#HtmlGenerator) 
+* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
 * [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
 * [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
-* [license](./license.md.md#license) 
 * [IConfig](./ts/classes/IConfig.ts.md#IConfig) 
+* [license](./license.md.md#license) 
 * [ParseFile](./ts/modules/referenceParser.ts.md#ParseFile) 
 
 #### authors 
@@ -20,30 +22,37 @@
 #### interfaces 
 * [IReferenceCollection](./ts/classes/referenceCollection.ts.md#IReferenceCollection) 
 * [IReferenceParser](./ts/modules/referenceParser.ts.md#IReferenceParser) 
+* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#IMarkdownGenerator) 
 * [IAnchor](./ts/classes/referenceCollection.ts.md#IAnchor) 
 * [ITag](./ts/classes/referenceCollection.ts.md#ITag) 
+* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#IHtmlGenerator) 
 
 #### constant 
 * [parseLoc](./ts/modules/referenceParser.ts.md#parseLoc) 
 
 #### classes 
+* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
 * [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
+* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#HtmlGenerator) 
 * [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
+
+#### issues 
+* [5](./ts/generators/markdownGenerator.ts.md#5) 
 
 ------------------------------ 
 
 ### Files 
-* [docs/authors.md.md](docs/authors.md.md) 
-* [docs/license.md.md](docs/license.md.md) 
-* [docs/ts/classes/IConfig.ts.md](docs/ts/classes/IConfig.ts.md) 
-* [docs/ts/classes/referenceCollection.ts.md](docs/ts/classes/referenceCollection.ts.md) 
-* [docs/ts/generators/htmlGenerator.ts.md](docs/ts/generators/htmlGenerator.ts.md) 
-* [docs/ts/generators/markdownGenerator.ts.md](docs/ts/generators/markdownGenerator.ts.md) 
-* [docs/ts/helpers/fileType.ts.md](docs/ts/helpers/fileType.ts.md) 
-* [docs/ts/helpers/helpers.ts.md](docs/ts/helpers/helpers.ts.md) 
-* [docs/ts/index.ts.md](docs/ts/index.ts.md) 
-* [docs/ts/modules/referenceParser.ts.md](docs/ts/modules/referenceParser.ts.md) 
-* [docs/ts/typings/index.d.ts.md](docs/ts/typings/index.d.ts.md) 
+* [authors.md.md](./authors.md.md) 
+* [license.md.md](./license.md.md) 
+* [ts/classes/IConfig.ts.md](./ts/classes/IConfig.ts.md) 
+* [ts/classes/referenceCollection.ts.md](./ts/classes/referenceCollection.ts.md) 
+* [ts/generators/htmlGenerator.ts.md](./ts/generators/htmlGenerator.ts.md) 
+* [ts/generators/markdownGenerator.ts.md](./ts/generators/markdownGenerator.ts.md) 
+* [ts/helpers/fileType.ts.md](./ts/helpers/fileType.ts.md) 
+* [ts/helpers/helpers.ts.md](./ts/helpers/helpers.ts.md) 
+* [ts/index.ts.md](./ts/index.ts.md) 
+* [ts/modules/referenceParser.ts.md](./ts/modules/referenceParser.ts.md) 
+* [ts/typings/index.d.ts.md](./ts/typings/index.d.ts.md) 
 
 ------------------------------ 
 
@@ -79,7 +88,13 @@ Duly noted runs from the command line as `duly-noted [options]`
 ## Using
 
 ### duly-noted.json
-Configuration options for duly noted are stored in a dedicated configuration file. You can generate a template duly-noted.json with `duly-noted -i`.
+Configuration options for duly noted are stored in a dedicated configuration file.  
+
+To generate a template duly-noted.json.
+```
+duly-noted -i
+```
+
 > NOTE: You need to modify the template settings file - duly-noted will not work off-the-shelf at this time.
 
 ### You can link to what matters
@@ -118,10 +133,15 @@ For example, using  `@wiki/Software_documentation` in a comment will render to: 
 
 You can link to your scrum manager, your ticket system, github, anywhere on the Internet or your Intranet, without cluttering your source control will length pasted urls. 
 
+## Examples
+For this project markdown docs were generated in-place with the typescript source code. 
+To see an an example of the Markdown docs you can look at ./Duly Noted.md, and the ./ts folder.
+
+Example HTML docs live in the ./html-docs folder.
 
 ________________________________
 
-## How the Code is Organized
+## How the Duly Noted Code is Organized
 
 This code is generally organized into a three parts:
 1. A reference parser that parses all the links and anchors in your code - the output of which is two reference maps:
@@ -132,9 +152,3 @@ This code is generally organized into a three parts:
 3. Generators that turn those line-by-line maps, and reference collections into human-readable output format. 
     * Markdown 
     * HTML
-
-### Parsing
-coming soon. 
-
-### Output
-coming soon.

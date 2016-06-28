@@ -191,7 +191,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             if (!tag) {
                 logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             } else {
-                logger.debug("found internal link: " + match[1]);
+                logger.debug("found internal link: " + match[1] + " " + tag.path);
                 newComment =  comment.substr(0, match.index) +
                 " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + match[1] + ") " +
                 newComment.substr(match.index + match[0].length);
@@ -239,7 +239,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
      * and sucks in the README. 
      */
     generateIndexPage(readmeText?): void {
-        logger.info("generating Duly Noted.md");
+        logger.info("generating Duly Noted Index file.");
         let that = this;
 
         let outputMap = {
@@ -284,7 +284,20 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         md += "\n### Files \n";
 
         for (let i = 0; i < outputMap.files.length; i++) {
-            md += "* [" + outputMap.files[i] + "](" + outputMap.files[i] + ") \n";
+
+            // This shifts off the root folder b/c our index file is inside the output folder, 
+            // not one level up. See !issues/5
+            // > EXAMPLE: 
+            // > docs/myfile.ts.md is linked to as ./myfile.ts.md
+            let path: any = outputMap.files[i].split("/");
+            let name = path;
+            path.shift();
+            path.unshift(".");
+            path = path.join("/");
+            name.shift();
+            name = name.join("/");
+
+            md += "* [" + name + "](" + path + ") \n";
         }
         md += "\n------------------------------ \n";
 

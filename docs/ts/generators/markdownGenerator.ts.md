@@ -1,3 +1,9 @@
+ # [MarkdownGenerator](#MarkdownGenerator)
+
+ [authors/chris](../.././authors.md.md#authors/chris) 
+
+ [license](../.././license.md.md#license) 
+
 ```typescript
 import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
 import {parseLoc} from "../modules/referenceParser";
@@ -12,9 +18,17 @@ import _ = require("underscore");
 import lineReader = require("line-reader");
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::MarkdownGenerator");
+```
+ [interfaces/IMarkdownGenerator](#interfaces/IMarkdownGenerator)
+
+```typescript
 export interface IMarkdownGenerator {
     generate(): void;
 }
+```
+ ## [classes/MarkdownGenerator](#classes/MarkdownGenerator)
+
+```typescript
 export class MarkdownGenerator implements IMarkdownGenerator {
     outputDir: string;
     externalReferences: IExternalReference[];
@@ -25,6 +39,10 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     readme: string;
     projectName: string;
     outputFiles: string[] = [];
+```
+ ### Creates an instance of [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator) 
+
+```typescript
     constructor(config: IConfig, logLevel?: string) {
         logger.setLevel(logLevel || "DEBUG");
         this.outputDir = config.outputDir;
@@ -36,10 +54,15 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.readme = config.readme;
         this.projectName = config.projectName;
     }
-    public generate(cleanUp?: boolean): void {
+```
+ ## Generate Markdown Docs
+
+ Creates Markdown docs for a set of file maps and reference maps set on [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator)  construction.
+
+```typescript
+    public generate(): void {
         logger.info("Generating Markdown Docs.");
         let that = this;
-        let clean = cleanUp || false;
         this.outputFiles = [];
         readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
             that.proccessFile(err, content, next, that.outputDir);
@@ -57,6 +80,14 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             });
         });
     }
+```
+ ## Process Files
+
+ Processes the file map for a file, making output decisions based on
+
+ code, comment, long comment presence
+
+```typescript
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
         let file: IFile = JSON.parse(content);
         let that = this;
@@ -125,14 +156,20 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 }
                 else {
                     let fileName = path.join(outputDir, file.name + ".md");
-                    logger.info("Saving output for " + file.type + " file " + file.name + " as " + fileName);
                     that.outputFiles.push(fileName);
+                    logger.debug("Saving output for " + file.type + " file " + file.name + " as " + fileName);
                     writeFileSync(fileName, output, { flag: "w" });
                 }
             });
             next();
         }
     }
+```
+ ## Replace Anchors
+
+ Processes a comment line, replacing anchors with markdown anchor link tags
+
+```typescript
     replaceAnchors(comment: string,  fileName: string, line: number) {
         let pos = 0;
         let match;
@@ -150,6 +187,14 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         }
         return newComment;
     }
+```
+ ## Replace Links
+
+ > Run this AFTER external link replacement to ensure warning accuracy
+
+ Processes a comment line, replacing links with markdown links
+
+```typescript
     replaceInternalLinks(comment: string, fileName: string, line: number) {
         let pos = 0;
         let match;
@@ -165,7 +210,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             if (!tag) {
                 logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             } else {
-                logger.debug("found internal link: " + match[1]);
+                logger.debug("found internal link: " + match[1] + " " + tag.path);
                 newComment =  comment.substr(0, match.index) +
                 " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + match[1] + ") " +
                 newComment.substr(match.index + match[0].length);
@@ -174,6 +219,14 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         }
         return newComment;
     }
+```
+ ## Replace External Links
+
+ > Run this BEFORE internal link replacement
+
+ Processes a comment line, replacing links with markdown links to external urls
+
+```typescript
     replaceExternalLinks(comment: string, fileName: string, line: number) {
         let pos = 0;
         let match;
@@ -199,8 +252,16 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         }
         return newComment;
     }
+```
+ ## Generates the "Index Page"
+
+ This generates the index page, listing all the link collections,
+
+ and sucks in the README.
+
+```typescript
     generateIndexPage(readmeText?): void {
-        logger.info("generating Duly Noted.md");
+        logger.info("generating Duly Noted Index file.");
         let that = this;
         let outputMap = {
             project: this.projectName,
@@ -208,11 +269,6 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             files: this.outputFiles,
             readme: readmeText
         };
-```
- collections
-
-```typescript
-       
         let collections = that.referenceCollection.getTagsByCollection();
         for (let i = 0; i < collections.length; i++) {
             let anchors = _.clone(collections[i].anchors);
@@ -240,17 +296,45 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         md += "\n------------------------------ \n";
         md += "\n### Files \n";
         for (let i = 0; i < outputMap.files.length; i++) {
-            md += "* [" + outputMap.files[i] + "](" + outputMap.files[i] + ") \n";
+```
+ This shifts off the root folder b/c our index file is inside the output folder, 
+
+```typescript
+           
+```
+ not one level up. See [issues/5](#issues/5)
+
+```typescript
+           
+```
+ > EXAMPLE: 
+
+```typescript
+           
+```
+ > docs/myfile.ts.md is linked to as ./myfile.ts.md
+
+```typescript
+           
+            let path: any = outputMap.files[i].split("/");
+            let name = path;
+            path.shift();
+            path.unshift(".");
+            path = path.join("/");
+            name.shift();
+            name = name.join("/");
+            md += "* [" + name + "](" + path + ") \n";
         }
         md += "\n------------------------------ \n";
         md += outputMap.readme;
         writeFileSync(path.join(that.outputDir, "Duly Noted.md"), md, { flag: "w" });
     }
 ```
- > NOTE: Without this code, the link will not properly navigated deeply nested pages with relative linking.
+ Generate a link Prefix from a fileName
+
+ > NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.
 
 ```typescript
-   
     getLinkPrefix(fileName: string): string {
         let fileNameAsArray = fileName.split("/");
         let linkPrefix = "";
@@ -258,15 +342,6 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             linkPrefix += "../";
         }
         return linkPrefix;
-    }
-    cleanUp(err, files) {
-        if (err) {
-            logger.error(err.message);
-        } else {
-            for (let i = 0; i < files.length; i++) {
-                unlinkSync(files[i]);
-            }
-        }
     }
 }
 ```
