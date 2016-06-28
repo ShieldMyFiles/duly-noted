@@ -54,13 +54,15 @@ var MarkdownGenerator = (function () {
         }
         else {
             var file_1 = JSON.parse(content);
+            var safeFileName_1 = file_1.name.replace(/.([^.]*)$/, "_" + "$1");
+            logger.debug("Safe Name " + safeFileName_1);
             var output_1 = "";
             var inCodeBlock = false;
             for (var i = 0; i < file_1.lines.length; i++) {
                 if (typeof (file_1.lines[i].comment) === "string" && file_1.lines[i].comment !== "" && file_1.lines[i].comment !== null) {
-                    file_1.lines[i].comment = this.replaceAnchors(file_1.lines[i].comment, file_1.name, i);
-                    file_1.lines[i].comment = this.replaceExternalLinks(file_1.lines[i].comment, file_1.name, i);
-                    file_1.lines[i].comment = this.replaceInternalLinks(file_1.lines[i].comment, file_1.name, i);
+                    file_1.lines[i].comment = this.replaceAnchors(file_1.lines[i].comment, safeFileName_1, i);
+                    file_1.lines[i].comment = this.replaceExternalLinks(file_1.lines[i].comment, safeFileName_1, i);
+                    file_1.lines[i].comment = this.replaceInternalLinks(file_1.lines[i].comment, safeFileName_1, i);
                 }
             }
             for (var i = 0; i < file_1.lines.length; i++) {
@@ -83,7 +85,7 @@ var MarkdownGenerator = (function () {
                 output_1 += "```" + "\n";
                 inCodeBlock = false;
             }
-            var filePathArray = path.join(outputDir, file_1.name + ".md").split("/");
+            var filePathArray = path.join(outputDir, safeFileName_1 + ".md").split("/");
             filePathArray.pop();
             var filePath = filePathArray.join("/");
             mkdirp(filePath, function (err) {
@@ -91,9 +93,9 @@ var MarkdownGenerator = (function () {
                     logger.fatal(err.message);
                 }
                 else {
-                    var fileName = path.join(outputDir, file_1.name + ".md");
+                    var fileName = path.join(outputDir, safeFileName_1 + ".md");
                     that.outputFiles.push(fileName);
-                    logger.debug("Saving output for " + file_1.type + " file " + file_1.name + " as " + fileName);
+                    logger.debug("Saving output for " + file_1.type + " file " + safeFileName_1 + " as " + fileName);
                     fs_1.writeFileSync(fileName, output_1, { flag: "w" });
                 }
             });

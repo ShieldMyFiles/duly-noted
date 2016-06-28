@@ -98,13 +98,20 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             logger.error(err.message);
         } else {
             let file: IFile = JSON.parse(content);
+```
+ Transform the file name into name that avoids extra extensions se [issues/3](https://bitbucket.org/shieldmyfiles/duly-noted/issues/3) 
+
+```typescript
+           
+            let safeFileName = file.name.replace(/.([^.]*)$/, "_" + "$1");
+            logger.debug("Safe Name " + safeFileName);
             let output: string = "";
             let inCodeBlock = false;
             for (let i = 0; i < file.lines.length; i++) {
                 if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
-                    file.lines[i].comment = this.replaceAnchors(file.lines[i].comment, file.name, i);
-                    file.lines[i].comment = this.replaceExternalLinks(file.lines[i].comment, file.name, i);
-                    file.lines[i].comment = this.replaceInternalLinks(file.lines[i].comment, file.name, i);
+                    file.lines[i].comment = this.replaceAnchors(file.lines[i].comment, safeFileName, i);
+                    file.lines[i].comment = this.replaceExternalLinks(file.lines[i].comment, safeFileName, i);
+                    file.lines[i].comment = this.replaceInternalLinks(file.lines[i].comment, safeFileName, i);
                 }
             }
             for (let i = 0; i < file.lines.length; i++) {
@@ -149,7 +156,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 output += "```" + "\n";
                 inCodeBlock = false;
             }
-            let filePathArray = path.join(outputDir, file.name + ".md").split("/");
+            let filePathArray = path.join(outputDir, safeFileName + ".md").split("/");
             filePathArray.pop();
             let filePath = filePathArray.join("/");
             mkdirp(filePath, function (err) {
@@ -157,9 +164,9 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                     logger.fatal(err.message);
                 }
                 else {
-                    let fileName = path.join(outputDir, file.name + ".md");
+                    let fileName = path.join(outputDir, safeFileName + ".md");
                     that.outputFiles.push(fileName);
-                    logger.debug("Saving output for " + file.type + " file " + file.name + " as " + fileName);
+                    logger.debug("Saving output for " + file.type + " file " + safeFileName + " as " + fileName);
                     writeFileSync(fileName, output, { flag: "w" });
                 }
             });
@@ -304,7 +311,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 ```typescript
            
 ```
- not one level up. See [issues/5](#issues/5)
+ not one level up. Se [issues/5](https://bitbucket.org/shieldmyfiles/duly-noted/issues/3) 
 
 ```typescript
            

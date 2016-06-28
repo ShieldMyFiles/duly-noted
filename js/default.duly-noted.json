@@ -4,6 +4,7 @@
         // STEP 2. set some file globs for the files you want to generate documents for.
     ], 
     "outputDir": "./docs", // STEP 3. Set an output directory for the docs
+    "indexFile":"README.md", // Leabe this if you want index markdown output as README.md (helpful of BitBucket/GitHub Rendering)
     "commentRegExp": "\\/\\/(.*)", // Leave this if you want '//' being comments.
     "longCommentOpenRegExp": "\\/\\*\\*(.*)", // Leave this if you want '/**' starting long comments
     "longCommentLineRegExp": "\\*(.*)", // Leave this if you want '*' continuing long comments
