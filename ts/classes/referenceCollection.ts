@@ -1,11 +1,11 @@
 /**
- * # !ReferenceCollection
- * @authors/chris
- * @license
+ *# !ReferenceCollection
+ *@authors/chris
+ *@license
  * 
- *  This reference parser that parses all the links and anchors in your code - the output of which is two reference collections:
- *  * `internalReferences.json`
- *  * `externalReferences.json`
+ * This reference parser that parses all the links and anchors in your code - the output of which is two reference collections:
+ * * `internalReferences.json`
+ * * `externalReferences.json`
  */
 import {findWhere, findIndex} from "underscore";
 import log4js = require("log4js");

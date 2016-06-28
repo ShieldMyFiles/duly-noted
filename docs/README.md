@@ -36,20 +36,23 @@
 * [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#HtmlGenerator) 
 * [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
 
+#### issues 
+* [5](./ts/generators/markdownGenerator.ts.md#5) 
+
 ------------------------------ 
 
 ### Files 
-* [authors_md.md](./authors_md.md) 
-* [license_md.md](./license_md.md) 
-* [ts/classes/IConfig_ts.md](./ts/classes/IConfig_ts.md) 
-* [ts/classes/referenceCollection_ts.md](./ts/classes/referenceCollection_ts.md) 
-* [ts/generators/htmlGenerator_ts.md](./ts/generators/htmlGenerator_ts.md) 
-* [ts/generators/markdownGenerator_ts.md](./ts/generators/markdownGenerator_ts.md) 
-* [ts/helpers/fileType_ts.md](./ts/helpers/fileType_ts.md) 
-* [ts/helpers/helpers_ts.md](./ts/helpers/helpers_ts.md) 
-* [ts/index_ts.md](./ts/index_ts.md) 
-* [ts/modules/referenceParser_ts.md](./ts/modules/referenceParser_ts.md) 
-* [ts/typings/index.d_ts.md](./ts/typings/index.d_ts.md) 
+* [authors.md.md](./authors.md.md) 
+* [license.md.md](./license.md.md) 
+* [ts/classes/IConfig.ts.md](./ts/classes/IConfig.ts.md) 
+* [ts/classes/referenceCollection.ts.md](./ts/classes/referenceCollection.ts.md) 
+* [ts/generators/htmlGenerator.ts.md](./ts/generators/htmlGenerator.ts.md) 
+* [ts/generators/markdownGenerator.ts.md](./ts/generators/markdownGenerator.ts.md) 
+* [ts/helpers/fileType.ts.md](./ts/helpers/fileType.ts.md) 
+* [ts/helpers/helpers.ts.md](./ts/helpers/helpers.ts.md) 
+* [ts/index.ts.md](./ts/index.ts.md) 
+* [ts/modules/referenceParser.ts.md](./ts/modules/referenceParser.ts.md) 
+* [ts/typings/index.d.ts.md](./ts/typings/index.d.ts.md) 
 
 ------------------------------ 
 
