@@ -7,8 +7,8 @@
 * [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
 * [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
 * [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
-* [IConfig](./ts/classes/IConfig.ts.md#IConfig) 
 * [license](./license.md.md#license) 
+* [IConfig](./ts/classes/IConfig.ts.md#IConfig) 
 * [ParseFile](./ts/modules/referenceParser.ts.md#ParseFile) 
 
 #### authors 
@@ -35,9 +35,6 @@
 * [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
 * [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#HtmlGenerator) 
 * [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
-
-#### issues 
-* [5](./ts/generators/markdownGenerator.ts.md#5) 
 
 ------------------------------ 
 

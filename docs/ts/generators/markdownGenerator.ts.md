@@ -304,7 +304,7 @@ and sucks in the README.
 ```typescript
            
 ```
- not one level up. See [issues/5](#issues/5)
+ not one level up. Se [issues/5](https://bitbucket.org/shieldmyfiles/duly-noted/issues/5) 
 
 ```typescript
            
