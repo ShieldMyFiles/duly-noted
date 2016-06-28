@@ -122,7 +122,7 @@ var MarkdownGenerator = (function () {
                 logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             }
             else {
-                logger.debug("found internal link: " + match[1]);
+                logger.debug("found internal link: " + match[1] + " " + tag.path);
                 newComment = comment.substr(0, match.index) +
                     " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + match[1] + ") " +
                     newComment.substr(match.index + match[0].length);
@@ -152,7 +152,7 @@ var MarkdownGenerator = (function () {
         return newComment;
     };
     MarkdownGenerator.prototype.generateIndexPage = function (readmeText) {
-        logger.info("generating Duly Noted.md");
+        logger.info("generating Duly Noted Index file.");
         var that = this;
         var outputMap = {
             project: this.projectName,
@@ -187,7 +187,14 @@ var MarkdownGenerator = (function () {
         md += "\n------------------------------ \n";
         md += "\n### Files \n";
         for (var i = 0; i < outputMap.files.length; i++) {
-            md += "* [" + outputMap.files[i] + "](" + outputMap.files[i] + ") \n";
+            var path_1 = outputMap.files[i].split("/");
+            var name_2 = path_1;
+            path_1.shift();
+            path_1.unshift(".");
+            path_1 = path_1.join("/");
+            name_2.shift();
+            name_2 = name_2.join("/");
+            md += "* [" + name_2 + "](" + path_1 + ") \n";
         }
         md += "\n------------------------------ \n";
         md += outputMap.readme;

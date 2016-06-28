@@ -76,7 +76,7 @@ export class ReferenceCollection implements IReferenceCollection {
         return this;
     }
 ```
- ## Add an @interface/IAnchor to collection
+ ## Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#interfaces/IAnchor)  to collection
 
 ```typescript
     public addAnchor(anchor: IAnchor): void {
