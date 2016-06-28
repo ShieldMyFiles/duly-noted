@@ -299,25 +299,15 @@ and sucks in the README.
         md += "\n### Files \n";
         for (let i = 0; i < outputMap.files.length; i++) {
 ```
- This shifts off the root folder b/c our index file is inside the output folder, 
+This shifts off the root folder b/c our index file is inside the output folder,
+
+not one level up. Se [issues/5](https://bitbucket.org/shieldmyfiles/duly-noted/issues/5) 
+
+> EXAMPLE:
+
+> docs/myfile.ts.md is linked to as ./myfile.ts.md
 
 ```typescript
-           
-```
- not one level up. Se [issues/5](https://bitbucket.org/shieldmyfiles/duly-noted/issues/5) 
-
-```typescript
-           
-```
- > EXAMPLE: 
-
-```typescript
-           
-```
- > docs/myfile.ts.md is linked to as ./myfile.ts.md
-
-```typescript
-           
             let path: any = outputMap.files[i].split("/");
             let name = path;
             path.shift();

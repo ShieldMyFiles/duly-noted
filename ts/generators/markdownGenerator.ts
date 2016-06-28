@@ -287,10 +287,12 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 
         for (let i = 0; i < outputMap.files.length; i++) {
 
-            // This shifts off the root folder b/c our index file is inside the output folder, 
-            // not one level up. See @issues/5
-            // > EXAMPLE: 
-            // > docs/myfile.ts.md is linked to as ./myfile.ts.md
+            /**
+             * This shifts off the root folder b/c our index file is inside the output folder, 
+             * not one level up. See @issues/5
+             * > EXAMPLE: 
+             * > docs/myfile.ts.md is linked to as ./myfile.ts.md
+             */
             let path: any = outputMap.files[i].split("/");
             let name = path;
             path.shift();
