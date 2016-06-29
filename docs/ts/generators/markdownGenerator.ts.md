@@ -16,6 +16,7 @@ import mkdirp = require("mkdirp");
 import * as path from "path";
 import _ = require("underscore");
 import lineReader = require("line-reader");
+import Q = require("q");
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::MarkdownGenerator");
 ```
@@ -62,23 +63,26 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 Creates Markdown docs for a set of file maps and reference maps set on [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator)  construction.
 
 ```typescript
-    public generate(): void {
-        logger.info("Generating Markdown Docs.");
-        let that = this;
-        this.outputFiles = [];
-        readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
-            that.proccessFile(err, content, next, that.outputDir);
-        }, (err, files) => {
-            let readme = "";
-            let i = 1;
-            lineReader.eachLine(that.readme, (line, last) => {
-                let newLine = line;
-                newLine = that.replaceExternalLinks(newLine, that.readme, i);
-                newLine = that.replaceInternalLinks(newLine, that.readme, i);
-                readme +=  "\n" + newLine;
-                i++;
-            }, () => {
-                that.generateIndexPage(readme);
+    public generate(): Q.IPromise<{}> {
+        return Q.Promise((resolve, reject) => {
+            logger.info("Generating Markdown Docs.");
+            let that = this;
+            this.outputFiles = [];
+            readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
+                that.proccessFile(err, content, next, that.outputDir);
+            }, (err, files) => {
+                let readme = "";
+                let i = 1;
+                lineReader.eachLine(that.readme, (line, last) => {
+                    let newLine = line;
+                    newLine = that.replaceExternalLinks(newLine, that.readme, i);
+                    newLine = that.replaceInternalLinks(newLine, that.readme, i);
+                    readme +=  "\n" + newLine;
+                    i++;
+                }, () => {
+                    that.generateIndexPage(readme);
+                    resolve(null);
+                });
             });
         });
     }

@@ -46,7 +46,7 @@ export function run () {
     .option("-v, --verbose", "Chatty Cathy mode")
     .parse(process.argv);
 ```
-### Init - copies example duly-noted.json
+ ### Init - copies example duly-noted.json
 
 ```typescript
     
@@ -94,20 +94,22 @@ export function run () {
          referenceParser.parse()
          .then((response) => {
              logger.info("Parsing complete, beginning export.");
+             let generatorActions = [];
              if (_.contains(config.generators, "html")) {
-                new HtmlGenerator(config, logLevel).generate();
+                generatorActions.push(new HtmlGenerator(config, logLevel).generate());
              }
              if (_.contains(config.generators, "markdown")) {
-                new MarkdownGenerator(config, logLevel).generate();
+                generatorActions.push(new MarkdownGenerator(config, logLevel).generate());
              }
-             if (config.leaveJSONFiles === false) {
-                 logger.info("Cleaning up JSON");
+             Q.all(generatorActions)
+             .then(() => {
+                 logger.info("Cleaning up - Removing JSON parse files.");
                  deleteDir(parseLoc);
-             }
+             });
          })
          .catch( (err: Error) => {
 ```
- [TODO/errors](#TODO/errors) > An overall stratefy is needed to identify errors.
+ [TODO/errors](#TODO/errors) > An overall strategy is needed to identify errors.
 
 ```typescript
             
@@ -129,6 +131,12 @@ function getFilesFromGlob(globString: string): Q.Promise<string[]> {
         });
     });
 }
+```
+## Delete a directory
+
+This is a simple helper to recursively delete a directory, and any sub-directories and files it contains.
+
+```typescript
 function deleteDir(dirPath) {
     let files = [];
     try { files = readdirSync(dirPath); }

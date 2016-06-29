@@ -49,13 +49,13 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h1 id="-a-name-htmlgenerator-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-htmlgenerator-a-"><a name="HtmlGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>HtmlGenerator</a></h1>
 <p> <a href="../.././authors.md.html#authors/chris">authors/chris</a> 
- <a href="../.././license.md.html#license">license</a> </p>
-<p> Generates HTML pages for the source code,
- replacing links and anchors as it goes along.
- Builds a nice Index.html page with info and
- README.md content.</p>
-<p> Uses tempalate that employ handlebars as the
- templating engine.</p>
+ <a href="../.././license.md.html#license">license</a> 
+Generates HTML pages for the source code,
+replacing links and anchors as it goes along.
+Builds a nice Index.html page with info and
+README.md content.
+Uses tempalate that employ handlebars as the
+templating engine.</p>
 
                     </div>
 
@@ -78,6 +78,7 @@ import * as handlebars from &quot;handlebars&quot;;
 import * as marked from &quot;marked&quot;;
 import * as fse from &quot;fs-extra&quot;;
 import _ &#x3D; require(&quot;underscore&quot;);
+import Q &#x3D; require(&quot;q&quot;);
 import log4js &#x3D; require(&quot;log4js&quot;);
 let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code>
                         </pre>
@@ -86,7 +87,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p>  <a name="interfaces/IHtmlGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>interfaces/IHtmlGenerator</a> </p>
+                    <p> <a name="interfaces/IHtmlGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>interfaces/IHtmlGenerator</a> </p>
 
                     </div>
 
@@ -169,7 +170,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="generate-html-docs">Generate HTML Docs</h2>
-<p> Creates HTML docs for a set of file maps and reference maps set on <a href="../.././ts/generators/htmlGenerator.ts.html#classes/HtmlGenerator">classes/HtmlGenerator</a>  construction.</p>
+<p>Creates HTML docs for a set of file maps and reference maps set on <a href="../.././ts/generators/htmlGenerator.ts.html#classes/HtmlGenerator">classes/HtmlGenerator</a>  construction.</p>
 
                     </div>
 
@@ -179,16 +180,19 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">    public generate(): void {
-        logger.info(&quot;Generating HTML Documents&quot;);
-        let that &#x3D; this;
-        readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) &#x3D;&gt; {
-            that.proccessFile(err, content, next, that.outputDir);
-        }, (err, files) &#x3D;&gt; {
-            that.generateIndexPage();
+                            <code class="typescript">    public generate(): Q.IPromise&lt;{}&gt; {
+        return Q.Promise((resolve, reject) &#x3D;&gt; {
+            logger.info(&quot;Generating HTML Documents&quot;);
+            let that &#x3D; this;
+            readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) &#x3D;&gt; {
+                that.proccessFile(err, content, next, that.outputDir);
+            }, (err, files) &#x3D;&gt; {
+                that.generateIndexPage();
+                resolve(null);
+            });
+            fse.copySync(path.join(this.projectPath, &quot;templates&quot;, &quot;highlight.pack.js&quot;), path.join(this.outputDir, &quot;scripts/highlight.js&quot;));
+            fse.copySync(path.join(this.projectPath, &quot;templates&quot;, &quot;css&quot;, &quot;default.css&quot;), path.join(this.outputDir, &quot;css/default.css&quot;));
         });
-        fse.copySync(path.join(this.projectPath, &quot;templates&quot;, &quot;highlight.pack.js&quot;), path.join(this.outputDir, &quot;scripts/highlight.js&quot;));
-        fse.copySync(path.join(this.projectPath, &quot;templates&quot;, &quot;css&quot;, &quot;default.css&quot;), path.join(this.outputDir, &quot;css/default.css&quot;));
     }</code>
                         </pre>
                     </div>
@@ -197,8 +201,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="process-files">Process Files</h2>
-<p> Processes the file map for a file, making output decisions based on
- code, comment, long comment presence</p>
+<p>Processes the file map for a file, making output decisions based on
+code, comment, long comment presence</p>
 
                     </div>
 
@@ -250,7 +254,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
                 logger.fatal(err.message);
             }
             else {
-                logger.debug(&quot;Saving output for &quot; + file.type + &quot; file &quot; + file.name &quot; as &quot; file.name + &quot;.html&quot;);
+                logger.debug(&quot;Saving output for &quot; + file.type + &quot; file &quot; + file.name + &quot; as &quot; + file.name + &quot;.html&quot;);
                 writeFileSync(path.join(outputDir, file.name + &quot;.html&quot;), output, { flag: &quot;w&quot; });
                 next();
             }
@@ -263,7 +267,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="replace-anchors">Replace Anchors</h2>
-<p> Processes a comment line, replacing anchors with a:href anchor tags</p>
+<p>Processes a comment line, replacing anchors with a:href anchor tags</p>
 
                     </div>
 
@@ -311,7 +315,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
                     <h2 id="replace-links">Replace Links</h2>
 <blockquote>
 <p>Run this AFTER external link replacement to ensure warning accuracy
- Processes a comment line, replacing links with links</p>
+Processes a comment line, replacing links with links</p>
 </blockquote>
 
                     </div>
@@ -367,7 +371,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
                     <h2 id="replace-external-links">Replace External Links</h2>
 <blockquote>
 <p>Run this BEFORE internal link replacement
- Processes a comment line, replacing links with links to external urls</p>
+Processes a comment line, replacing links with links to external urls</p>
 </blockquote>
 
                     </div>
@@ -422,8 +426,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="generates-the-index-page-">Generates the &quot;Index Page&quot;</h2>
-<p> This generates the index page, listing all the link collections,
- and sucks in the README.</p>
+<p>This generates the index page, listing all the link collections,
+and sucks in the README.</p>
 
                     </div>
 
@@ -530,7 +534,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> Generate a link Prefix from a fileName</p>
+                    <p>Generate a link Prefix from a fileName</p>
 <blockquote>
 <p>NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.</p>
 </blockquote>

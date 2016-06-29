@@ -26,7 +26,7 @@ import * as handlebars from "handlebars";
 import * as marked from "marked";
 import * as fse from "fs-extra";
 import _ = require("underscore");
-
+import Q = require("q");
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::HtmlGenerator");
 
@@ -85,17 +85,20 @@ export class HtmlGenerator implements IHtmlGenerator {
      * ## Generate HTML Docs
      * Creates HTML docs for a set of file maps and reference maps set on @classes/HtmlGenerator construction.
      */
-    public generate(): void {
-        logger.info("Generating HTML Documents");
-        let that = this;
-        readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
-            that.proccessFile(err, content, next, that.outputDir);
-        }, (err, files) => {
-            that.generateIndexPage();
-        });
+    public generate(): Q.IPromise<{}> {
+        return Q.Promise((resolve, reject) => {
+            logger.info("Generating HTML Documents");
+            let that = this;
+            readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) => {
+                that.proccessFile(err, content, next, that.outputDir);
+            }, (err, files) => {
+                that.generateIndexPage();
+                resolve(null);
+            });
 
-        fse.copySync(path.join(this.projectPath, "templates", "highlight.pack.js"), path.join(this.outputDir, "scripts/highlight.js"));
-        fse.copySync(path.join(this.projectPath, "templates", "css", "default.css"), path.join(this.outputDir, "css/default.css"));
+            fse.copySync(path.join(this.projectPath, "templates", "highlight.pack.js"), path.join(this.outputDir, "scripts/highlight.js"));
+            fse.copySync(path.join(this.projectPath, "templates", "css", "default.css"), path.join(this.outputDir, "css/default.css"));
+        });
     }
 
     /**

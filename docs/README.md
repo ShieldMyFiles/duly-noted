@@ -22,8 +22,8 @@
 #### interfaces 
 * [IReferenceCollection](./ts/classes/referenceCollection.ts.md#IReferenceCollection) 
 * [IReferenceParser](./ts/modules/referenceParser.ts.md#IReferenceParser) 
-* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#IMarkdownGenerator) 
 * [IAnchor](./ts/classes/referenceCollection.ts.md#IAnchor) 
+* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#IMarkdownGenerator) 
 * [ITag](./ts/classes/referenceCollection.ts.md#ITag) 
 * [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#IHtmlGenerator) 
 
@@ -39,6 +39,127 @@
 ------------------------------ 
 
 ### Files 
+* [authors.md.md](./authors.md.md) 
+* [license.md.md](./license.md.md) 
+* [ts/classes/IConfig.ts.md](./ts/classes/IConfig.ts.md) 
+* [ts/classes/referenceCollection.ts.md](./ts/classes/referenceCollection.ts.md) 
+* [ts/generators/htmlGenerator.ts.md](./ts/generators/htmlGenerator.ts.md) 
+* [ts/generators/markdownGenerator.ts.md](./ts/generators/markdownGenerator.ts.md) 
+* [ts/helpers/fileType.ts.md](./ts/helpers/fileType.ts.md) 
+* [ts/helpers/helpers.ts.md](./ts/helpers/helpers.ts.md) 
+* [ts/index.ts.md](./ts/index.ts.md) 
+* [ts/modules/referenceParser.ts.md](./ts/modules/referenceParser.ts.md) 
+* [ts/typings/index.d.ts.md](./ts/typings/index.d.ts.md) 
+
+------------------------------ 
+
+# Duly-Noted documentation 
+### Collections 
+
+####  
+* [Index](./ts/index.ts.md#Index) 
+* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#HtmlGenerator) 
+* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
+* [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
+* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
+* [license](./license.md.md#license) 
+* [IConfig](./ts/classes/IConfig.ts.md#IConfig) 
+* [ParseFile](./ts/modules/referenceParser.ts.md#ParseFile) 
+
+#### authors 
+* [chris](./authors.md.md#chris) 
+* [joe](./authors.md.md#joe) 
+
+#### TODO 
+* [commentRegExp](./ts/classes/IConfig.ts.md#commentRegExp) 
+* [errors](./ts/index.ts.md#errors) 
+
+#### interfaces 
+* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#IReferenceCollection) 
+* [IReferenceParser](./ts/modules/referenceParser.ts.md#IReferenceParser) 
+* [IAnchor](./ts/classes/referenceCollection.ts.md#IAnchor) 
+* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#IMarkdownGenerator) 
+* [ITag](./ts/classes/referenceCollection.ts.md#ITag) 
+* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#IHtmlGenerator) 
+
+#### constant 
+* [parseLoc](./ts/modules/referenceParser.ts.md#parseLoc) 
+
+#### classes 
+* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
+* [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
+* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#HtmlGenerator) 
+* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
+
+------------------------------ 
+
+### Files 
+* [](.) 
+* [](.) 
+* [classes/IConfig.ts.md](./classes/IConfig.ts.md) 
+* [classes/referenceCollection.ts.md](./classes/referenceCollection.ts.md) 
+* [generators/htmlGenerator.ts.md](./generators/htmlGenerator.ts.md) 
+* [generators/markdownGenerator.ts.md](./generators/markdownGenerator.ts.md) 
+* [helpers/fileType.ts.md](./helpers/fileType.ts.md) 
+* [helpers/helpers.ts.md](./helpers/helpers.ts.md) 
+* [index.ts.md](./index.ts.md) 
+* [modules/referenceParser.ts.md](./modules/referenceParser.ts.md) 
+* [typings/index.d.ts.md](./typings/index.d.ts.md) 
+
+------------------------------ 
+
+# Duly-Noted documentation 
+### Collections 
+
+####  
+* [Index](./ts/index.ts.md#Index) 
+* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#HtmlGenerator) 
+* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
+* [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
+* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
+* [license](./license.md.md#license) 
+* [IConfig](./ts/classes/IConfig.ts.md#IConfig) 
+* [ParseFile](./ts/modules/referenceParser.ts.md#ParseFile) 
+
+#### authors 
+* [chris](./authors.md.md#chris) 
+* [joe](./authors.md.md#joe) 
+
+#### TODO 
+* [commentRegExp](./ts/classes/IConfig.ts.md#commentRegExp) 
+* [errors](./ts/index.ts.md#errors) 
+
+#### interfaces 
+* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#IReferenceCollection) 
+* [IReferenceParser](./ts/modules/referenceParser.ts.md#IReferenceParser) 
+* [IAnchor](./ts/classes/referenceCollection.ts.md#IAnchor) 
+* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#IMarkdownGenerator) 
+* [ITag](./ts/classes/referenceCollection.ts.md#ITag) 
+* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#IHtmlGenerator) 
+
+#### constant 
+* [parseLoc](./ts/modules/referenceParser.ts.md#parseLoc) 
+
+#### classes 
+* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
+* [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
+* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#HtmlGenerator) 
+* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
+
+------------------------------ 
+
+### Files 
+* [](.) 
+* [](.) 
+* [classes/IConfig.ts.md](./classes/IConfig.ts.md) 
+* [classes/referenceCollection.ts.md](./classes/referenceCollection.ts.md) 
+* [generators/htmlGenerator.ts.md](./generators/htmlGenerator.ts.md) 
+* [generators/markdownGenerator.ts.md](./generators/markdownGenerator.ts.md) 
+* [helpers/fileType.ts.md](./helpers/fileType.ts.md) 
+* [helpers/helpers.ts.md](./helpers/helpers.ts.md) 
+* [index.ts.md](./index.ts.md) 
+* [modules/referenceParser.ts.md](./modules/referenceParser.ts.md) 
+* [typings/index.d.ts.md](./typings/index.d.ts.md) 
 
 ------------------------------ 
 

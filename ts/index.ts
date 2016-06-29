@@ -42,7 +42,7 @@ export function run () {
     .option("-v, --verbose", "Chatty Cathy mode")
     .parse(process.argv);
 
-     //### Init - copies example duly-noted.json
+     // ### Init - copies example duly-noted.json
      if (program.init) {
         try {
           let config = JSON.parse(readFileSync("duly-noted.json").toString());
@@ -96,20 +96,21 @@ export function run () {
          referenceParser.parse()
          .then((response) => {
              logger.info("Parsing complete, beginning export.");
+             let generatorActions = [];
 
              if (_.contains(config.generators, "html")) {
-                new HtmlGenerator(config, logLevel).generate();
+                generatorActions.push(new HtmlGenerator(config, logLevel).generate());
              }
 
              if (_.contains(config.generators, "markdown")) {
-                new MarkdownGenerator(config, logLevel).generate();
+                generatorActions.push(new MarkdownGenerator(config, logLevel).generate());
              }
 
-             if (config.leaveJSONFiles === false) {
-                 logger.info("Cleaning up JSON");
+             Q.all(generatorActions)
+             .then(() => {
+                 logger.info("Cleaning up - Removing JSON parse files.");
                  deleteDir(parseLoc);
-             }
-
+             });
          })
          .catch( (err: Error) => {
              // !TODO/errors > An overall strategy is needed to identify errors.

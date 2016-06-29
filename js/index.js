@@ -69,16 +69,18 @@ function run() {
         referenceParser.parse()
             .then(function (response) {
             logger.info("Parsing complete, beginning export.");
+            var generatorActions = [];
             if (_.contains(config.generators, "html")) {
-                new htmlGenerator_1.HtmlGenerator(config, logLevel).generate();
+                generatorActions.push(new htmlGenerator_1.HtmlGenerator(config, logLevel).generate());
             }
             if (_.contains(config.generators, "markdown")) {
-                new markdownGenerator_1.MarkdownGenerator(config, logLevel).generate();
+                generatorActions.push(new markdownGenerator_1.MarkdownGenerator(config, logLevel).generate());
             }
-            if (config.leaveJSONFiles === false) {
-                logger.info("Cleaning up JSON");
+            Q.all(generatorActions)
+                .then(function () {
+                logger.info("Cleaning up - Removing JSON parse files.");
                 deleteDir(referenceParser_1.parseLoc);
-            }
+            });
         })
             .catch(function (err) {
             logger.error(err.message + err.stack);

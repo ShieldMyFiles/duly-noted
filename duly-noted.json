@@ -14,7 +14,7 @@
         "./license.md"
     ],
     "indexFile":"README.md",
-    "outputDir": "./",
+    "outputDir": "./docs",
     "commentRegExp": "\\/\\/(.*)",
     "longCommentOpenRegExp": "\\/\\*\\*(.*)",
     "longCommentLineRegExp": "\\* (.*)",

@@ -10,7 +10,7 @@ ____________________________________
 
 * email: [chris@shieldmyfile.com](mailto:chris@shieldmyfile.com)
 
-* slack: [@chris](https://shieldmyfiles.slack.com/team/chris)
+* slack: [chris](https://shieldmyfiles.slack.com/team/chris)
 
 ____________________________________
 

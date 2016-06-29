@@ -8,6 +8,7 @@ var mkdirp = require("mkdirp");
 var path = require("path");
 var _ = require("underscore");
 var lineReader = require("line-reader");
+var Q = require("q");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::MarkdownGenerator");
 var MarkdownGenerator = (function () {
@@ -26,22 +27,26 @@ var MarkdownGenerator = (function () {
         this.indexFile = config.indexFile;
     }
     MarkdownGenerator.prototype.generate = function () {
-        logger.info("Generating Markdown Docs.");
-        var that = this;
-        this.outputFiles = [];
-        node_dir_1.readFiles(referenceParser_1.parseLoc, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
-            that.proccessFile(err, content, next, that.outputDir);
-        }, function (err, files) {
-            var readme = "";
-            var i = 1;
-            lineReader.eachLine(that.readme, function (line, last) {
-                var newLine = line;
-                newLine = that.replaceExternalLinks(newLine, that.readme, i);
-                newLine = that.replaceInternalLinks(newLine, that.readme, i);
-                readme += "\n" + newLine;
-                i++;
-            }, function () {
-                that.generateIndexPage(readme);
+        var _this = this;
+        return Q.Promise(function (resolve, reject) {
+            logger.info("Generating Markdown Docs.");
+            var that = _this;
+            _this.outputFiles = [];
+            node_dir_1.readFiles(referenceParser_1.parseLoc, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
+                that.proccessFile(err, content, next, that.outputDir);
+            }, function (err, files) {
+                var readme = "";
+                var i = 1;
+                lineReader.eachLine(that.readme, function (line, last) {
+                    var newLine = line;
+                    newLine = that.replaceExternalLinks(newLine, that.readme, i);
+                    newLine = that.replaceInternalLinks(newLine, that.readme, i);
+                    readme += "\n" + newLine;
+                    i++;
+                }, function () {
+                    that.generateIndexPage(readme);
+                    resolve(null);
+                });
             });
         });
     };

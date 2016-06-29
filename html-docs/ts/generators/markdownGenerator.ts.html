@@ -78,7 +78,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p>  <a name="interfaces/IMarkdownGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>interfaces/IMarkdownGenerator</a> </p>
+                    <p> <a name="interfaces/IMarkdownGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>interfaces/IMarkdownGenerator</a> </p>
 
                     </div>
 
@@ -109,6 +109,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
                         <pre>
                             <code class="typescript">export class MarkdownGenerator implements IMarkdownGenerator {
     outputDir: string;
+    indexFile: string;
     externalReferences: IExternalReference[];
     anchorRegExp: RegExp;
     linkRegExp: RegExp;
@@ -143,6 +144,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
         this.tags &#x3D; this.referenceCollection.getAllTags();
         this.readme &#x3D; config.readme;
         this.projectName &#x3D; config.projectName;
+        this.indexFile &#x3D; config.indexFile;
     }</code>
                         </pre>
                     </div>
@@ -151,7 +153,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="generate-markdown-docs">Generate Markdown Docs</h2>
-<p> Creates Markdown docs for a set of file maps and reference maps set on <a href="../.././ts/generators/markdownGenerator.ts.html#classes/MarkdownGenerator">classes/MarkdownGenerator</a>  construction.</p>
+<p>Creates Markdown docs for a set of file maps and reference maps set on <a href="../.././ts/generators/markdownGenerator.ts.html#classes/MarkdownGenerator">classes/MarkdownGenerator</a>  construction.</p>
 
                     </div>
 
@@ -161,23 +163,26 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">    public generate(): void {
-        logger.info(&quot;Generating Markdown Docs.&quot;);
-        let that &#x3D; this;
-        this.outputFiles &#x3D; [];
-        readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) &#x3D;&gt; {
-            that.proccessFile(err, content, next, that.outputDir);
-        }, (err, files) &#x3D;&gt; {
-            let readme &#x3D; &quot;&quot;;
-            let i &#x3D; 1;
-            lineReader.eachLine(that.readme, (line, last) &#x3D;&gt; {
-                let newLine &#x3D; line;
-                newLine &#x3D; that.replaceExternalLinks(newLine, that.readme, i);
-                newLine &#x3D; that.replaceInternalLinks(newLine, that.readme, i);
-                readme +&#x3D;  &quot;\n&quot; + newLine;
-                i++;
-            }, () &#x3D;&gt; {
-                that.generateIndexPage(readme);
+                            <code class="typescript">    public generate(): Q.IPromise&lt;{}&gt; {
+        return Q.Promise((resolve, reject) &#x3D;&gt; {
+            logger.info(&quot;Generating Markdown Docs.&quot;);
+            let that &#x3D; this;
+            this.outputFiles &#x3D; [];
+            readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) &#x3D;&gt; {
+                that.proccessFile(err, content, next, that.outputDir);
+            }, (err, files) &#x3D;&gt; {
+                let readme &#x3D; &quot;&quot;;
+                let i &#x3D; 1;
+                lineReader.eachLine(that.readme, (line, last) &#x3D;&gt; {
+                    let newLine &#x3D; line;
+                    newLine &#x3D; that.replaceExternalLinks(newLine, that.readme, i);
+                    newLine &#x3D; that.replaceInternalLinks(newLine, that.readme, i);
+                    readme +&#x3D;  &quot;\n&quot; + newLine;
+                    i++;
+                }, () &#x3D;&gt; {
+                    that.generateIndexPage(readme);
+                    resolve(null);
+                });
             });
         });
     }</code>
@@ -188,8 +193,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="process-files">Process Files</h2>
-<p> Processes the file map for a file, making output decisions based on
- code, comment, long comment presence</p>
+<p>Processes the file map for a file, making output decisions based on
+code, comment, long comment presence</p>
 
                     </div>
 
@@ -342,7 +347,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="replace-anchors">Replace Anchors</h2>
-<p> Processes a comment line, replacing anchors with markdown anchor link tags</p>
+<p>Processes a comment line, replacing anchors with markdown anchor link tags</p>
 
                     </div>
 
@@ -390,7 +395,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
                     <h2 id="replace-links">Replace Links</h2>
 <blockquote>
 <p>Run this AFTER external link replacement to ensure warning accuracy
- Processes a comment line, replacing links with markdown links</p>
+Processes a comment line, replacing links with markdown links</p>
 </blockquote>
 
                     </div>
@@ -428,7 +433,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
             if (!tag) {
                 logger.warn(&quot;link: &quot; + match[1] + &quot; in &quot; + fileName + &quot;:&quot; + line + &quot; does not have a cooresponding anchor, so link cannot be created.&quot;);
             } else {
-                logger.debug(&quot;found internal link: &quot; + match[1]);
+                logger.debug(&quot;found internal link: &quot; + match[1] + &quot; &quot; + tag.path);
                 newComment &#x3D;  comment.substr(0, match.index) +
                 &quot; [&quot; + match[1] + &quot;](&quot; + linkPrefix + tag.path + &quot;.md#&quot; + match[1] + &quot;) &quot; +
                 newComment.substr(match.index + match[0].length);
@@ -446,7 +451,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
                     <h2 id="replace-external-links">Replace External Links</h2>
 <blockquote>
 <p>Run this BEFORE internal link replacement
- Processes a comment line, replacing links with markdown links to external urls</p>
+Processes a comment line, replacing links with markdown links to external urls</p>
 </blockquote>
 
                     </div>
@@ -486,7 +491,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
                 for (let i &#x3D; 1; i &lt; tagArray.length; i++) {
                     tag.path &#x3D; tag.path.replace(&quot;::&quot;, tagArray[i]);
                 }
-                newComment &#x3D;  comment.substr(0, match.index - 1) +
+                newComment &#x3D;  comment.substr(0, match.index) +
                 &quot; [&quot; + match[1] + &quot;](&quot; + tag.path + &quot;) &quot; +
                 newComment.substr(match.index + match[0].length);
             }
@@ -501,8 +506,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="generates-the-index-page-">Generates the &quot;Index Page&quot;</h2>
-<p> This generates the index page, listing all the link collections,
- and sucks in the README.</p>
+<p>This generates the index page, listing all the link collections,
+and sucks in the README.</p>
 
                     </div>
 
@@ -513,7 +518,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">    generateIndexPage(readmeText?): void {
-        logger.info(&quot;generating Duly Noted.md&quot;);
+        logger.info(&quot;generating Duly Noted Index file.&quot;);
         let that &#x3D; this;
         let outputMap &#x3D; {
             project: this.projectName,
@@ -547,12 +552,40 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
         }
         md +&#x3D; &quot;\n------------------------------ \n&quot;;
         md +&#x3D; &quot;\n### Files \n&quot;;
-        for (let i &#x3D; 0; i &lt; outputMap.files.length; i++) {
-            md +&#x3D; &quot;* [&quot; + outputMap.files[i] + &quot;](&quot; + outputMap.files[i] + &quot;) \n&quot;;
+        for (let i &#x3D; 0; i &lt; outputMap.files.length; i++) {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>This shifts off the root folder b/c our index file is inside the output folder,
+not one level up. Se <a href="https://bitbucket.org/shieldmyfiles/duly-noted/issues/5">issues/5</a> </p>
+<blockquote>
+<p>EXAMPLE:
+docs/myfile.ts.md is linked to as ./myfile.ts.md</p>
+</blockquote>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">            let path: any &#x3D; outputMap.files[i].split(&quot;/&quot;);
+            let name &#x3D; path;
+            path.shift();
+            path.unshift(&quot;.&quot;);
+            path &#x3D; path.join(&quot;/&quot;);
+            name.shift();
+            name &#x3D; name.join(&quot;/&quot;);
+            md +&#x3D; &quot;* [&quot; + name + &quot;](&quot; + path + &quot;) \n&quot;;
         }
         md +&#x3D; &quot;\n------------------------------ \n&quot;;
         md +&#x3D; outputMap.readme;
-        writeFileSync(path.join(that.outputDir, &quot;Duly Noted.md&quot;), md, { flag: &quot;w&quot; });
+        writeFileSync(path.join(that.outputDir, that.indexFile), md, { flag: &quot;w&quot; });
     }</code>
                         </pre>
                     </div>
@@ -560,7 +593,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> Generate a link Prefix from a fileName</p>
+                    <p>Generate a link Prefix from a fileName</p>
 <blockquote>
 <p>NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.</p>
 </blockquote>

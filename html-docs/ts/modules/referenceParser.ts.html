@@ -168,7 +168,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="parse">Parse</h2>
-<p> Parser all files for anchors - produce a <a href="../.././ts/classes/referenceCollection.ts.html#interfaces/IReferenceCollection">interfaces/IReferenceCollection</a> </p>
+<p>Parser all files for anchors - produce a <a href="../.././ts/classes/referenceCollection.ts.html#interfaces/IReferenceCollection">interfaces/IReferenceCollection</a> </p>
 
                     </div>
 
@@ -208,7 +208,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="parse-as-markdown">Parse As Markdown</h2>
-<p> When a file is markdown, we parse the whole thing.</p>
+<p>When a file is markdown, we parse the whole thing.</p>
 
                     </div>
 
@@ -290,7 +290,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="parse-file">Parse File</h2>
-<p> Parse a file to a file map.  <a name="ParseFile"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>ParseFile</a> </p>
+<p>Parse a file to a file map.  <a name="ParseFile"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>ParseFile</a> </p>
 
                     </div>
 
@@ -533,7 +533,27 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                             file.lines[lineNumber].comment &#x3D; longCommentOpenMatch[1].trim();
                         } else {
                             let match &#x3D; XRegExp.exec(line, this.longCommentLineRegExp, 0);
-                            file.lines[lineNumber].comment &#x3D;  &quot; &quot; + match[1].trim() || line;
+                            if (match &amp;&amp; match[1]) {
+                              file.lines[lineNumber].comment &#x3D; match[1].trim();
+                            } else {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Blank Line inside long comment...</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">                              file.lines[lineNumber].comment &#x3D; &quot;&quot;;
+                            }
                         }
                         that.parseComment(line, fileName, lineNumber)
                         .then(() &#x3D;&gt; {
@@ -588,7 +608,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="write-out-file">Write Out File</h2>
-<p> Writes out a file map</p>
+<p>Writes out a file map</p>
 
                     </div>
 
@@ -624,9 +644,9 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h2 id="parse-comment">Parse Comment</h2>
-<p> Once a comment is found (see <a href="../.././ts/modules/referenceParser.ts.html#ParseFile">ParseFile</a>  above for example) this will parse
- that commant for anchors. It will add those anchors to the <a href="../.././ts/classes/referenceCollection.ts.html#interfaces/IReferenceCollection">interfaces/IReferenceCollection</a> 
- for the entire project.</p>
+<p>Once a comment is found (see <a href="../.././ts/modules/referenceParser.ts.html#ParseFile">ParseFile</a>  above for example) this will parse
+that commant for anchors. It will add those anchors to the <a href="../.././ts/classes/referenceCollection.ts.html#interfaces/IReferenceCollection">interfaces/IReferenceCollection</a> 
+for the entire project.</p>
 
                     </div>
 

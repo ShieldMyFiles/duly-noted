@@ -10,6 +10,7 @@ var handlebars = require("handlebars");
 var marked = require("marked");
 var fse = require("fs-extra");
 var _ = require("underscore");
+var Q = require("q");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::HtmlGenerator");
 var HtmlGenerator = (function () {
@@ -34,15 +35,19 @@ var HtmlGenerator = (function () {
         handlebars.registerHelper("ifCond", this.ifCondHelper);
     }
     HtmlGenerator.prototype.generate = function () {
-        logger.info("Generating HTML Documents");
-        var that = this;
-        node_dir_1.readFiles(referenceParser_1.parseLoc, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
-            that.proccessFile(err, content, next, that.outputDir);
-        }, function (err, files) {
-            that.generateIndexPage();
+        var _this = this;
+        return Q.Promise(function (resolve, reject) {
+            logger.info("Generating HTML Documents");
+            var that = _this;
+            node_dir_1.readFiles(referenceParser_1.parseLoc, { match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true }, function (err, content, next) {
+                that.proccessFile(err, content, next, that.outputDir);
+            }, function (err, files) {
+                that.generateIndexPage();
+                resolve(null);
+            });
+            fse.copySync(path.join(_this.projectPath, "templates", "highlight.pack.js"), path.join(_this.outputDir, "scripts/highlight.js"));
+            fse.copySync(path.join(_this.projectPath, "templates", "css", "default.css"), path.join(_this.outputDir, "css/default.css"));
         });
-        fse.copySync(path.join(this.projectPath, "templates", "highlight.pack.js"), path.join(this.outputDir, "scripts/highlight.js"));
-        fse.copySync(path.join(this.projectPath, "templates", "css", "default.css"), path.join(this.outputDir, "css/default.css"));
     };
     HtmlGenerator.prototype.proccessFile = function (err, content, next, outputDir) {
         var file = JSON.parse(content);
