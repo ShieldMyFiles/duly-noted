@@ -10,15 +10,15 @@ var Q = require("q");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceParser");
 exports.parseLoc = "duly-noted";
+exports.commentPatterns = "duly-noted";
 var ReferenceParser = (function () {
     function ReferenceParser(config, logLevel) {
         this.files = config.files;
         this.rootCollection = new referenceCollection_1.ReferenceCollection(exports.parseLoc, logLevel);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
-        this.commentRegExp = new RegExp(config.commentRegExp);
-        this.longCommentOpenRegExp = new RegExp(config.longCommentOpenRegExp);
-        this.longCommentLineRegExp = new RegExp(config.longCommentLineRegExp);
-        this.longCommentCloseRegExp = new RegExp(config.longCommentCloseRegExp);
+        var commentPatternsFile = path.join(__dirname, "../comment-patterns.json");
+        logger.debug("Loading Comment Patterns from " + commentPatternsFile);
+        this.commentPatterns = JSON.parse(fs_1.readFileSync(commentPatternsFile).toString());
         this.externalReferences = config.externalReferences;
         logger.setLevel(logLevel || "DEBUG");
         logger.debug("ready");
@@ -81,31 +81,63 @@ var ReferenceParser = (function () {
         });
     };
     ReferenceParser.prototype.parseFile = function (fileName) {
-        var _this = this;
         logger.debug("parsing code file: " + fileName);
         var that = this;
         var file;
         var insideLongComment = false;
         return Q.Promise(function (resolve, reject) {
+            var commentRegExp;
+            var longCommentOpenRegExp;
+            var longCommentLineRegExp;
+            var longCommentCloseRegExp;
             logger.debug("Working on file: " + fileName);
             file = {
                 name: fileName,
                 lines: [],
                 type: fileType_1.getFileType(fileName)
             };
+            if (that.commentPatterns[file.type]) {
+                logger.debug("Using comment patten for " + file.type);
+                commentRegExp = new RegExp(that.commentPatterns[file.type]["commentRegExp"]);
+                if (that.commentPatterns[file.type]["longCommentOpenRegExp"])
+                    longCommentOpenRegExp = new RegExp(that.commentPatterns[file.type]["longCommentOpenRegExp"]);
+                else
+                    longCommentOpenRegExp = undefined;
+                if (that.commentPatterns[file.type]["longCommentLineRegExp"])
+                    longCommentLineRegExp = new RegExp(that.commentPatterns[file.type]["longCommentLineRegExp"]);
+                else
+                    longCommentLineRegExp = undefined;
+                if (that.commentPatterns[file.type]["longCommentCloseRegExp"])
+                    longCommentCloseRegExp = new RegExp(that.commentPatterns[file.type]["longCommentCloseRegExp"]);
+                else
+                    longCommentLineRegExp = undefined;
+            }
+            else {
+                logger.debug("Using default comment patten.");
+                commentRegExp = new RegExp(that.commentPatterns["default"]["commentRegExp"]);
+                longCommentOpenRegExp = new RegExp(that.commentPatterns["default"]["longCommentOpenRegExp"]);
+                longCommentLineRegExp = new RegExp(that.commentPatterns["default"]["longCommentLineRegExp"]);
+                longCommentCloseRegExp = new RegExp(that.commentPatterns["default"]["longCommentCloseRegExp"]);
+            }
             var lineNumber = 0;
             lineReader.eachLine(fileName, function (line, last) {
                 var thisLine = {
                     number: lineNumber
                 };
                 file.lines.push(thisLine);
-                var longCommentOpenMatch = XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);
+                var longCommentOpenMatch;
+                if (longCommentOpenRegExp) {
+                    longCommentOpenMatch = XRegExp.exec(line, longCommentOpenRegExp, 0, false);
+                }
+                else {
+                    longCommentOpenMatch = false;
+                }
                 if (!insideLongComment && longCommentOpenMatch) {
                     insideLongComment = true;
                     file.lines[lineNumber].longComment = true;
                 }
                 if (!insideLongComment) {
-                    var match = XRegExp.exec(line, that.commentRegExp, 0, false);
+                    var match = XRegExp.exec(line, commentRegExp, 0, false);
                     if (match) {
                         file.lines[lineNumber].comment = match[1];
                         file.lines[lineNumber].code = line.substr(0, match.index - 1);
@@ -138,7 +170,7 @@ var ReferenceParser = (function () {
                     }
                 }
                 else {
-                    if (XRegExp.exec(line, _this.longCommentCloseRegExp, 0)) {
+                    if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
                         file.lines[lineNumber].comment = "";
                         insideLongComment = false;
                     }
@@ -148,7 +180,7 @@ var ReferenceParser = (function () {
                             file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
                         }
                         else {
-                            var match = XRegExp.exec(line, _this.longCommentLineRegExp, 0);
+                            var match = XRegExp.exec(line, longCommentLineRegExp, 0);
                             if (match && match[1]) {
                                 file.lines[lineNumber].comment = match[1].trim();
                             }

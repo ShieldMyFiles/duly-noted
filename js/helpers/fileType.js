@@ -7,6 +7,8 @@ function getFileType(fileName) {
             return "typescript";
         case "js":
             return "javascript";
+        case "html":
+            return "html";
         default:
             return "plain/text";
     }

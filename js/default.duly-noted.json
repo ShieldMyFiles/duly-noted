@@ -5,10 +5,6 @@
     ], 
     "outputDir": "./docs", // STEP 3. Set an output directory for the docs
     "indexFile":"README.md", // Leabe this if you want index markdown output as README.md (helpful of BitBucket/GitHub Rendering)
-    "commentRegExp": "\\/\\/(.*)", // Leave this if you want '//' being comments.
-    "longCommentOpenRegExp": "\\/\\*\\*(.*)", // Leave this if you want '/**' starting long comments
-    "longCommentLineRegExp": "\\*(.*)", // Leave this if you want '*' continuing long comments
-    "longCommentCloseRegExp": "\\*\/", // Leave this if you want '*/' continuing long comments
     "anchorRegExp": "!([a-zA-Z0-9\\-\\./]+)", // Leave this if you want to use '!' to define anchors
     "linkRegExp": "(?:^|\\W)@([a-zA-Z0-9\\-\\./]+)", // Leave this if you want to use '@' to define links
     "readme": "./README.md", // STEP 4. Set this to your readme file

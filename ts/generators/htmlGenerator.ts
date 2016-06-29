@@ -15,7 +15,7 @@
 
 import {IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
 import {parseLoc} from "../modules/referenceParser";
-import {Config, IExternalReference} from "../classes/IConfig";
+import {IConfig, IExternalReference} from "../classes/IConfig";
 import {readFiles, files} from "node-dir";
 import {IFile, ILine} from "../classes/IFile";
 import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} from "fs";
@@ -57,7 +57,7 @@ export class HtmlGenerator implements IHtmlGenerator {
     /**
      * ### Creates an instance of @classes/HtmlGenerator
      */
-    constructor(config: Config, logLevel?: string) {
+    constructor(config: IConfig, logLevel?: string) {
         logger.setLevel(logLevel || "DEBUG");
         this.outputDir = config.outputDir;
         this.collection = JSON.parse(readFileSync(path.join(parseLoc, "internalReferences.json")).toString());

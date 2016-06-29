@@ -8,7 +8,7 @@ import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/ref
 import {IConfig, IExternalReference} from "../classes/IConfig";
 import {IFile, ILine} from "../classes/IFile";
 import {getFileType} from "../helpers/fileType";
-import {writeFileSync, mkdirSync, accessSync, F_OK, openSync} from "fs";
+import {writeFileSync, mkdirSync, accessSync, F_OK, openSync, readFileSync} from "fs";
 import mkdirp = require("mkdirp");
 import * as path from "path";
 import XRegExp = require("xregexp");
@@ -30,6 +30,11 @@ export interface IReferenceParser {
  * ## !constant/parseLoc
  */
 export const parseLoc = "duly-noted";
+/**
+ * ## !constant/commentPatterns
+ */
+export const commentPatterns = "duly-noted";
+
 
 /**
  * ## !classes/ReferenceParser
@@ -38,10 +43,7 @@ export class ReferenceParser implements IReferenceParser {
     files: string[];
     rootCollection: IReferenceCollection;
     anchorRegExp: RegExp;
-    commentRegExp: RegExp;
-    longCommentOpenRegExp: RegExp;
-    longCommentLineRegExp: RegExp;
-    longCommentCloseRegExp: RegExp;
+    commentPatterns: {}[];
     externalReferences: IExternalReference[];
 
     /**
@@ -51,10 +53,10 @@ export class ReferenceParser implements IReferenceParser {
         this.files = config.files;
         this.rootCollection = new ReferenceCollection(parseLoc, logLevel);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
-        this.commentRegExp = new RegExp(config.commentRegExp);
-        this.longCommentOpenRegExp = new RegExp(config.longCommentOpenRegExp);
-        this.longCommentLineRegExp = new RegExp(config.longCommentLineRegExp);
-        this.longCommentCloseRegExp = new RegExp(config.longCommentCloseRegExp);
+
+        let commentPatternsFile = path.join(__dirname, "../comment-patterns.json");
+        logger.debug("Loading Comment Patterns from " + commentPatternsFile);
+        this.commentPatterns = JSON.parse(readFileSync(commentPatternsFile).toString());
         this.externalReferences = config.externalReferences;
         logger.setLevel(logLevel || "DEBUG");
         logger.debug("ready");
@@ -142,12 +144,38 @@ export class ReferenceParser implements IReferenceParser {
         let file: IFile;
         let insideLongComment = false;
         return Q.Promise((resolve, reject) => {
+            let commentRegExp;
+            let longCommentOpenRegExp;
+            let longCommentLineRegExp;
+            let longCommentCloseRegExp;
+
             logger.debug("Working on file: " + fileName);
             file = {
                 name: fileName,
                 lines: [],
                 type: getFileType(fileName)
             };
+
+            // Load comment RegEx bases on file type
+            if (that.commentPatterns[file.type]) {
+                logger.debug("Using comment patten for " + file.type);
+                commentRegExp = new RegExp(that.commentPatterns[file.type]["commentRegExp"]);
+
+                if (that.commentPatterns[file.type]["longCommentOpenRegExp"]) longCommentOpenRegExp =  new RegExp(that.commentPatterns[file.type]["longCommentOpenRegExp"]);
+                else longCommentOpenRegExp = undefined;
+
+                if (that.commentPatterns[file.type]["longCommentLineRegExp"]) longCommentLineRegExp =  new RegExp(that.commentPatterns[file.type]["longCommentLineRegExp"]);
+                else longCommentLineRegExp = undefined;
+
+                if (that.commentPatterns[file.type]["longCommentCloseRegExp"]) longCommentCloseRegExp =  new RegExp(that.commentPatterns[file.type]["longCommentCloseRegExp"]);
+                else longCommentLineRegExp = undefined;
+            } else {
+                logger.debug("Using default comment patten.");
+                commentRegExp =  new RegExp(that.commentPatterns["default"]["commentRegExp"]);
+                longCommentOpenRegExp =  new RegExp(that.commentPatterns["default"]["longCommentOpenRegExp"]);
+                longCommentLineRegExp =  new RegExp(that.commentPatterns["default"]["longCommentLineRegExp"]);
+                longCommentCloseRegExp =  new RegExp(that.commentPatterns["default"]["longCommentCloseRegExp"]);
+            }
 
             // Line numbering traditionally starts at 1 (not 0)
             let lineNumber = 0;
@@ -160,7 +188,12 @@ export class ReferenceParser implements IReferenceParser {
                 file.lines.push(thisLine);
 
                 // Logic for long comments, either beginning, or already started.
-                let longCommentOpenMatch = XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);
+                let longCommentOpenMatch;
+                if (longCommentOpenRegExp) {
+                    longCommentOpenMatch = XRegExp.exec(line, longCommentOpenRegExp, 0, false);
+                } else {
+                    longCommentOpenMatch = false;
+                }
 
                 if (!insideLongComment && longCommentOpenMatch) { // These comments must come at beginning of line.
                     insideLongComment = true;
@@ -169,7 +202,7 @@ export class ReferenceParser implements IReferenceParser {
 
                 // We are not inside a long comment - look for a regular comment.
                 if (!insideLongComment) {
-                    let match = XRegExp.exec(line, that.commentRegExp, 0, false);
+                    let match = XRegExp.exec(line, commentRegExp, 0, false);
 
                     // Contains a tradition comment
                     if (match) {
@@ -207,7 +240,7 @@ export class ReferenceParser implements IReferenceParser {
                 // Inside a long comment - so the whole thing is a comment
                 // If this line contains a long comment closing symbol, then next line isn't long comment.
                 } else {
-                    if (XRegExp.exec(line, this.longCommentCloseRegExp, 0)) {
+                    if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
                         file.lines[lineNumber].comment = "";
                         insideLongComment = false;
                     // This long comment hasn't been closed, so we should parse it for links.
@@ -218,7 +251,7 @@ export class ReferenceParser implements IReferenceParser {
                         if (longCommentOpenMatch) {
                             file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
                         } else {
-                            let match = XRegExp.exec(line, this.longCommentLineRegExp, 0);
+                            let match = XRegExp.exec(line, longCommentLineRegExp, 0);
                             if (match && match[1]) {
                               file.lines[lineNumber].comment = match[1].trim();
                             } else {

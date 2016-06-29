@@ -1,5 +1,5 @@
 import { ITag, ReferenceCollection } from "../classes/referenceCollection";
-import { Config, IExternalReference } from "../classes/IConfig";
+import { IConfig, IExternalReference } from "../classes/IConfig";
 import Q = require("q");
 export interface IHtmlGenerator {
 }
@@ -16,7 +16,7 @@ export declare class HtmlGenerator implements IHtmlGenerator {
     externalReferences: IExternalReference[];
     readme: string;
     projectName: string;
-    constructor(config: Config, logLevel?: string);
+    constructor(config: IConfig, logLevel?: string);
     generate(): Q.IPromise<{}>;
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void;
     replaceAnchors(comment: string, fileName: string, line: number): string;

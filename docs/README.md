@@ -29,6 +29,7 @@
 
 #### constant 
 * [parseLoc](./ts/modules/referenceParser.ts.md#parseLoc) 
+* [commentPatterns](./ts/modules/referenceParser.ts.md#commentPatterns) 
 
 #### classes 
 * [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 

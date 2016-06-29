@@ -64,7 +64,7 @@ import {IReferenceCollection, IAnchor, ReferenceCollection} from &quot;../classe
 import {IConfig, IExternalReference} from &quot;../classes/IConfig&quot;;
 import {IFile, ILine} from &quot;../classes/IFile&quot;;
 import {getFileType} from &quot;../helpers/fileType&quot;;
-import {writeFileSync, mkdirSync, accessSync, F_OK, openSync} from &quot;fs&quot;;
+import {writeFileSync, mkdirSync, accessSync, F_OK, openSync, readFileSync} from &quot;fs&quot;;
 import mkdirp &#x3D; require(&quot;mkdirp&quot;);
 import * as path from &quot;path&quot;;
 import XRegExp &#x3D; require(&quot;xregexp&quot;);
@@ -111,7 +111,25 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">export const parseLoc &#x3D; &quot;duly-noted&quot;;
+                            <code class="typescript">export const parseLoc &#x3D; &quot;duly-noted&quot;;</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h2 id="-a-name-constant-commentpatterns-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-constant-commentpatterns-a-"><a name="constant/commentPatterns"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>constant/commentPatterns</a></h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export const commentPatterns &#x3D; &quot;duly-noted&quot;;
+
 </code>
                         </pre>
                     </div>
@@ -133,10 +151,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);
     files: string[];
     rootCollection: IReferenceCollection;
     anchorRegExp: RegExp;
-    commentRegExp: RegExp;
-    longCommentOpenRegExp: RegExp;
-    longCommentLineRegExp: RegExp;
-    longCommentCloseRegExp: RegExp;
+    commentPatterns: {}[];
     externalReferences: IExternalReference[];
 </code>
                         </pre>
@@ -159,10 +174,10 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);
         this.files &#x3D; config.files;
         this.rootCollection &#x3D; new ReferenceCollection(parseLoc, logLevel);
         this.anchorRegExp &#x3D; new RegExp(config.anchorRegExp);
-        this.commentRegExp &#x3D; new RegExp(config.commentRegExp);
-        this.longCommentOpenRegExp &#x3D; new RegExp(config.longCommentOpenRegExp);
-        this.longCommentLineRegExp &#x3D; new RegExp(config.longCommentLineRegExp);
-        this.longCommentCloseRegExp &#x3D; new RegExp(config.longCommentCloseRegExp);
+
+        let commentPatternsFile &#x3D; path.join(__dirname, &quot;../comment-patterns.json&quot;);
+        logger.debug(&quot;Loading Comment Patterns from &quot; + commentPatternsFile);
+        this.commentPatterns &#x3D; JSON.parse(readFileSync(commentPatternsFile).toString());
         this.externalReferences &#x3D; config.externalReferences;
         logger.setLevel(logLevel || &quot;DEBUG&quot;);
         logger.debug(&quot;ready&quot;);
@@ -321,12 +336,54 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);
         let file: IFile;
         let insideLongComment &#x3D; false;
         return Q.Promise((resolve, reject) &#x3D;&gt; {
+            let commentRegExp;
+            let longCommentOpenRegExp;
+            let longCommentLineRegExp;
+            let longCommentCloseRegExp;
+
             logger.debug(&quot;Working on file: &quot; + fileName);
             file &#x3D; {
                 name: fileName,
                 lines: [],
                 type: getFileType(fileName)
             };
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Load comment RegEx bases on file type</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">           
+            if (that.commentPatterns[file.type]) {
+                logger.debug(&quot;Using comment patten for &quot; + file.type);
+                commentRegExp &#x3D; new RegExp(that.commentPatterns[file.type][&quot;commentRegExp&quot;]);
+
+                if (that.commentPatterns[file.type][&quot;longCommentOpenRegExp&quot;]) longCommentOpenRegExp &#x3D;  new RegExp(that.commentPatterns[file.type][&quot;longCommentOpenRegExp&quot;]);
+                else longCommentOpenRegExp &#x3D; undefined;
+
+                if (that.commentPatterns[file.type][&quot;longCommentLineRegExp&quot;]) longCommentLineRegExp &#x3D;  new RegExp(that.commentPatterns[file.type][&quot;longCommentLineRegExp&quot;]);
+                else longCommentLineRegExp &#x3D; undefined;
+
+                if (that.commentPatterns[file.type][&quot;longCommentCloseRegExp&quot;]) longCommentCloseRegExp &#x3D;  new RegExp(that.commentPatterns[file.type][&quot;longCommentCloseRegExp&quot;]);
+                else longCommentLineRegExp &#x3D; undefined;
+            } else {
+                logger.debug(&quot;Using default comment patten.&quot;);
+                commentRegExp &#x3D;  new RegExp(that.commentPatterns[&quot;default&quot;][&quot;commentRegExp&quot;]);
+                longCommentOpenRegExp &#x3D;  new RegExp(that.commentPatterns[&quot;default&quot;][&quot;longCommentOpenRegExp&quot;]);
+                longCommentLineRegExp &#x3D;  new RegExp(that.commentPatterns[&quot;default&quot;][&quot;longCommentLineRegExp&quot;]);
+                longCommentCloseRegExp &#x3D;  new RegExp(that.commentPatterns[&quot;default&quot;][&quot;longCommentCloseRegExp&quot;]);
+            }
 </code>
                         </pre>
                     </div>
@@ -387,7 +444,12 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">               
-                let longCommentOpenMatch &#x3D; XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);
+                let longCommentOpenMatch;
+                if (longCommentOpenRegExp) {
+                    longCommentOpenMatch &#x3D; XRegExp.exec(line, longCommentOpenRegExp, 0, false);
+                } else {
+                    longCommentOpenMatch &#x3D; false;
+                }
 </code>
                         </pre>
                     </div>
@@ -428,7 +490,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);
                         <pre>
                             <code class="typescript">               
                 if (!insideLongComment) {
-                    let match &#x3D; XRegExp.exec(line, that.commentRegExp, 0, false);
+                    let match &#x3D; XRegExp.exec(line, commentRegExp, 0, false);
 </code>
                         </pre>
                     </div>
@@ -530,7 +592,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);
                         <pre>
                             <code class="typescript">               
                 } else {
-                    if (XRegExp.exec(line, this.longCommentCloseRegExp, 0)) {
+                    if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
                         file.lines[lineNumber].comment &#x3D; &quot;&quot;;
                         insideLongComment &#x3D; false;</code>
                         </pre>
@@ -557,7 +619,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);
                         if (longCommentOpenMatch) {
                             file.lines[lineNumber].comment &#x3D; longCommentOpenMatch[1].trim();
                         } else {
-                            let match &#x3D; XRegExp.exec(line, this.longCommentLineRegExp, 0);
+                            let match &#x3D; XRegExp.exec(line, longCommentLineRegExp, 0);
                             if (match &amp;&amp; match[1]) {
                               file.lines[lineNumber].comment &#x3D; match[1].trim();
                             } else {</code>

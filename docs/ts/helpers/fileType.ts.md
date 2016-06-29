@@ -10,6 +10,9 @@ export function getFileType(fileName: string): string {
         case "js":
             return "javascript";
 
+        case "html":
+            return "html";
+
         default:
             return "plain/text";
     }

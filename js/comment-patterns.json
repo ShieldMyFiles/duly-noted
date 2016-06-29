@@ -1,0 +1,23 @@
+{
+    "default": {
+        "commentRegExp": "\\/\\/(.*)",
+        "longCommentOpenRegExp": "\\/\\*\\*(.*)",
+        "longCommentLineRegExp": "\\* (.*)",
+        "longCommentCloseRegExp": "\\*\/"
+    },
+    "typescript": {
+        "commentRegExp": "\\/\\/(.*)",
+        "longCommentOpenRegExp": "\\/\\*\\*(.*)",
+        "longCommentLineRegExp": "\\* (.*)",
+        "longCommentCloseRegExp": "\\*\/"
+    },
+    "javascript":{
+        "commentRegExp": "\\/\\/(.*)",
+        "longCommentOpenRegExp": "\\/\\*\\*(.*)",
+        "longCommentLineRegExp": "\\* (.*)",
+        "longCommentCloseRegExp": "\\*\/"
+    },
+    "html":{
+        "commentRegExp": "<!--(.*)-->"
+    }
+}
