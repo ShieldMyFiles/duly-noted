@@ -1,9 +1,31 @@
+![logo](https://raw.githubusercontent.com/ShieldMyFiles/duly-noted/master/DNLogo.png)
+
+
 # Duly Noted
+[![npm version](https://badge.fury.io/js/duly-noted.svg)](https://badge.fury.io/js/duly-noted)
 
-> Code documentation for the modern world. 
+> A better way to document code.
 
-## Goal of this project
+## Why Duly Noted?
 The goal of this project is to provide an easy, flexible way to comment source code, leveraging links! 
+
+We tried a bunch of tools before we sent out to write our own, but none of them had the full set features we needed.
+We spent a lot of time writing comments, and running document generators, all to produce less-than-useful documentation
+that we rarely looked at - so Duly Noted was born.
+
+Duly Noted aims to:
+* Output documentation in easy to display formats
+    * HTML
+    * Markdown
+* Support linking
+    * Link internally between places in comments with simple, clean notation
+    * Link externally to wikis, tickets, tasks, issues, stack-overflow questions - you name it.
+* Produce "Literate" code style documentation that is easy to read and understand
+* Support long-form and short form comments in many different languages
+    * HTML/XML `<!-- -->`
+    * C, C++, JS, Etc. `// , /**`
+* Produce documents that are easy to host in git tools (GitHub, BitBucket)
+    * See the docs in action here --> [Duly Noted Docs](/docs)
 
 ## Installing
 ```
