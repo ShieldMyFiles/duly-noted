@@ -181,7 +181,7 @@ Parse a file to a file map. [ParseFile](#ParseFile)
             };
 
 ```
- Load comment RegEx bases on file type
+ Load comment RegEx based on file type
 ```typescript
            
             if (that.commentPatterns[file.type]) {

@@ -156,7 +156,7 @@ export class ReferenceParser implements IReferenceParser {
                 type: getFileType(fileName)
             };
 
-            // Load comment RegEx bases on file type
+            // Load comment RegEx based on file type
             if (that.commentPatterns[file.type]) {
                 logger.debug("Using comment patten for " + file.type);
                 commentRegExp = new RegExp(that.commentPatterns[file.type]["commentRegExp"]);
