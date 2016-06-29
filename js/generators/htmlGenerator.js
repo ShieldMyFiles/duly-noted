@@ -88,7 +88,7 @@ var HtmlGenerator = (function () {
                 logger.fatal(err.message);
             }
             else {
-                logger.debug("Saving output for " + file.type + " file " + file.name, " as ", file.name + ".html");
+                logger.debug("Saving output for " + file.type + " file " + file.name + " as " + file.name + ".html");
                 fs_1.writeFileSync(path.join(outputDir, file.name + ".html"), output, { flag: "w" });
                 next();
             }

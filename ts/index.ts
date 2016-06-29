@@ -7,8 +7,8 @@
  */
 import {IConfig} from "./classes/IConfig";
 import program = require("commander");
-import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} from "fs";
-import {ReferenceParser} from "./modules/referenceParser";
+import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync, readdirSync, rmdirSync, statSync} from "fs";
+import {ReferenceParser, parseLoc} from "./modules/referenceParser";
 import _ = require("underscore");
 import * as path from "path";
 import glob = require("glob");
@@ -105,9 +105,14 @@ export function run () {
                 new MarkdownGenerator(config, logLevel).generate();
              }
 
+             if (config.leaveJSONFiles === false) {
+                 logger.info("Cleaning up JSON");
+                 deleteDir(parseLoc);
+             }
+
          })
          .catch( (err: Error) => {
-             // !TODO/errors > An overall stratefy is needed to identify errors.
+             // !TODO/errors > An overall strategy is needed to identify errors.
              logger.error(err.message + err.stack);
          });
      });
@@ -125,3 +130,27 @@ function getFilesFromGlob(globString: string): Q.Promise<string[]> {
         });
     });
 }
+
+/**
+ * ## Delete a directory
+ * This is a simple helper to recursively delete a directory, and any sub-directories and files it contains.
+ */
+function deleteDir(dirPath) {
+    let files = [];
+
+    try { files = readdirSync(dirPath); }
+    catch (e) { return; }
+
+    if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+            let filePath = dirPath + "/" + files[i];
+            if (statSync(filePath).isFile()) {
+                unlinkSync(filePath);
+            } else {
+                deleteDir(filePath);
+            }
+        }
+    }
+
+    rmdirSync(dirPath);
+};

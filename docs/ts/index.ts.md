@@ -9,8 +9,8 @@ This is the entry file to Duly Noted
 ```typescript
 import {IConfig} from "./classes/IConfig";
 import program = require("commander");
-import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} from "fs";
-import {ReferenceParser} from "./modules/referenceParser";
+import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync, readdirSync, rmdirSync, statSync} from "fs";
+import {ReferenceParser, parseLoc} from "./modules/referenceParser";
 import _ = require("underscore");
 import * as path from "path";
 import glob = require("glob");
@@ -100,6 +100,10 @@ export function run () {
              if (_.contains(config.generators, "markdown")) {
                 new MarkdownGenerator(config, logLevel).generate();
              }
+             if (config.leaveJSONFiles === false) {
+                 logger.info("Cleaning up JSON");
+                 deleteDir(parseLoc);
+             }
          })
          .catch( (err: Error) => {
 ```
@@ -125,4 +129,20 @@ function getFilesFromGlob(globString: string): Q.Promise<string[]> {
         });
     });
 }
+function deleteDir(dirPath) {
+    let files = [];
+    try { files = readdirSync(dirPath); }
+    catch (e) { return; }
+    if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+            let filePath = dirPath + "/" + files[i];
+            if (statSync(filePath).isFile()) {
+                unlinkSync(filePath);
+            } else {
+                deleteDir(filePath);
+            }
+        }
+    }
+    rmdirSync(dirPath);
+};
 ```

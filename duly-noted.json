@@ -30,6 +30,6 @@
     ],
     "generators": [
         "markdown"
-    ]
-
+    ],
+    "leaveJSONFiles":false
 }

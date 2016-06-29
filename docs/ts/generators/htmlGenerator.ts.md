@@ -145,7 +145,7 @@ code, comment, long comment presence
                 logger.fatal(err.message);
             }
             else {
-                logger.debug("Saving output for " + file.type + " file " + file.name " as " file.name + ".html");
+                logger.debug("Saving output for " + file.type + " file " + file.name + " as " + file.name + ".html");
                 writeFileSync(path.join(outputDir, file.name + ".html"), output, { flag: "w" });
                 next();
             }

@@ -28,5 +28,6 @@
         // STEP 6 Pick a generator, or generators to use.
         "html"
     // ,"markdown"
-    ]
+    ],
+    "leaveJSONFiles":false // Leave this unless you want to keep artifacts
 }

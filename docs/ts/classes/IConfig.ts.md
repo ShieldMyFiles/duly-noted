@@ -19,6 +19,7 @@ export interface IConfig {
     externalReferences: IExternalReference[];
     readme: string;
     generators: string[];
+    leaveJSONFiles: boolean;
 }
 export interface IExternalReference {
     anchorRegExp: string;

@@ -75,6 +75,10 @@ function run() {
             if (_.contains(config.generators, "markdown")) {
                 new markdownGenerator_1.MarkdownGenerator(config, logLevel).generate();
             }
+            if (config.leaveJSONFiles === false) {
+                logger.info("Cleaning up JSON");
+                deleteDir(referenceParser_1.parseLoc);
+            }
         })
             .catch(function (err) {
             logger.error(err.message + err.stack);
@@ -91,3 +95,25 @@ function getFilesFromGlob(globString) {
         });
     });
 }
+function deleteDir(dirPath) {
+    var files = [];
+    try {
+        files = fs_1.readdirSync(dirPath);
+    }
+    catch (e) {
+        return;
+    }
+    if (files.length > 0) {
+        for (var i = 0; i < files.length; i++) {
+            var filePath = dirPath + "/" + files[i];
+            if (fs_1.statSync(filePath).isFile()) {
+                fs_1.unlinkSync(filePath);
+            }
+            else {
+                deleteDir(filePath);
+            }
+        }
+    }
+    fs_1.rmdirSync(dirPath);
+}
+;

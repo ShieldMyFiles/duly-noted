@@ -39,17 +39,6 @@
 ------------------------------ 
 
 ### Files 
-* [authors.md.md](./authors.md.md) 
-* [license.md.md](./license.md.md) 
-* [ts/classes/IConfig.ts.md](./ts/classes/IConfig.ts.md) 
-* [ts/classes/referenceCollection.ts.md](./ts/classes/referenceCollection.ts.md) 
-* [ts/generators/htmlGenerator.ts.md](./ts/generators/htmlGenerator.ts.md) 
-* [ts/generators/markdownGenerator.ts.md](./ts/generators/markdownGenerator.ts.md) 
-* [ts/helpers/fileType.ts.md](./ts/helpers/fileType.ts.md) 
-* [ts/helpers/helpers.ts.md](./ts/helpers/helpers.ts.md) 
-* [ts/index.ts.md](./ts/index.ts.md) 
-* [ts/modules/referenceParser.ts.md](./ts/modules/referenceParser.ts.md) 
-* [ts/typings/index.d.ts.md](./ts/typings/index.d.ts.md) 
 
 ------------------------------ 
 
