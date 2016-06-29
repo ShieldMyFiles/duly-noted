@@ -59,7 +59,8 @@
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;
+                            <code class="typescript">
+import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;
 import {parseLoc} from &quot;../modules/referenceParser&quot;;
 import {IConfig, IExternalReference} from &quot;../classes/IConfig&quot;;
 import {readFiles, files} from &quot;node-dir&quot;;
@@ -70,8 +71,12 @@ import mkdirp &#x3D; require(&quot;mkdirp&quot;);
 import * as path from &quot;path&quot;;
 import _ &#x3D; require(&quot;underscore&quot;);
 import lineReader &#x3D; require(&quot;line-reader&quot;);
+import Q &#x3D; require(&quot;q&quot;);
+
 import log4js &#x3D; require(&quot;log4js&quot;);
-let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</code>
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);
+
+</code>
                         </pre>
                     </div>
             </div>
@@ -90,7 +95,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
                         <pre>
                             <code class="typescript">export interface IMarkdownGenerator {
     generate(): void;
-}</code>
+}
+</code>
                         </pre>
                     </div>
             </div>
@@ -117,7 +123,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
     tags: ITag[] &#x3D; [];
     readme: string;
     projectName: string;
-    outputFiles: string[] &#x3D; [];</code>
+    outputFiles: string[] &#x3D; [];
+</code>
                         </pre>
                     </div>
             </div>
@@ -145,7 +152,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
         this.readme &#x3D; config.readme;
         this.projectName &#x3D; config.projectName;
         this.indexFile &#x3D; config.indexFile;
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -185,7 +193,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);</
                 });
             });
         });
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -208,12 +217,14 @@ code, comment, long comment presence</p>
         let file: IFile &#x3D; JSON.parse(content);
         let that &#x3D; this;
         logger.debug(&quot;Processing &quot; + file.name);
+
         if (err) {
             logger.error(err.message);
         } else {
             let file: IFile &#x3D; JSON.parse(content);
             let output: string &#x3D; &quot;&quot;;
             let inCodeBlock &#x3D; false;
+
             for (let i &#x3D; 0; i &lt; file.lines.length; i++) {
                 if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
                     file.lines[i].comment &#x3D; this.replaceAnchors(file.lines[i].comment, file.name, i);
@@ -221,7 +232,9 @@ code, comment, long comment presence</p>
                     file.lines[i].comment &#x3D; this.replaceInternalLinks(file.lines[i].comment, file.name, i);
                 }
             }
-            for (let i &#x3D; 0; i &lt; file.lines.length; i++) {</code>
+
+            for (let i &#x3D; 0; i &lt; file.lines.length; i++) {
+</code>
                         </pre>
                     </div>
             </div>
@@ -239,7 +252,7 @@ code, comment, long comment presence</p>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">               
-                if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
+                if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
                     if (inCodeBlock) {</code>
                         </pre>
                     </div>
@@ -257,11 +270,13 @@ code, comment, long comment presence</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                        output +&#x3D; &quot;&#x60;&#x60;&#x60;&quot; + &quot;\n&quot;;
+                            <code class="typescript">                        output +&#x3D; &quot;\n&quot; + &quot;&#x60;&#x60;&#x60;&quot; ;
                         inCodeBlock &#x3D; false;
                     }
-                    output +&#x3D; file.lines[i].comment + &quot;\n&quot; + &quot;\n&quot;;
-                }</code>
+
+                    output +&#x3D; &quot;\n&quot; + file.lines[i].comment;
+                }
+</code>
                         </pre>
                     </div>
             </div>
@@ -279,7 +294,7 @@ code, comment, long comment presence</p>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">               
-                if (typeof(file.lines[i].code) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].code !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].code !&#x3D;&#x3D; null) {
+                if (typeof(file.lines[i].code) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].code !&#x3D;&#x3D; null) {
                     if (!inCodeBlock) {</code>
                         </pre>
                     </div>
@@ -297,12 +312,13 @@ code, comment, long comment presence</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                        output +&#x3D; &quot;&#x60;&#x60;&#x60;&quot; + file.type +  &quot;\n&quot;;
+                            <code class="typescript">                        output +&#x3D; &quot;\n&quot; + &quot;&#x60;&#x60;&#x60;&quot; + file.type;
                         inCodeBlock &#x3D; true;
                     }
-                    output +&#x3D; file.lines[i].code + &quot;\n&quot;;
+                    output +&#x3D; &quot;\n&quot; + file.lines[i].code;
                 }
             }
+
             if (inCodeBlock) {</code>
                         </pre>
                     </div>
@@ -320,12 +336,14 @@ code, comment, long comment presence</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                output +&#x3D; &quot;&#x60;&#x60;&#x60;&quot; + &quot;\n&quot;;
+                            <code class="typescript">                output +&#x3D; &quot;\n&quot; + &quot;&#x60;&#x60;&#x60;&quot;;
                 inCodeBlock &#x3D; false;
             }
+
             let filePathArray &#x3D; path.join(outputDir, file.name + &quot;.md&quot;).split(&quot;/&quot;);
             filePathArray.pop();
             let filePath &#x3D; filePathArray.join(&quot;/&quot;);
+
             mkdirp(filePath, function (err) {
                 if (err) {
                     logger.fatal(err.message);
@@ -337,9 +355,11 @@ code, comment, long comment presence</p>
                     writeFileSync(fileName, output, { flag: &quot;w&quot; });
                 }
             });
+
             next();
         }
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -382,10 +402,13 @@ code, comment, long comment presence</p>
             newComment &#x3D;  newComment.substr(0, match.index) +
             &quot;[&quot; + match[1] + &quot;](#&quot; + match[1] + &quot;)&quot; +
             newComment.substr(match.index + match[0].length);
+
             pos &#x3D; match.index + match[0].length;
         }
+
         return newComment;
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -410,7 +433,9 @@ Processes a comment line, replacing links with markdown links</p>
         let pos &#x3D; 0;
         let match;
         let newComment: string &#x3D; comment;
-        let linkPrefix &#x3D; this.getLinkPrefix(fileName);</code>
+
+        let linkPrefix &#x3D; this.getLinkPrefix(fileName);
+</code>
                         </pre>
                     </div>
             </div>
@@ -440,8 +465,10 @@ Processes a comment line, replacing links with markdown links</p>
             }
             pos &#x3D; match.index + match[0].length;
         }
+
         return newComment;
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -465,7 +492,8 @@ Processes a comment line, replacing links with markdown links to external urls</
                             <code class="typescript">    replaceExternalLinks(comment: string, fileName: string, line: number) {
         let pos &#x3D; 0;
         let match;
-        let newComment: string &#x3D; comment;</code>
+        let newComment: string &#x3D; comment;
+</code>
                         </pre>
                     </div>
             </div>
@@ -486,19 +514,23 @@ Processes a comment line, replacing links with markdown links to external urls</
         while (match &#x3D; XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             let tagArray &#x3D; match[1].split(&quot;/&quot;);
             let tag &#x3D;  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
+
             if (tag) {
                 logger.debug(&quot;found external link: &quot; + match[1]);
                 for (let i &#x3D; 1; i &lt; tagArray.length; i++) {
                     tag.path &#x3D; tag.path.replace(&quot;::&quot;, tagArray[i]);
                 }
+
                 newComment &#x3D;  comment.substr(0, match.index) +
                 &quot; [&quot; + match[1] + &quot;](&quot; + tag.path + &quot;) &quot; +
                 newComment.substr(match.index + match[0].length);
             }
+
             pos &#x3D; match.index + match[0].length;
         }
         return newComment;
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -520,39 +552,50 @@ and sucks in the README.</p>
                             <code class="typescript">    generateIndexPage(readmeText?): void {
         logger.info(&quot;generating Duly Noted Index file.&quot;);
         let that &#x3D; this;
+
         let outputMap &#x3D; {
             project: this.projectName,
             collections: [],
             files: this.outputFiles,
             readme: readmeText
         };
+
         let collections &#x3D; that.referenceCollection.getTagsByCollection();
+
         for (let i &#x3D; 0; i &lt; collections.length; i++) {
             let anchors &#x3D; _.clone(collections[i].anchors);
             for (let x &#x3D; 0; x &lt; anchors.length; x++) {
                 let linkPrefix &#x3D; that.getLinkPrefix(anchors[x].path);
                 anchors[x].path &#x3D; anchors[x].path + &quot;.md#&quot; + anchors[x].linkStub;
             }
+
             let name &#x3D; collections[i].name.split(&quot;/&quot;);
             name.shift();
             name.shift();
             name &#x3D; name.join(&quot;/&quot;);
+
             outputMap.collections.push({
                 name: name,
                 anchors: anchors
             });
         }
+
         let md &#x3D; &quot;# &quot; + this.projectName + &quot; documentation \n&quot;;
+
         md +&#x3D; &quot;### Collections \n&quot;;
         for (let i &#x3D; 0; i &lt; outputMap.collections.length; i++) {
            md +&#x3D; &quot;\n#### &quot; + outputMap.collections[i].name + &quot; \n&quot;;
+
            for (let x &#x3D; 0; x &lt; outputMap.collections[i].anchors.length; x++) {
                md +&#x3D; &quot;* [&quot; + outputMap.collections[i].anchors[x].anchor + &quot;]&quot; + &quot;(&quot; + outputMap.collections[i].anchors[x].path + &quot;) \n&quot;;
            }
         }
+
         md +&#x3D; &quot;\n------------------------------ \n&quot;;
         md +&#x3D; &quot;\n### Files \n&quot;;
-        for (let i &#x3D; 0; i &lt; outputMap.files.length; i++) {</code>
+
+        for (let i &#x3D; 0; i &lt; outputMap.files.length; i++) {
+</code>
                         </pre>
                     </div>
             </div>
@@ -581,12 +624,16 @@ docs/myfile.ts.md is linked to as ./myfile.ts.md</p>
             path &#x3D; path.join(&quot;/&quot;);
             name.shift();
             name &#x3D; name.join(&quot;/&quot;);
+
             md +&#x3D; &quot;* [&quot; + name + &quot;](&quot; + path + &quot;) \n&quot;;
         }
         md +&#x3D; &quot;\n------------------------------ \n&quot;;
+
         md +&#x3D; outputMap.readme;
+
         writeFileSync(path.join(that.outputDir, that.indexFile), md, { flag: &quot;w&quot; });
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -612,9 +659,11 @@ docs/myfile.ts.md is linked to as ./myfile.ts.md</p>
         for (let i &#x3D; 0; i &lt; fileNameAsArray.length - 2; i++) {
             linkPrefix +&#x3D; &quot;../&quot;;
         }
+
         return linkPrefix;
     }
-}</code>
+}
+</code>
                         </pre>
                     </div>
             </div>

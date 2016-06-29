@@ -1,10 +1,11 @@
+
+
 # [MarkdownGenerator](#MarkdownGenerator)
-
  [authors/chris](../.././authors.md.md#authors/chris) 
-
  [license](../.././license.md.md#license) 
 
 ```typescript
+
 import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
 import {parseLoc} from "../modules/referenceParser";
 import {IConfig, IExternalReference} from "../classes/IConfig";
@@ -17,16 +18,22 @@ import * as path from "path";
 import _ = require("underscore");
 import lineReader = require("line-reader");
 import Q = require("q");
+
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::MarkdownGenerator");
+
+
 ```
+
 [interfaces/IMarkdownGenerator](#interfaces/IMarkdownGenerator)
 
 ```typescript
 export interface IMarkdownGenerator {
     generate(): void;
 }
+
 ```
+
 ## [classes/MarkdownGenerator](#classes/MarkdownGenerator)
 
 ```typescript
@@ -41,7 +48,9 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     readme: string;
     projectName: string;
     outputFiles: string[] = [];
+
 ```
+
 ### Creates an instance of [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator) 
 
 ```typescript
@@ -57,9 +66,10 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.projectName = config.projectName;
         this.indexFile = config.indexFile;
     }
-```
-## Generate Markdown Docs
 
+```
+
+## Generate Markdown Docs
 Creates Markdown docs for a set of file maps and reference maps set on [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator)  construction.
 
 ```typescript
@@ -86,11 +96,11 @@ Creates Markdown docs for a set of file maps and reference maps set on [classes/
             });
         });
     }
+
 ```
+
 ## Process Files
-
 Processes the file map for a file, making output decisions based on
-
 code, comment, long comment presence
 
 ```typescript
@@ -98,12 +108,14 @@ code, comment, long comment presence
         let file: IFile = JSON.parse(content);
         let that = this;
         logger.debug("Processing " + file.name);
+
         if (err) {
             logger.error(err.message);
         } else {
             let file: IFile = JSON.parse(content);
             let output: string = "";
             let inCodeBlock = false;
+
             for (let i = 0; i < file.lines.length; i++) {
                 if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
                     file.lines[i].comment = this.replaceAnchors(file.lines[i].comment, file.name, i);
@@ -111,51 +123,53 @@ code, comment, long comment presence
                     file.lines[i].comment = this.replaceInternalLinks(file.lines[i].comment, file.name, i);
                 }
             }
+
             for (let i = 0; i < file.lines.length; i++) {
+
 ```
  Comment
-
 ```typescript
                
-                if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
+                if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== null) {
                     if (inCodeBlock) {
 ```
  Close the current block of code. 
-
 ```typescript
-                        output += "```" + "\n";
+                        output += "\n" + "```" ;
                         inCodeBlock = false;
                     }
-                    output += file.lines[i].comment + "\n" + "\n";
+
+                    output += "\n" + file.lines[i].comment;
                 }
+
 ```
  Code
-
 ```typescript
                
-                if (typeof(file.lines[i].code) === "string" && file.lines[i].code !== "" && file.lines[i].code !== null) {
+                if (typeof(file.lines[i].code) === "string" && file.lines[i].code !== null) {
                     if (!inCodeBlock) {
 ```
  Open new code block. 
-
 ```typescript
-                        output += "```" + file.type +  "\n";
+                        output += "\n" + "```" + file.type;
                         inCodeBlock = true;
                     }
-                    output += file.lines[i].code + "\n";
+                    output += "\n" + file.lines[i].code;
                 }
             }
+
             if (inCodeBlock) {
 ```
  Close the current block of code. 
-
 ```typescript
-                output += "```" + "\n";
+                output += "\n" + "```";
                 inCodeBlock = false;
             }
+
             let filePathArray = path.join(outputDir, file.name + ".md").split("/");
             filePathArray.pop();
             let filePath = filePathArray.join("/");
+
             mkdirp(filePath, function (err) {
                 if (err) {
                     logger.fatal(err.message);
@@ -167,12 +181,14 @@ code, comment, long comment presence
                     writeFileSync(fileName, output, { flag: "w" });
                 }
             });
+
             next();
         }
     }
-```
-## Replace Anchors
 
+```
+
+## Replace Anchors
 Processes a comment line, replacing anchors with markdown anchor link tags
 
 ```typescript
@@ -182,22 +198,23 @@ Processes a comment line, replacing anchors with markdown anchor link tags
         let newComment: string = comment;
 ```
  Look at the line for anchors - replace them with links. 
-
 ```typescript
        
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
             newComment =  newComment.substr(0, match.index) +
             "[" + match[1] + "](#" + match[1] + ")" +
             newComment.substr(match.index + match[0].length);
+
             pos = match.index + match[0].length;
         }
+
         return newComment;
     }
+
 ```
+
 ## Replace Links
-
 > Run this AFTER external link replacement to ensure warning accuracy
-
 Processes a comment line, replacing links with markdown links
 
 ```typescript
@@ -205,10 +222,11 @@ Processes a comment line, replacing links with markdown links
         let pos = 0;
         let match;
         let newComment: string = comment;
+
         let linkPrefix = this.getLinkPrefix(fileName);
+
 ```
  Look at the line for anchors - replace them with links. 
-
 ```typescript
        
         while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
@@ -223,13 +241,14 @@ Processes a comment line, replacing links with markdown links
             }
             pos = match.index + match[0].length;
         }
+
         return newComment;
     }
+
 ```
+
 ## Replace External Links
-
 > Run this BEFORE internal link replacement
-
 Processes a comment line, replacing links with markdown links to external urls
 
 ```typescript
@@ -237,78 +256,90 @@ Processes a comment line, replacing links with markdown links to external urls
         let pos = 0;
         let match;
         let newComment: string = comment;
+
 ```
  Look at the line for external references - replace them with links. 
-
 ```typescript
        
         while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             let tagArray = match[1].split("/");
             let tag =  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
+
             if (tag) {
                 logger.debug("found external link: " + match[1]);
                 for (let i = 1; i < tagArray.length; i++) {
                     tag.path = tag.path.replace("::", tagArray[i]);
                 }
+
                 newComment =  comment.substr(0, match.index) +
                 " [" + match[1] + "](" + tag.path + ") " +
                 newComment.substr(match.index + match[0].length);
             }
+
             pos = match.index + match[0].length;
         }
         return newComment;
     }
+
 ```
+
 ## Generates the "Index Page"
-
 This generates the index page, listing all the link collections,
-
 and sucks in the README.
 
 ```typescript
     generateIndexPage(readmeText?): void {
         logger.info("generating Duly Noted Index file.");
         let that = this;
+
         let outputMap = {
             project: this.projectName,
             collections: [],
             files: this.outputFiles,
             readme: readmeText
         };
+
         let collections = that.referenceCollection.getTagsByCollection();
+
         for (let i = 0; i < collections.length; i++) {
             let anchors = _.clone(collections[i].anchors);
             for (let x = 0; x < anchors.length; x++) {
                 let linkPrefix = that.getLinkPrefix(anchors[x].path);
                 anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
             }
+
             let name = collections[i].name.split("/");
             name.shift();
             name.shift();
             name = name.join("/");
+
             outputMap.collections.push({
                 name: name,
                 anchors: anchors
             });
         }
+
         let md = "# " + this.projectName + " documentation \n";
+
         md += "### Collections \n";
         for (let i = 0; i < outputMap.collections.length; i++) {
            md += "\n#### " + outputMap.collections[i].name + " \n";
+
            for (let x = 0; x < outputMap.collections[i].anchors.length; x++) {
                md += "* [" + outputMap.collections[i].anchors[x].anchor + "]" + "(" + outputMap.collections[i].anchors[x].path + ") \n";
            }
         }
+
         md += "\n------------------------------ \n";
         md += "\n### Files \n";
+
         for (let i = 0; i < outputMap.files.length; i++) {
+
 ```
+
 This shifts off the root folder b/c our index file is inside the output folder,
-
 not one level up. See [issues/5](https://bitbucket.org/shieldmyfiles/duly-noted/issues/5) 
-
 > EXAMPLE:
-
 > docs/myfile.ts.md is linked to as ./myfile.ts.md
 
 ```typescript
@@ -319,15 +350,19 @@ not one level up. See [issues/5](https://bitbucket.org/shieldmyfiles/duly-noted/
             path = path.join("/");
             name.shift();
             name = name.join("/");
+
             md += "* [" + name + "](" + path + ") \n";
         }
         md += "\n------------------------------ \n";
+
         md += outputMap.readme;
+
         writeFileSync(path.join(that.outputDir, that.indexFile), md, { flag: "w" });
     }
-```
-Generate a link Prefix from a fileName
 
+```
+
+Generate a link Prefix from a fileName
 > NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.
 
 ```typescript
@@ -337,7 +372,9 @@ Generate a link Prefix from a fileName
         for (let i = 0; i < fileNameAsArray.length - 2; i++) {
             linkPrefix += "../";
         }
+
         return linkPrefix;
     }
 }
+
 ```

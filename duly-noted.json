@@ -31,5 +31,5 @@
     "generators": [
         "markdown"
     ],
-    "leaveJSONFiles":false
+    "leaveJSONFiles":true
 }

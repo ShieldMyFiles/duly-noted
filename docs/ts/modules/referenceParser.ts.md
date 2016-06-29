@@ -1,10 +1,11 @@
+
+
 # [ReferenceParser](#ReferenceParser)
-
  [authors/chris](../.././authors.md.md#authors/chris) 
-
  [license](../.././license.md.md#license) 
 
 ```typescript
+
 import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";
 import {IConfig, IExternalReference} from "../classes/IConfig";
 import {IFile, ILine} from "../classes/IFile";
@@ -16,21 +17,28 @@ import XRegExp = require("xregexp");
 import lineReader = require("line-reader");
 import Q = require("q");
 import {doInOrder, doNext} from "../helpers/helpers";
+
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::ReferenceParser");
+
 ```
+
 ## [interfaces/IReferenceParser](#interfaces/IReferenceParser)
 
 ```typescript
 export interface IReferenceParser {
     parse(): Q.Promise<IReferenceCollection>;
 }
+
 ```
+
 ## [constant/parseLoc](#constant/parseLoc)
 
 ```typescript
 export const parseLoc = "duly-noted";
+
 ```
+
 ## [classes/ReferenceParser](#classes/ReferenceParser)
 
 ```typescript
@@ -43,7 +51,9 @@ export class ReferenceParser implements IReferenceParser {
     longCommentLineRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
     externalReferences: IExternalReference[];
+
 ```
+
 ### Creates an instance of [classes/ReferenceParser](../.././ts/modules/referenceParser.ts.md#classes/ReferenceParser) 
 
 ```typescript
@@ -59,9 +69,10 @@ export class ReferenceParser implements IReferenceParser {
         logger.setLevel(logLevel || "DEBUG");
         logger.debug("ready");
     }
-```
-## Parse
 
+```
+
+## Parse
 Parser all files for anchors - produce a [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
 
 ```typescript
@@ -69,7 +80,9 @@ Parser all files for anchors - produce a [interfaces/IReferenceCollection](../..
         let that = this;
         return Q.Promise<IReferenceCollection>((resolve, reject) => {
             logger.info("Starting parse actions for " + that.files.length + " files.");
+
             let parseActions = [];
+
             for (let i = 0; i < that.files.length; i++) {
                 let fileName = that.files[i].split(".");
                 let extension = fileName[fileName.length - 1];
@@ -79,6 +92,7 @@ Parser all files for anchors - produce a [interfaces/IReferenceCollection](../..
                     parseActions.push(that.parseFile(that.files[i]));
                 }
             }
+
             Q.all(parseActions)
             .then(() => {
                 logger.debug("Saving out internalReferences.json & externalReferences.json");
@@ -88,9 +102,10 @@ Parser all files for anchors - produce a [interfaces/IReferenceCollection](../..
             });
         });
     }
-```
-## Parse As Markdown
 
+```
+
+## Parse As Markdown
 When a file is markdown, we parse the whole thing.
 
 ```typescript
@@ -104,7 +119,6 @@ When a file is markdown, we parse the whole thing.
         };
 ```
  Line numbering traditionally starts at 1
-
 ```typescript
         let lineNumber = 0;
         return Q.Promise((resolve, reject) => {
@@ -112,12 +126,13 @@ When a file is markdown, we parse the whole thing.
                 let thisLine: ILine = {
                     number: lineNumber
                 };
+
                 file.lines.push(thisLine);
 ```
  In Markdown all lines are considered comments
-
 ```typescript
                 file.lines[lineNumber].comment = line;
+
                 that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
                 .then(() => {
                     if (last) {
@@ -131,13 +146,15 @@ When a file is markdown, we parse the whole thing.
                         });
                     }
                 });
+
                 lineNumber++;
             });
         });
     }
-```
-## Parse File
 
+```
+
+## Parse File
 Parse a file to a file map. [ParseFile](#ParseFile)
 
 ```typescript
@@ -153,51 +170,53 @@ Parse a file to a file map. [ParseFile](#ParseFile)
                 lines: [],
                 type: getFileType(fileName)
             };
+
 ```
  Line numbering traditionally starts at 1 (not 0)
-
 ```typescript
            
             let lineNumber = 0;
 ```
  Read each line of the file.
-
 ```typescript
            
             lineReader.eachLine(fileName, (line, last) => {
+
                 let thisLine: ILine = {
                     number: lineNumber
                 };
                 file.lines.push(thisLine);
+
 ```
  Logic for long comments, either beginning, or already started.
-
 ```typescript
                
                 let longCommentOpenMatch = XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);
+
 ```
  These comments must come at beginning of line.
-
 ```typescript
                 if (!insideLongComment && longCommentOpenMatch) {
                     insideLongComment = true;
                     file.lines[lineNumber].longComment = true;
                 }
+
 ```
  We are not inside a long comment - look for a regular comment.
-
 ```typescript
                
                 if (!insideLongComment) {
                     let match = XRegExp.exec(line, that.commentRegExp, 0, false);
+
 ```
  Contains a tradition comment
-
 ```typescript
                    
                     if (match) {
+
                         file.lines[lineNumber].comment = match[1];
                         file.lines[lineNumber].code = line.substr(0, match.index - 1);
+
                         that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
                             .then(() => {
                                 if (last) {
@@ -213,7 +232,6 @@ Parse a file to a file map. [ParseFile](#ParseFile)
                             });
 ```
  Not a comment (code only)
-
 ```typescript
                    
                     } else {
@@ -231,12 +249,10 @@ Parse a file to a file map. [ParseFile](#ParseFile)
                     }
 ```
  Inside a long comment - so the whole thing is a comment
-
 ```typescript
                
 ```
  If this line contains a long comment closing symbol, then next line isn't long comment.
-
 ```typescript
                
                 } else {
@@ -245,11 +261,12 @@ Parse a file to a file map. [ParseFile](#ParseFile)
                         insideLongComment = false;
 ```
  This long comment hasn't been closed, so we should parse it for links.
-
 ```typescript
                    
                     } else {
+
                         file.lines[lineNumber].longComment = true;
+
                         if (longCommentOpenMatch) {
                             file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
                         } else {
@@ -259,11 +276,11 @@ Parse a file to a file map. [ParseFile](#ParseFile)
                             } else {
 ```
  Blank Line inside long comment...
-
 ```typescript
                               file.lines[lineNumber].comment = "";
                             }
                         }
+
                         that.parseComment(line, fileName, lineNumber)
                         .then(() => {
                             if (last) {
@@ -278,9 +295,9 @@ Parse a file to a file map. [ParseFile](#ParseFile)
                             }
                         });
                     }
+
 ```
  If this is the last line, then we can wrap things up.
-
 ```typescript
                    
                     if (last) {
@@ -294,13 +311,15 @@ Parse a file to a file map. [ParseFile](#ParseFile)
                         });
                     }
                 }
+
                 lineNumber++;
             });
         });
     }
-```
-## Write Out File
 
+```
+
+## Write Out File
 Writes out a file map
 
 ```typescript
@@ -323,13 +342,12 @@ Writes out a file map
             });
         });
     }
+
 ```
+
 ## Parse Comment
-
 Once a comment is found (see [ParseFile](../.././ts/modules/referenceParser.ts.md#ParseFile)  above for example) this will parse
-
 that commant for anchors. It will add those anchors to the [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
-
 for the entire project.
 
 ```typescript
@@ -338,11 +356,15 @@ for the entire project.
         return Q.Promise<{}>((resolve, reject) => {
             let pos = 0;
             let match;
+
             while (match = XRegExp.exec(comment, that.anchorRegExp, pos, false)) {
                 logger.debug("found anchor: " + match[1]);
+
                 let parts = match[1].split("/");
+
                 that.rootCollection.addAnchorTag(parts, fileName, lineNumber);
                 resolve(null);
+
                 pos = match.index + match[0].length;
             }
             resolve(null);

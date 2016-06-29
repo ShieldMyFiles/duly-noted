@@ -69,23 +69,23 @@ var MarkdownGenerator = (function () {
                 }
             }
             for (var i = 0; i < file_1.lines.length; i++) {
-                if (typeof (file_1.lines[i].comment) === "string" && file_1.lines[i].comment !== "" && file_1.lines[i].comment !== null) {
+                if (typeof (file_1.lines[i].comment) === "string" && file_1.lines[i].comment !== null) {
                     if (inCodeBlock) {
-                        output_1 += "```" + "\n";
+                        output_1 += "\n" + "```";
                         inCodeBlock = false;
                     }
-                    output_1 += file_1.lines[i].comment + "\n" + "\n";
+                    output_1 += "\n" + file_1.lines[i].comment;
                 }
-                if (typeof (file_1.lines[i].code) === "string" && file_1.lines[i].code !== "" && file_1.lines[i].code !== null) {
+                if (typeof (file_1.lines[i].code) === "string" && file_1.lines[i].code !== null) {
                     if (!inCodeBlock) {
-                        output_1 += "```" + file_1.type + "\n";
+                        output_1 += "\n" + "```" + file_1.type;
                         inCodeBlock = true;
                     }
-                    output_1 += file_1.lines[i].code + "\n";
+                    output_1 += "\n" + file_1.lines[i].code;
                 }
             }
             if (inCodeBlock) {
-                output_1 += "```" + "\n";
+                output_1 += "\n" + "```";
                 inCodeBlock = false;
             }
             var filePathArray = path.join(outputDir, file_1.name + ".md").split("/");

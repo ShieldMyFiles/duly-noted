@@ -50,12 +50,14 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">import Q &#x3D; require(&quot;q&quot;);
+
 export function doNext(fn) {
     let args &#x3D; Array.prototype.splice.call(arguments, 1);
     return function(prevRetVal) {
         return fn.apply(null, args);
     };
 };
+
 export function doInOrder(doNexters, init?) {
     return doNexters.reduce(Q.when, init);
 };</code>

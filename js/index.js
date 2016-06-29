@@ -78,8 +78,10 @@ function run() {
             }
             Q.all(generatorActions)
                 .then(function () {
-                logger.info("Cleaning up - Removing JSON parse files.");
-                deleteDir(referenceParser_1.parseLoc);
+                if (!config.leaveJSONFiles) {
+                    logger.info("Cleaning up - Removing JSON parse files.");
+                    deleteDir(referenceParser_1.parseLoc);
+                }
             });
         })
             .catch(function (err) {

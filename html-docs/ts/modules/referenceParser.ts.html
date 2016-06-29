@@ -59,7 +59,8 @@
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">import {IReferenceCollection, IAnchor, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;
+                            <code class="typescript">
+import {IReferenceCollection, IAnchor, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;
 import {IConfig, IExternalReference} from &quot;../classes/IConfig&quot;;
 import {IFile, ILine} from &quot;../classes/IFile&quot;;
 import {getFileType} from &quot;../helpers/fileType&quot;;
@@ -70,8 +71,10 @@ import XRegExp &#x3D; require(&quot;xregexp&quot;);
 import lineReader &#x3D; require(&quot;line-reader&quot;);
 import Q &#x3D; require(&quot;q&quot;);
 import {doInOrder, doNext} from &quot;../helpers/helpers&quot;;
+
 import log4js &#x3D; require(&quot;log4js&quot;);
-let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</code>
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);
+</code>
                         </pre>
                     </div>
             </div>
@@ -90,7 +93,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                         <pre>
                             <code class="typescript">export interface IReferenceParser {
     parse(): Q.Promise&lt;IReferenceCollection&gt;;
-}</code>
+}
+</code>
                         </pre>
                     </div>
             </div>
@@ -107,7 +111,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">export const parseLoc &#x3D; &quot;duly-noted&quot;;</code>
+                            <code class="typescript">export const parseLoc &#x3D; &quot;duly-noted&quot;;
+</code>
                         </pre>
                     </div>
             </div>
@@ -132,7 +137,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
     longCommentOpenRegExp: RegExp;
     longCommentLineRegExp: RegExp;
     longCommentCloseRegExp: RegExp;
-    externalReferences: IExternalReference[];</code>
+    externalReferences: IExternalReference[];
+</code>
                         </pre>
                     </div>
             </div>
@@ -160,7 +166,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
         this.externalReferences &#x3D; config.externalReferences;
         logger.setLevel(logLevel || &quot;DEBUG&quot;);
         logger.debug(&quot;ready&quot;);
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -182,7 +189,9 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
         let that &#x3D; this;
         return Q.Promise&lt;IReferenceCollection&gt;((resolve, reject) &#x3D;&gt; {
             logger.info(&quot;Starting parse actions for &quot; + that.files.length + &quot; files.&quot;);
+
             let parseActions &#x3D; [];
+
             for (let i &#x3D; 0; i &lt; that.files.length; i++) {
                 let fileName &#x3D; that.files[i].split(&quot;.&quot;);
                 let extension &#x3D; fileName[fileName.length - 1];
@@ -192,6 +201,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                     parseActions.push(that.parseFile(that.files[i]));
                 }
             }
+
             Q.all(parseActions)
             .then(() &#x3D;&gt; {
                 logger.debug(&quot;Saving out internalReferences.json &amp; externalReferences.json&quot;);
@@ -200,7 +210,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                 resolve(that.rootCollection);
             });
         });
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -248,6 +259,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                 let thisLine: ILine &#x3D; {
                     number: lineNumber
                 };
+
                 file.lines.push(thisLine);</code>
                         </pre>
                     </div>
@@ -266,6 +278,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">                file.lines[lineNumber].comment &#x3D; line;
+
                 that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
                 .then(() &#x3D;&gt; {
                     if (last) {
@@ -279,10 +292,12 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                         });
                     }
                 });
+
                 lineNumber++;
             });
         });
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -311,7 +326,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                 name: fileName,
                 lines: [],
                 type: getFileType(fileName)
-            };</code>
+            };
+</code>
                         </pre>
                     </div>
             </div>
@@ -348,10 +364,12 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                         <pre>
                             <code class="typescript">           
             lineReader.eachLine(fileName, (line, last) &#x3D;&gt; {
+
                 let thisLine: ILine &#x3D; {
                     number: lineNumber
                 };
-                file.lines.push(thisLine);</code>
+                file.lines.push(thisLine);
+</code>
                         </pre>
                     </div>
             </div>
@@ -369,7 +387,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">               
-                let longCommentOpenMatch &#x3D; XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);</code>
+                let longCommentOpenMatch &#x3D; XRegExp.exec(line, that.longCommentOpenRegExp, 0, false);
+</code>
                         </pre>
                     </div>
             </div>
@@ -389,7 +408,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                             <code class="typescript">                if (!insideLongComment &amp;&amp; longCommentOpenMatch) {
                     insideLongComment &#x3D; true;
                     file.lines[lineNumber].longComment &#x3D; true;
-                }</code>
+                }
+</code>
                         </pre>
                     </div>
             </div>
@@ -408,7 +428,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                         <pre>
                             <code class="typescript">               
                 if (!insideLongComment) {
-                    let match &#x3D; XRegExp.exec(line, that.commentRegExp, 0, false);</code>
+                    let match &#x3D; XRegExp.exec(line, that.commentRegExp, 0, false);
+</code>
                         </pre>
                     </div>
             </div>
@@ -427,8 +448,10 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                         <pre>
                             <code class="typescript">                   
                     if (match) {
+
                         file.lines[lineNumber].comment &#x3D; match[1];
                         file.lines[lineNumber].code &#x3D; line.substr(0, match.index - 1);
+
                         that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
                             .then(() &#x3D;&gt; {
                                 if (last) {
@@ -528,7 +551,9 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                         <pre>
                             <code class="typescript">                   
                     } else {
+
                         file.lines[lineNumber].longComment &#x3D; true;
+
                         if (longCommentOpenMatch) {
                             file.lines[lineNumber].comment &#x3D; longCommentOpenMatch[1].trim();
                         } else {
@@ -555,6 +580,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                             <code class="typescript">                              file.lines[lineNumber].comment &#x3D; &quot;&quot;;
                             }
                         }
+
                         that.parseComment(line, fileName, lineNumber)
                         .then(() &#x3D;&gt; {
                             if (last) {
@@ -568,7 +594,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                                     });
                             }
                         });
-                    }</code>
+                    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -597,10 +624,12 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                         });
                     }
                 }
+
                 lineNumber++;
             });
         });
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -636,7 +665,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);</co
                 }
             });
         });
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -661,11 +691,15 @@ for the entire project.</p>
         return Q.Promise&lt;{}&gt;((resolve, reject) &#x3D;&gt; {
             let pos &#x3D; 0;
             let match;
+
             while (match &#x3D; XRegExp.exec(comment, that.anchorRegExp, pos, false)) {
                 logger.debug(&quot;found anchor: &quot; + match[1]);
+
                 let parts &#x3D; match[1].split(&quot;/&quot;);
+
                 that.rootCollection.addAnchorTag(parts, fileName, lineNumber);
                 resolve(null);
+
                 pos &#x3D; match.index + match[0].length;
             }
             resolve(null);

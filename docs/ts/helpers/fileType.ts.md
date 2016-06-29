@@ -1,3 +1,4 @@
+
 ```typescript
 export function getFileType(fileName: string): string {
     let parsed = fileName.split(".");
@@ -5,8 +6,10 @@ export function getFileType(fileName: string): string {
     switch (extension) {
         case "ts":
             return "typescript";
+
         case "js":
             return "javascript";
+
         default:
             return "plain/text";
     }

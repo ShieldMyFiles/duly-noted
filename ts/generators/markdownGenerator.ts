@@ -115,27 +115,27 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             for (let i = 0; i < file.lines.length; i++) {
 
                 // Comment
-                if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
+                if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== null) {
                     if (inCodeBlock) {
-                        output += "```" + "\n"; // Close the current block of code. 
+                        output += "\n" + "```" ; // Close the current block of code. 
                         inCodeBlock = false;
                     }
 
-                    output += file.lines[i].comment + "\n" + "\n";
+                    output += "\n" + file.lines[i].comment;
                 }
 
                 // Code
-                if (typeof(file.lines[i].code) === "string" && file.lines[i].code !== "" && file.lines[i].code !== null) {
+                if (typeof(file.lines[i].code) === "string" && file.lines[i].code !== null) {
                     if (!inCodeBlock) {
-                        output += "```" + file.type +  "\n"; // Open new code block. 
+                        output += "\n" + "```" + file.type; // Open new code block. 
                         inCodeBlock = true;
                     }
-                    output += file.lines[i].code + "\n";
+                    output += "\n" + file.lines[i].code;
                 }
             }
 
             if (inCodeBlock) {
-                output += "```" + "\n"; // Close the current block of code. 
+                output += "\n" + "```"; // Close the current block of code. 
                 inCodeBlock = false;
             }
 

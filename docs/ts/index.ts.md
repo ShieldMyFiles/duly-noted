@@ -1,7 +1,7 @@
+
+
 # [Index](#Index)
-
  [authors/chris](.././authors.md.md#authors/chris) 
-
  [license](.././license.md.md#license) 
 
 This is the entry file to Duly Noted
@@ -19,17 +19,16 @@ import {MarkdownGenerator} from "./generators/markdownGenerator";
 import {HtmlGenerator} from "./generators/htmlGenerator";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::run");
+
+
 ```
+
 ## Run
 
 Runs duly-typed using taking the consuing the config file (see [IConfig](.././ts/classes/IConfig.ts.md#IConfig) ) found as `/duly-noted.json`
-
 Basic code flow is:
-
 1. parse the cofiguration options
-
 2. get the files, and pass those to the [ReferenceParser](.././ts/modules/referenceParser.ts.md#ReferenceParser) 
-
 3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator [MarkdownGenerator](.././ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
 
 ```typescript
@@ -37,6 +36,7 @@ export function run () {
     logger.info("Welcome to Duly Noted.");
     let logLevel: string;
     let config: IConfig;
+
     program
     .version("1.1.0")
     .option("-c, --config <file>", "Path to duly-noted.json", "duly-noted.json")
@@ -45,9 +45,9 @@ export function run () {
     .option("-i, --init", "Creates a default duly-noted.json file")
     .option("-v, --verbose", "Chatty Cathy mode")
     .parse(process.argv);
+
 ```
  ### Init - copies example duly-noted.json
-
 ```typescript
     
      if (program.init) {
@@ -65,6 +65,7 @@ export function run () {
             return;
         }
      }
+
      try {
         config = JSON.parse(readFileSync(program.config).toString());
      } catch (error) {
@@ -72,54 +73,67 @@ export function run () {
          logger.fatal("Error reading config file: " + program.config);
          return;
      }
+
      config.outputDir = program.outputDir || config.outputDir;
+
      if (program.generator) {
          config.generators = [program.generator];
      }
+
      let getFiles: Q.IPromise<string[]>[] = [];
+
      for (let i = 0; i < config.files.length; i++) {
         getFiles.push(getFilesFromGlob(config.files[i]));
      }
+
      if (program.verbose) {
          logLevel = "DEUBG";
      } else {
          logLevel = "INFO";
      }
+
      logger.setLevel(logLevel);
+
     logger.debug("Starting Reference Parsing.");
      Q.all(getFiles)
      .then((results) => {
          let files = _.flatten(results);
          let referenceParser = new ReferenceParser(config, logLevel);
+
          referenceParser.parse()
          .then((response) => {
              logger.info("Parsing complete, beginning export.");
              let generatorActions = [];
+
              if (_.contains(config.generators, "html")) {
                 generatorActions.push(new HtmlGenerator(config, logLevel).generate());
              }
+
              if (_.contains(config.generators, "markdown")) {
                 generatorActions.push(new MarkdownGenerator(config, logLevel).generate());
              }
+
              Q.all(generatorActions)
              .then(() => {
-                 logger.info("Cleaning up - Removing JSON parse files.");
-                 deleteDir(parseLoc);
+                 if (!config.leaveJSONFiles) {
+                    logger.info("Cleaning up - Removing JSON parse files.");
+                    deleteDir(parseLoc);
+                 }
              });
          })
          .catch( (err: Error) => {
 ```
  [TODO/errors](#TODO/errors) > An overall strategy is needed to identify errors.
-
 ```typescript
             
              logger.error(err.message + err.stack);
          });
      });
 }
-```
-## Get Files from Glob
 
+```
+
+## Get Files from Glob
 This is a simple helper to get a set of files from a glob.
 
 ```typescript
@@ -131,16 +145,19 @@ function getFilesFromGlob(globString: string): Q.Promise<string[]> {
         });
     });
 }
-```
-## Delete a directory
 
+```
+
+## Delete a directory
 This is a simple helper to recursively delete a directory, and any sub-directories and files it contains.
 
 ```typescript
 function deleteDir(dirPath) {
     let files = [];
+
     try { files = readdirSync(dirPath); }
     catch (e) { return; }
+
     if (files.length > 0) {
         for (let i = 0; i < files.length; i++) {
             let filePath = dirPath + "/" + files[i];
@@ -151,6 +168,7 @@ function deleteDir(dirPath) {
             }
         }
     }
+
     rmdirSync(dirPath);
 };
 ```

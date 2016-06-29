@@ -1,14 +1,20 @@
+
+
+
+
+
+
 This reference parser that parses all the links and anchors in your code - the output of which is two reference collections:
-
 * `internalReferences.json`
-
 * `externalReferences.json`
 
 ```typescript
 import {findWhere, findIndex} from "underscore";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::ReferenceCollection");
+
 ```
+
 ## [interfaces/IReferenceCollection](#interfaces/IReferenceCollection)
 
 ```typescript
@@ -17,7 +23,9 @@ export interface IReferenceCollection {
     anchors?: IAnchor[];
     subcollections?: IReferenceCollection[];
 }
+
 ```
+
 ## [interfaces/IAnchor](#interfaces/IAnchor)
 
 ```typescript
@@ -26,7 +34,9 @@ export interface IAnchor {
     file: string;
     line: number;
 }
+
 ```
+
 ## [interfaces/ITag](#interfaces/ITag)
 
 ```typescript
@@ -35,7 +45,9 @@ export interface ITag {
     path: string;
     linkStub: string;
 }
+
 ```
+
 ## [classes/ReferenceCollection](#classes/ReferenceCollection)
 
 ```typescript
@@ -44,7 +56,9 @@ export class ReferenceCollection implements IReferenceCollection {
     anchors: IAnchor[];
     subcollections: IReferenceCollection[];
     logLevel: string;
+
 ```
+
 ### Creates an instance of [ReferenceCollection](../.././ts/classes/referenceCollection.ts.md#ReferenceCollection) 
 
 ```typescript
@@ -55,7 +69,9 @@ export class ReferenceCollection implements IReferenceCollection {
         this.anchors = [];
         this.subcollections = [];
     }
+
 ```
+
 ## Recursively inflate a reference collection in the form of [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection)  from flat data (likely from JSON file)
 
 ```typescript
@@ -67,7 +83,9 @@ export class ReferenceCollection implements IReferenceCollection {
         }
         return this;
     }
+
 ```
+
 ## Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#interfaces/IAnchor)  to collection
 
 ```typescript
@@ -76,9 +94,12 @@ export class ReferenceCollection implements IReferenceCollection {
         if (existing) {
             logger.error("Cannot add anchor '" + anchor.id + "' from " + anchor.file + ":" + anchor.line + " to '" + this.id + "' collection because it was already defined at " + existing.file + ":" + existing.line);
         }
+
         this.anchors.push(anchor);
     }
+
 ```
+
 ## Add a subcollection to this collection in the form of an [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
 
 ```typescript
@@ -88,16 +109,19 @@ export class ReferenceCollection implements IReferenceCollection {
             logger.error("Cannot add collection '" + collection.id + "' because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
             return;
         }
+
         let existingCollection = findWhere(this.anchors, {id: collection.id});
         if (existingCollection) {
             logger.error("Cannot add collection '" + collection.id + "' because it was already defined as a subcollection of '" + collection.id +  "'");
             return;
         }
+
         this.subcollections.push(collection);
     }
-```
-## Add Anchor Tag to the appropriate subcollection
 
+```
+
+## Add Anchor Tag to the appropriate subcollection
 Recursively skims the collection and subcollections to place anchor in the correct place.
 
 ```typescript
@@ -113,11 +137,14 @@ Recursively skims the collection and subcollections to place anchor in the corre
             return;
         } else {
             let collectionTag = anchorTag.shift();
+
             let i = findIndex(this.subcollections, (item) => {
                 return item.id === collectionTag;
             });
+
             if (i > -1) {
             logger.debug("Collection present:" + collectionTag);
+
             return this.subcollections[i].addAnchorTag(anchorTag, fileName, lineNumber);
             } else {
                 logger.debug("Collection not present:" + collectionTag);
@@ -128,17 +155,20 @@ Recursively skims the collection and subcollections to place anchor in the corre
             }
         }
     }
-```
-## Get All the tags in a collection and its subcollections
 
+```
+
+## Get All the tags in a collection and its subcollections
 Recursively cull all of the tags.
 
 ```typescript
     public getAllTags(parentPath?: string, depth?: number): ITag[] {
         parentPath = parentPath || "";
         depth = depth || 0;
+
         let allTags: ITag[] = [];
         if (depth > 0) {
+
             for (let i = 0; i < this.anchors.length; i++) {
                 if (parentPath !== "" && parentPath !== null) {
                     allTags.push({
@@ -154,10 +184,12 @@ Recursively cull all of the tags.
                     });
                 }
             }
+
             for (let i = 0; i < this.subcollections.length; i++) {
                 allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id,  depth + 1));
             }
         } else {
+
             for (let i = 0; i < this.anchors.length; i++) {
                 allTags.push({
                     anchor: this.anchors[i].id,
@@ -165,13 +197,17 @@ Recursively cull all of the tags.
                     linkStub: this.anchors[i].id
                 });
             }
+
             for (let i = 0; i < this.subcollections.length; i++) {
                 allTags = allTags.concat(this.subcollections[i].getAllTags(null, depth + 1));
             }
         }
+
         return allTags;
     }
+
 ```
+
 ## Get a list of anchors sorted by an array of all the collections.
 
 ```typescript
@@ -179,10 +215,12 @@ Recursively cull all of the tags.
         allCollections = allCollections || [];
         parentPath = parentPath || "";
         let id = parentPath + "/" + this.id;
+
         allCollections.push({
             name: id,
             anchors: []
         });
+
         for (let i = 0; i < this.anchors.length; i++) {
             allCollections[allCollections.length - 1].anchors.push({
                 anchor: this.anchors[i].id,
@@ -190,9 +228,11 @@ Recursively cull all of the tags.
                 linkStub: this.anchors[i].id
             });
         }
+
         for (let i = 0; i < this.subcollections.length; i++) {
             allCollections = this.subcollections[i].getTagsByCollection(allCollections, id);
         }
+
         return allCollections;
     }
 }

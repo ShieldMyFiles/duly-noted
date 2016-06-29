@@ -1,6 +1,7 @@
- [IConfig](#IConfig)
 
+ [IConfig](#IConfig)
 ```typescript
+
 export interface IConfig {
     projectName: string;
     files: string[];
@@ -9,7 +10,6 @@ export interface IConfig {
     anchorRegExp: string;
 ```
  [TODO/commentRegExp](#TODO/commentRegExp) We should associate comment RegExp with file type - so we can support HTML comments
-
 ```typescript
     commentRegExp: string;
     longCommentOpenRegExp: string;
@@ -21,6 +21,7 @@ export interface IConfig {
     generators: string[];
     leaveJSONFiles: boolean;
 }
+
 export interface IExternalReference {
     anchorRegExp: string;
     path: string;

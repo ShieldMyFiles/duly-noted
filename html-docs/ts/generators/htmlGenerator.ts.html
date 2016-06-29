@@ -49,12 +49,12 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h1 id="-a-name-htmlgenerator-span-class-glyphicon-glyphicon-link-aria-hidden-true-span-htmlgenerator-a-"><a name="HtmlGenerator"><span class="glyphicon glyphicon-link" aria-hidden="true"></span>HtmlGenerator</a></h1>
 <p> <a href="../.././authors.md.html#authors/chris">authors/chris</a> 
- <a href="../.././license.md.html#license">license</a> 
-Generates HTML pages for the source code,
+ <a href="../.././license.md.html#license">license</a> </p>
+<p>Generates HTML pages for the source code,
 replacing links and anchors as it goes along.
 Builds a nice Index.html page with info and
-README.md content.
-Uses tempalate that employ handlebars as the
+README.md content.</p>
+<p>Uses tempalate that employ handlebars as the
 templating engine.</p>
 
                     </div>
@@ -65,7 +65,8 @@ templating engine.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">import {IAnchor, ITag, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;
+                            <code class="typescript">
+import {IAnchor, ITag, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;
 import {parseLoc} from &quot;../modules/referenceParser&quot;;
 import {Config, IExternalReference} from &quot;../classes/IConfig&quot;;
 import {readFiles, files} from &quot;node-dir&quot;;
@@ -80,7 +81,8 @@ import * as fse from &quot;fs-extra&quot;;
 import _ &#x3D; require(&quot;underscore&quot;);
 import Q &#x3D; require(&quot;q&quot;);
 import log4js &#x3D; require(&quot;log4js&quot;);
-let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code>
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);
+</code>
                         </pre>
                     </div>
             </div>
@@ -98,7 +100,9 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">export interface IHtmlGenerator {
-}</code>
+
+}
+</code>
                         </pre>
                     </div>
             </div>
@@ -127,7 +131,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
     tags: ITag[] &#x3D; [];
     externalReferences: IExternalReference[];
     readme: string;
-    projectName: string;</code>
+    projectName: string;
+</code>
                         </pre>
                     </div>
             </div>
@@ -156,13 +161,18 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
         let projectPathArray &#x3D; __dirname.split(&quot;/&quot;);
         projectPathArray.pop();
         this.projectPath &#x3D; projectPathArray.join(&quot;/&quot;);
+
         this.template &#x3D; handlebars.compile(readFileSync(path.join(this.projectPath, &quot;templates&quot;, &quot;stacked.html&quot;)).toString());
         this.indexTemplate &#x3D; handlebars.compile(readFileSync(path.join(this.projectPath, &quot;templates&quot;, &quot;index.html&quot;)).toString());
+
         this.projectName &#x3D; config.projectName;
         this.readme &#x3D; config.readme;
+
         handlebars.registerHelper(&quot;md&quot;, this.markdownHelper);
         handlebars.registerHelper(&quot;ifCond&quot;, this.ifCondHelper);
-    }</code>
+    }
+
+</code>
                         </pre>
                     </div>
             </div>
@@ -190,10 +200,12 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::HtmlGenerator&quot;);</code
                 that.generateIndexPage();
                 resolve(null);
             });
+
             fse.copySync(path.join(this.projectPath, &quot;templates&quot;, &quot;highlight.pack.js&quot;), path.join(this.outputDir, &quot;scripts/highlight.js&quot;));
             fse.copySync(path.join(this.projectPath, &quot;templates&quot;, &quot;css&quot;, &quot;default.css&quot;), path.join(this.outputDir, &quot;css/default.css&quot;));
         });
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -215,6 +227,8 @@ code, comment, long comment presence</p>
                             <code class="typescript">    proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
         let file: IFile &#x3D; JSON.parse(content);
         logger.debug(&quot;Processing &quot; + file.name);
+
+
         for (let i &#x3D; 0; i &lt; file.lines.length; i++) {
             if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
                 file.lines[i].comment &#x3D; this.replaceAnchors(file.lines[i].comment, file.name, i);
@@ -222,6 +236,7 @@ code, comment, long comment presence</p>
                 file.lines[i].comment &#x3D; this.replaceInternalLinks(file.lines[i].comment, file.name, i);
             }
         }
+
         let outputMap &#x3D; {
             project: this.projectName,
             items: [],
@@ -229,15 +244,17 @@ code, comment, long comment presence</p>
             name: file.type,
             linkPrefix: this.getLinkPrefix(file.name)
         };
+
          for (let i &#x3D; 0; i &lt; file.lines.length; i++) {
-            if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
+            if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
                 if (outputMap.items.length &gt; 0 &amp;&amp; outputMap.items[outputMap.items.length - 1].type &#x3D;&#x3D;&#x3D; &quot;comment&quot;) {
                      outputMap.items[outputMap.items.length - 1].content +&#x3D;  &quot;\n&quot; + file.lines[i].comment;
                 } else {
                      outputMap.items.push({content: file.lines[i].comment, type: &quot;comment&quot;, longComment: file.lines[i].longComment || false });
                 }
             }
-            if (typeof(file.lines[i].code) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].code !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].code !&#x3D;&#x3D; null) {
+
+            if (typeof(file.lines[i].code) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].code !&#x3D;&#x3D; null) {
                 if (outputMap.items.length &gt; 0 &amp;&amp; outputMap.items[outputMap.items.length - 1].type &#x3D;&#x3D;&#x3D; &quot;code&quot;) {
                      outputMap.items[outputMap.items.length - 1].content  +&#x3D;  &quot;\n&quot; + file.lines[i].code;
                 } else {
@@ -246,9 +263,11 @@ code, comment, long comment presence</p>
             }
          }
         let output &#x3D; this.template(outputMap);
+
         let filePathArray &#x3D; path.join(outputDir, file.name + &quot;.md&quot;).split(&quot;/&quot;);
         filePathArray.pop();
         let filePath &#x3D; filePathArray.join(&quot;/&quot;);
+
         mkdirp(filePath, function (err) {
             if (err) {
                 logger.fatal(err.message);
@@ -259,7 +278,8 @@ code, comment, long comment presence</p>
                 next();
             }
         });
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -302,10 +322,14 @@ code, comment, long comment presence</p>
             newComment &#x3D;  newComment.substr(0, match.index) +
             &quot; &lt;a name&#x3D;\&quot;&quot; + match[1] + &quot;\&quot;&gt;&lt;span class&#x3D;\&quot;glyphicon glyphicon-link\&quot; aria-hidden&#x3D;\&quot;true\&quot;&gt;&lt;/span&gt;&quot; + match[1] + &quot;&lt;/a&gt; &quot; +
             newComment.substr(match.index + match[0].length);
+
             pos &#x3D; match.index + match[0].length;
         }
+
         return newComment;
-    }</code>
+    }
+
+</code>
                         </pre>
                     </div>
             </div>
@@ -330,7 +354,9 @@ Processes a comment line, replacing links with links</p>
         let pos &#x3D; 0;
         let match;
         let newComment: string &#x3D; comment;
-        let linkPrefix &#x3D; this.getLinkPrefix(fileName);</code>
+
+        let linkPrefix &#x3D; this.getLinkPrefix(fileName);
+</code>
                         </pre>
                     </div>
             </div>
@@ -360,8 +386,10 @@ Processes a comment line, replacing links with links</p>
             }
             pos &#x3D; match.index + match[0].length;
         }
+
         return newComment;
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -385,7 +413,8 @@ Processes a comment line, replacing links with links to external urls</p>
                             <code class="typescript">    replaceExternalLinks(comment: string, fileName: string, line: number) {
         let pos &#x3D; 0;
         let match;
-        let newComment: string &#x3D; comment;</code>
+        let newComment: string &#x3D; comment;
+</code>
                         </pre>
                     </div>
             </div>
@@ -406,19 +435,23 @@ Processes a comment line, replacing links with links to external urls</p>
         while (match &#x3D; XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
             let tagArray &#x3D; match[1].split(&quot;/&quot;);
             let tag &#x3D;  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
+
             if (tag) {
                 logger.debug(&quot;found external link: &quot; + match[1]);
                 for (let i &#x3D; 1; i &lt; tagArray.length; i++) {
                     tag.path &#x3D; tag.path.replace(&quot;::&quot;, tagArray[i]);
                 }
+
                 newComment &#x3D;  comment.substr(0, match.index - 1) +
                 &quot; [&quot; + match[1] + &quot;](&quot; + tag.path + &quot;) &quot; +
                 newComment.substr(match.index + match[0].length);
             }
+
             pos &#x3D; match.index + match[0].length;
         }
         return newComment;
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -440,12 +473,14 @@ and sucks in the README.</p>
                             <code class="typescript">    generateIndexPage(): void {
         logger.info(&quot;generating index.html&quot;);
         let that &#x3D; this;
+
         let outputMap &#x3D; {
             project: this.projectName,
             collections: [],
             files: [],
             readme: &quot;&quot;
-        };</code>
+        };
+</code>
                         </pre>
                     </div>
             </div>
@@ -464,22 +499,27 @@ and sucks in the README.</p>
                         <pre>
                             <code class="typescript">       
         let collections &#x3D; that.referenceCollection.getTagsByCollection();
+
         for (let i &#x3D; 0; i &lt; collections.length; i++) {
             let anchors &#x3D; _.clone(collections[i].anchors);
             for (let x &#x3D; 0; x &lt; anchors.length; x++) {
                 let linkPrefix &#x3D; that.getLinkPrefix(anchors[x].path);
                 anchors[x].path &#x3D; anchors[x].path + &quot;.html#&quot; + anchors[x].linkStub;
             }
+
             let name &#x3D; collections[i].name.split(&quot;/&quot;);
             name.shift();
             name.shift();
             name &#x3D; name.join(&quot;/&quot;);
+
             outputMap.collections.push({
                 name: name,
                 anchors: anchors
             });
         }
-        files(this.outputDir, (error, files) &#x3D;&gt; {</code>
+
+        files(this.outputDir, (error, files) &#x3D;&gt; {
+</code>
                         </pre>
                     </div>
             </div>
@@ -523,11 +563,13 @@ and sucks in the README.</p>
                     outputMap.files.push({path: path});
                 }
             }
+
             outputMap.readme &#x3D; readFileSync(that.readme).toString();
             let output &#x3D; this.indexTemplate(outputMap);
             writeFileSync(path.join(that.outputDir, &quot;index.html&quot;), output, { flag: &quot;w&quot; });
         });
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -553,11 +595,14 @@ and sucks in the README.</p>
         for (let i &#x3D; 0; i &lt; fileNameAsArray.length - 2; i++) {
             linkPrefix +&#x3D; &quot;../&quot;;
         }
+
         return linkPrefix;
     }
+
     markdownHelper(context, options) {
        return marked(context);
     }
+
     ifCondHelper(v1, v2, options) {
         if (v1 &#x3D;&#x3D;&#x3D; v2) {
             return options.fn(this);

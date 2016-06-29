@@ -67,7 +67,7 @@ var HtmlGenerator = (function () {
             linkPrefix: this.getLinkPrefix(file.name)
         };
         for (var i = 0; i < file.lines.length; i++) {
-            if (typeof (file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
+            if (typeof (file.lines[i].comment) === "string" && file.lines[i].comment !== null) {
                 if (outputMap.items.length > 0 && outputMap.items[outputMap.items.length - 1].type === "comment") {
                     outputMap.items[outputMap.items.length - 1].content += "\n" + file.lines[i].comment;
                 }
@@ -75,7 +75,7 @@ var HtmlGenerator = (function () {
                     outputMap.items.push({ content: file.lines[i].comment, type: "comment", longComment: file.lines[i].longComment || false });
                 }
             }
-            if (typeof (file.lines[i].code) === "string" && file.lines[i].code !== "" && file.lines[i].code !== null) {
+            if (typeof (file.lines[i].code) === "string" && file.lines[i].code !== null) {
                 if (outputMap.items.length > 0 && outputMap.items[outputMap.items.length - 1].type === "code") {
                     outputMap.items[outputMap.items.length - 1].content += "\n" + file.lines[i].code;
                 }

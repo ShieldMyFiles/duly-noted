@@ -108,8 +108,10 @@ export function run () {
 
              Q.all(generatorActions)
              .then(() => {
-                 logger.info("Cleaning up - Removing JSON parse files.");
-                 deleteDir(parseLoc);
+                 if (!config.leaveJSONFiles) {
+                    logger.info("Cleaning up - Removing JSON parse files.");
+                    deleteDir(parseLoc);
+                 }
              });
          })
          .catch( (err: Error) => {

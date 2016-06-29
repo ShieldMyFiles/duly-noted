@@ -63,7 +63,8 @@
                         <pre>
                             <code class="typescript">import {findWhere, findIndex} from &quot;underscore&quot;;
 import log4js &#x3D; require(&quot;log4js&quot;);
-let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);</code>
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
+</code>
                         </pre>
                     </div>
             </div>
@@ -84,7 +85,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
     id: string;
     anchors?: IAnchor[];
     subcollections?: IReferenceCollection[];
-}</code>
+}
+</code>
                         </pre>
                     </div>
             </div>
@@ -105,7 +107,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
     id: string;
     file: string;
     line: number;
-}</code>
+}
+</code>
                         </pre>
                     </div>
             </div>
@@ -126,7 +129,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
     anchor: string;
     path: string;
     linkStub: string;
-}</code>
+}
+</code>
                         </pre>
                     </div>
             </div>
@@ -147,7 +151,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
     id: string;
     anchors: IAnchor[];
     subcollections: IReferenceCollection[];
-    logLevel: string;</code>
+    logLevel: string;
+</code>
                         </pre>
                     </div>
             </div>
@@ -170,7 +175,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
         this.id &#x3D; id;
         this.anchors &#x3D; [];
         this.subcollections &#x3D; [];
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -194,7 +200,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
             this.subcollections.push(new ReferenceCollection(collection.subcollections[i].id, this.logLevel).inflate(collection.subcollections[i]));
         }
         return this;
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -216,8 +223,10 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
         if (existing) {
             logger.error(&quot;Cannot add anchor &#x27;&quot; + anchor.id + &quot;&#x27; from &quot; + anchor.file + &quot;:&quot; + anchor.line + &quot; to &#x27;&quot; + this.id + &quot;&#x27; collection because it was already defined at &quot; + existing.file + &quot;:&quot; + existing.line);
         }
+
         this.anchors.push(anchor);
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -240,13 +249,16 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
             logger.error(&quot;Cannot add collection &#x27;&quot; + collection.id + &quot;&#x27; because it was already defined as an anchor &quot; + existingAnchor.file + &quot;:&quot; + existingAnchor.line);
             return;
         }
+
         let existingCollection &#x3D; findWhere(this.anchors, {id: collection.id});
         if (existingCollection) {
             logger.error(&quot;Cannot add collection &#x27;&quot; + collection.id + &quot;&#x27; because it was already defined as a subcollection of &#x27;&quot; + collection.id +  &quot;&#x27;&quot;);
             return;
         }
+
         this.subcollections.push(collection);
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -276,11 +288,14 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
             return;
         } else {
             let collectionTag &#x3D; anchorTag.shift();
+
             let i &#x3D; findIndex(this.subcollections, (item) &#x3D;&gt; {
                 return item.id &#x3D;&#x3D;&#x3D; collectionTag;
             });
+
             if (i &gt; -1) {
             logger.debug(&quot;Collection present:&quot; + collectionTag);
+
             return this.subcollections[i].addAnchorTag(anchorTag, fileName, lineNumber);
             } else {
                 logger.debug(&quot;Collection not present:&quot; + collectionTag);
@@ -290,7 +305,8 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
                 return;
             }
         }
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -311,8 +327,10 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
                             <code class="typescript">    public getAllTags(parentPath?: string, depth?: number): ITag[] {
         parentPath &#x3D; parentPath || &quot;&quot;;
         depth &#x3D; depth || 0;
+
         let allTags: ITag[] &#x3D; [];
         if (depth &gt; 0) {
+
             for (let i &#x3D; 0; i &lt; this.anchors.length; i++) {
                 if (parentPath !&#x3D;&#x3D; &quot;&quot; &amp;&amp; parentPath !&#x3D;&#x3D; null) {
                     allTags.push({
@@ -328,10 +346,12 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
                     });
                 }
             }
+
             for (let i &#x3D; 0; i &lt; this.subcollections.length; i++) {
                 allTags &#x3D; allTags.concat(this.subcollections[i].getAllTags(parentPath + &quot;/&quot; + this.id,  depth + 1));
             }
         } else {
+
             for (let i &#x3D; 0; i &lt; this.anchors.length; i++) {
                 allTags.push({
                     anchor: this.anchors[i].id,
@@ -339,12 +359,15 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
                     linkStub: this.anchors[i].id
                 });
             }
+
             for (let i &#x3D; 0; i &lt; this.subcollections.length; i++) {
                 allTags &#x3D; allTags.concat(this.subcollections[i].getAllTags(null, depth + 1));
             }
         }
+
         return allTags;
-    }</code>
+    }
+</code>
                         </pre>
                     </div>
             </div>
@@ -365,10 +388,12 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
         allCollections &#x3D; allCollections || [];
         parentPath &#x3D; parentPath || &quot;&quot;;
         let id &#x3D; parentPath + &quot;/&quot; + this.id;
+
         allCollections.push({
             name: id,
             anchors: []
         });
+
         for (let i &#x3D; 0; i &lt; this.anchors.length; i++) {
             allCollections[allCollections.length - 1].anchors.push({
                 anchor: this.anchors[i].id,
@@ -376,9 +401,11 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceCollection&quot;);
                 linkStub: this.anchors[i].id
             });
         }
+
         for (let i &#x3D; 0; i &lt; this.subcollections.length; i++) {
             allCollections &#x3D; this.subcollections[i].getTagsByCollection(allCollections, id);
         }
+
         return allCollections;
     }
 }</code>
