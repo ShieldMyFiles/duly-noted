@@ -12,11 +12,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/shieldmyfiles/duly-noted.git"
+    "url": "https://github.com/ShieldMyFiles/duly-noted.git"
   },
   "author": "Christopher Webster <chris@shieldmyfiles.com>",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/shieldmyfiles/duly-noted#readme",
+  "homepage": "https://github.com/ShieldMyFiles/duly-noted#readme",
   "dependencies": {
     "commander": "^2.9.0",
     "fs-extra": "^0.30.0",
