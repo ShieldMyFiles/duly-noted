@@ -61,7 +61,7 @@ duly-noted -i
 ```
 
 #### Config Settings, and Default Values
-| Setting            | Description                                                                                                                                                                                        |                                                                          |
+| Setting            | Description                                                                                                                                                                                        | Default                                                                  |
 |--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
 | projectName        | A name for your project - used by generator for headings.                                                                                                                                          | "Fancy Project Name"                                                     |
 | files              | Array of file globs. The input code files you want to document with duly-noted.                                                                                                                    | empty array                                                              |
@@ -71,7 +71,7 @@ duly-noted -i
 | linkRegExp         | The regular expression to use to identify links.                                                                                                                                                   | The default link start is `@`, so to link to anchor above: `@ImAnAnchor` |
 | externalReferences | Array of External reference objects, each with an `anchor` and a `path`                                                                                                                            | none provided by default.                                                |
 | generators         | Array of generators you want to use to generate output. Currently `html`, and `markdown` are available.                                                                                            | markdown                                                                 |
-| leaveJSONFiles     | Duly Noted parses your code files to a json map of comments and code. When it is done, it cleans up these JSON files automatically. If you want to leave these files undeleted, set this to `true` | `false`                                                                    |
+| leaveJSONFiles     | Duly Noted parses your code files to a json map of comments and code. When it is done, it cleans up these JSON files automatically. If you want to leave these files undeleted, set this to `true` | `false`                                                                  |
 
 
 ### Creating Links
