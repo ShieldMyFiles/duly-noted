@@ -23,6 +23,7 @@ let logger = log4js.getLogger("duly-noted::run");
  * ## Run
  * 
  * Basic code flow is:
+ * 
  * 1. parse the cofiguration options using the following order of precedence
  * 2. get the files and pass those to the @ReferenceParser
  * 3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator
@@ -83,6 +84,7 @@ export function run() {
     /**
      * ## Set settings
      * Settings are in order of precedence
+     * 
      * 1. Command Line Input
      * 2. User's Config File
      * 3. Defaults values (see @issue/3)
