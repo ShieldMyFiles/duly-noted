@@ -83,16 +83,22 @@ Creates Markdown docs for a set of file maps and reference maps set on [classes/
             }, (err, files) => {
                 let readme = "";
                 let i = 1;
-                lineReader.eachLine(that.readme, (line, last) => {
-                    let newLine = line;
-                    newLine = that.replaceExternalLinks(newLine, that.readme, i);
-                    newLine = that.replaceInternalLinks(newLine, that.readme, i);
-                    readme +=  "\n" + newLine;
-                    i++;
-                }, () => {
-                    that.generateIndexPage(readme);
+
+                if (that.readme !== null) {
+                    lineReader.eachLine(that.readme, (line, last) => {
+                        let newLine = line;
+                        newLine = that.replaceExternalLinks(newLine, that.readme, i);
+                        newLine = that.replaceInternalLinks(newLine, that.readme, i);
+                        readme +=  "\n" + newLine;
+                        i++;
+                    }, () => {
+                        that.generateIndexPage(readme);
+                        resolve(null);
+                    });
+                } else {
+                    that.generateIndexPage("");
                     resolve(null);
-                });
+                }
             });
         });
     }
@@ -321,7 +327,7 @@ and sucks in the README.
 
         let md = "# " + this.projectName + " documentation \n";
 
-        md += "### Collections \n";
+        md += "### Anchor Collections \n";
         for (let i = 0; i < outputMap.collections.length; i++) {
            md += "\n#### " + outputMap.collections[i].name + " \n";
 
@@ -331,14 +337,14 @@ and sucks in the README.
         }
 
         md += "\n------------------------------ \n";
-        md += "\n### Files \n";
+        md += "\n### Documentation Files \n";
 
         for (let i = 0; i < outputMap.files.length; i++) {
 
 ```
 
 This shifts off the root folder b/c our index file is inside the output folder,
-not one level up. See [issues/5](https://bitbucket.org/shieldmyfiles/duly-noted/issues/5) 
+not one level up. See @issues/5
 > EXAMPLE:
 > docs/myfile.ts.md is linked to as ./myfile.ts.md
 

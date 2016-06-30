@@ -1,0 +1,15 @@
+{
+    "projectName":"Fancy Project Name",
+    "files": [
+    ],
+    "indexFile":"README.md",
+    "outputDir": "./docs",
+    "anchorRegExp": "!([a-zA-Z0-9\\-\\./]+)",
+    "linkRegExp": "(?:^|\\W)@([a-zA-Z0-9\\-\\./]+)",
+    "readme": null,
+    "externalReferences": [ ],
+    "generators": [
+        "markdown"
+     ],
+    "leaveJSONFiles":false
+}

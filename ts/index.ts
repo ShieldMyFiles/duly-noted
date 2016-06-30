@@ -5,6 +5,7 @@
  *
  * This is the entry file to Duly Noted
  */
+import {IProgram} from "./classes/IProgram";
 import {IConfig} from "./classes/IConfig";
 import program = require("commander");
 import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync, readdirSync, rmdirSync, statSync} from "fs";
@@ -18,107 +19,124 @@ import {HtmlGenerator} from "./generators/htmlGenerator";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::run");
 
-
 /**
  * ## Run
  * 
- * Runs duly-typed using taking the consuing the config file (see @IConfig) found as `/duly-noted.json` 
  * Basic code flow is:
- *  1. parse the cofiguration options
- *  2. get the files, and pass those to the @ReferenceParser
- *  3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator
+ * 1. parse the cofiguration options using the following order of precedence
+ * 2. get the files and pass those to the @ReferenceParser
+ * 3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator
  */
-export function run () {
+export function run() {
     logger.info("Welcome to Duly Noted.");
     let logLevel: string;
     let config: IConfig;
+    let defaults: IConfig = JSON.parse(readFileSync(__dirname + "/../bin/defaults.json").toString());
+    let packageJSON: any = JSON.parse(readFileSync(__dirname + "/../package.json").toString());
+    logger.info(packageJSON.description);
 
     program
-    .version("1.1.0")
-    .option("-c, --config <file>", "Path to duly-noted.json", "duly-noted.json")
-    .option("-o, --outputDir <path>", "Path to output docs to")
-    .option("-g, --generator <generator>", "Generator to use.")
-    .option("-i, --init", "Creates a default duly-noted.json file")
-    .option("-v, --verbose", "Chatty Cathy mode")
-    .parse(process.argv);
+        .version(packageJSON.version)
+        .option("-c, --config <file>", "Path to duly-noted.json", "duly-noted.json")
+        .option("-o, --outputDir <path>", "Path to output docs to")
+        .option("-g, --generator <generator>", "Generator to use.")
+        .option("-i, --init", "Creates a default duly-noted.json file")
+        .option("-v, --verbose", "Chatty Cathy mode")
+        .parse(process.argv);
 
-     // ### Init - copies example duly-noted.json
-     if (program.init) {
+    //### Set verbose mode
+    if (program.verbose) {
+        logLevel = "DEUBG";
+    } else {
+        logLevel = "INFO";
+    }
+    logger.setLevel(logLevel);
+
+
+    //### Init - copies example duly-noted.json
+    if (program.init) {
         try {
-          let config = JSON.parse(readFileSync("duly-noted.json").toString());
-          logger.fatal("It looks like you already have a 'duly-noted.json' file. Please just update that one.");
-          return;
+            let config = JSON.parse(readFileSync("duly-noted.json").toString());
+            logger.fatal("It looks like you already have a 'duly-noted.json' file. Please just update that one.");
+            return;
         } catch (err) {
             let projectPathArray = __dirname.split("/");
             let projectPath = projectPathArray.join("/");
-            let dnJSON = readFileSync(path.join(projectPath, "default.duly-noted.json")).toString();
+            let dnJSON = readFileSync(path.join(projectPath, "/../bin/default.duly-noted.json")).toString();
             writeFileSync("duly-noted.json", dnJSON);
             logger.info("duly-noted.json file created. YOU NEED TO UPDATE IT TO FIT YOUR NEEDS. Duly Noted will not work off-the-shelf.");
             logger.info("Seriously, stop reading the console, and go update your brand new duly-noted.json file aleady!");
             return;
         }
-     }
+    }
 
-     try {
+    //### Load the config file, or advise init
+    try {
+        logger.info("Parsing config file.")
         config = JSON.parse(readFileSync(program.config).toString());
-     } catch (error) {
-         logger.error(error.message);
-         logger.fatal("Error reading config file: " + program.config);
-         return;
-     }
+    } catch (error) {
+        logger.error(error.message);
+        logger.warn("Error reading config file: " + program.config + " Try running init first.");
+        return;
+    }
 
-     config.outputDir = program.outputDir || config.outputDir;
+    /**
+     * ## Set settings
+     * Settings are in order of precedence
+     * 1. Command Line Input
+     * 2. User's Config File
+     * 3. Defaults values (see @issue/3)
+     */
 
-     if (program.generator) {
-         config.generators = [program.generator];
-     }
+    // Set outputDir
+    config.outputDir = program.outputDir || config.outputDir || defaults.outputDir;
 
-     let getFiles: Q.IPromise<string[]>[] = [];
+    // Set generator
+    if (program.generator) {
+        config.generators = [program.generator];
+    } else {
+        config.generators = config.generators || defaults.generators;
+    }
 
-     for (let i = 0; i < config.files.length; i++) {
+    // Get file actions
+    let getFiles: Q.IPromise<string[]>[] = [];
+
+    for (let i = 0; i < config.files.length; i++) {
         getFiles.push(getFilesFromGlob(config.files[i]));
-     }
-
-     if (program.verbose) {
-         logLevel = "DEUBG";
-     } else {
-         logLevel = "INFO";
-     }
-
-     logger.setLevel(logLevel);
+    }
 
     logger.debug("Starting Reference Parsing.");
-     Q.all(getFiles)
-     .then((results) => {
-         let files = _.flatten(results);
-         let referenceParser = new ReferenceParser(config, logLevel);
+    Q.all(getFiles)
+        .then((results) => {
+            let files = _.flatten(results);
+            let referenceParser = new ReferenceParser(config, logLevel);
 
-         referenceParser.parse()
-         .then((response) => {
-             logger.info("Parsing complete, beginning export.");
-             let generatorActions = [];
+            referenceParser.parse()
+                .then((response) => {
+                    logger.info("Parsing complete, beginning export.");
+                    let generatorActions = [];
 
-             if (_.contains(config.generators, "html")) {
-                generatorActions.push(new HtmlGenerator(config, logLevel).generate());
-             }
+                    if (_.contains(config.generators, "html")) {
+                        generatorActions.push(new HtmlGenerator(config, logLevel).generate());
+                    }
 
-             if (_.contains(config.generators, "markdown")) {
-                generatorActions.push(new MarkdownGenerator(config, logLevel).generate());
-             }
+                    if (_.contains(config.generators, "markdown")) {
+                        generatorActions.push(new MarkdownGenerator(config, logLevel).generate());
+                    }
 
-             Q.all(generatorActions)
-             .then(() => {
-                 if (!config.leaveJSONFiles) {
-                    logger.info("Cleaning up - Removing JSON parse files.");
-                    deleteDir(parseLoc);
-                 }
-             });
-         })
-         .catch( (err: Error) => {
-             // !TODO/errors > An overall strategy is needed to identify errors.
-             logger.error(err.message + err.stack);
-         });
-     });
+                    Q.all(generatorActions)
+                        .then(() => {
+                            if (!config.leaveJSONFiles) {
+                                logger.info("Cleaning up - Removing JSON parse files.");
+                                deleteDir(parseLoc);
+                            }
+                        });
+                })
+                .catch((err: Error) => {
+                    // !TODO/errors > An overall strategy is needed to identify and report errors.
+                    logger.error(err.message + err.stack);
+                });
+        });
 }
 
 /**

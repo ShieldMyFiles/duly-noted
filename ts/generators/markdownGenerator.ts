@@ -73,16 +73,22 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             }, (err, files) => {
                 let readme = "";
                 let i = 1;
-                lineReader.eachLine(that.readme, (line, last) => {
-                    let newLine = line;
-                    newLine = that.replaceExternalLinks(newLine, that.readme, i);
-                    newLine = that.replaceInternalLinks(newLine, that.readme, i);
-                    readme +=  "\n" + newLine;
-                    i++;
-                }, () => {
-                    that.generateIndexPage(readme);
+
+                if (that.readme !== null) {
+                    lineReader.eachLine(that.readme, (line, last) => {
+                        let newLine = line;
+                        newLine = that.replaceExternalLinks(newLine, that.readme, i);
+                        newLine = that.replaceInternalLinks(newLine, that.readme, i);
+                        readme +=  "\n" + newLine;
+                        i++;
+                    }, () => {
+                        that.generateIndexPage(readme);
+                        resolve(null);
+                    });
+                } else {
+                    that.generateIndexPage("");
                     resolve(null);
-                });
+                }
             });
         });
     }
@@ -277,7 +283,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 
         let md = "# " + this.projectName + " documentation \n";
 
-        md += "### Collections \n";
+        md += "### Anchor Collections \n";
         for (let i = 0; i < outputMap.collections.length; i++) {
            md += "\n#### " + outputMap.collections[i].name + " \n";
 
@@ -287,7 +293,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         }
 
         md += "\n------------------------------ \n";
-        md += "\n### Files \n";
+        md += "\n### Documentation Files \n";
 
         for (let i = 0; i < outputMap.files.length; i++) {
 

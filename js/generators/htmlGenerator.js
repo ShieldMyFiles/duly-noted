@@ -188,7 +188,9 @@ var HtmlGenerator = (function () {
                     outputMap.files.push({ path: path_1 });
                 }
             }
-            outputMap.readme = fs_1.readFileSync(that.readme).toString();
+            if (_this.readme !== null) {
+                outputMap.readme = fs_1.readFileSync(that.readme).toString();
+            }
             var output = _this.indexTemplate(outputMap);
             fs_1.writeFileSync(path.join(that.outputDir, "index.html"), output, { flag: "w" });
         });

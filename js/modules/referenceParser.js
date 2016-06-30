@@ -16,7 +16,7 @@ var ReferenceParser = (function () {
         this.files = config.files;
         this.rootCollection = new referenceCollection_1.ReferenceCollection(exports.parseLoc, logLevel);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
-        var commentPatternsFile = path.join(__dirname, "../comment-patterns.json");
+        var commentPatternsFile = path.join(__dirname, "../../bin/comment-patterns.json");
         logger.debug("Loading Comment Patterns from " + commentPatternsFile);
         this.commentPatterns = JSON.parse(fs_1.readFileSync(commentPatternsFile).toString());
         this.externalReferences = config.externalReferences;

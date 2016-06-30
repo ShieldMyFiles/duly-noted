@@ -14,14 +14,24 @@ function run() {
     logger.info("Welcome to Duly Noted.");
     var logLevel;
     var config;
+    var defaults = JSON.parse(fs_1.readFileSync(__dirname + "/../bin/defaults.json").toString());
+    var packageJSON = JSON.parse(fs_1.readFileSync(__dirname + "/../package.json").toString());
+    logger.info(packageJSON.description);
     program
-        .version("1.1.0")
+        .version(packageJSON.version)
         .option("-c, --config <file>", "Path to duly-noted.json", "duly-noted.json")
         .option("-o, --outputDir <path>", "Path to output docs to")
         .option("-g, --generator <generator>", "Generator to use.")
         .option("-i, --init", "Creates a default duly-noted.json file")
         .option("-v, --verbose", "Chatty Cathy mode")
         .parse(process.argv);
+    if (program.verbose) {
+        logLevel = "DEUBG";
+    }
+    else {
+        logLevel = "INFO";
+    }
+    logger.setLevel(logLevel);
     if (program.init) {
         try {
             var config_1 = JSON.parse(fs_1.readFileSync("duly-noted.json").toString());
@@ -31,7 +41,7 @@ function run() {
         catch (err) {
             var projectPathArray = __dirname.split("/");
             var projectPath = projectPathArray.join("/");
-            var dnJSON = fs_1.readFileSync(path.join(projectPath, "default.duly-noted.json")).toString();
+            var dnJSON = fs_1.readFileSync(path.join(projectPath, "/../bin/default.duly-noted.json")).toString();
             fs_1.writeFileSync("duly-noted.json", dnJSON);
             logger.info("duly-noted.json file created. YOU NEED TO UPDATE IT TO FIT YOUR NEEDS. Duly Noted will not work off-the-shelf.");
             logger.info("Seriously, stop reading the console, and go update your brand new duly-noted.json file aleady!");
@@ -39,28 +49,25 @@ function run() {
         }
     }
     try {
+        logger.info("Parsing config file.");
         config = JSON.parse(fs_1.readFileSync(program.config).toString());
     }
     catch (error) {
         logger.error(error.message);
-        logger.fatal("Error reading config file: " + program.config);
+        logger.warn("Error reading config file: " + program.config + " Try running init first.");
         return;
     }
-    config.outputDir = program.outputDir || config.outputDir;
+    config.outputDir = program.outputDir || config.outputDir || defaults.outputDir;
     if (program.generator) {
         config.generators = [program.generator];
+    }
+    else {
+        config.generators = config.generators || defaults.generators;
     }
     var getFiles = [];
     for (var i = 0; i < config.files.length; i++) {
         getFiles.push(getFilesFromGlob(config.files[i]));
     }
-    if (program.verbose) {
-        logLevel = "DEUBG";
-    }
-    else {
-        logLevel = "INFO";
-    }
-    logger.setLevel(logLevel);
     logger.debug("Starting Reference Parsing.");
     Q.all(getFiles)
         .then(function (results) {

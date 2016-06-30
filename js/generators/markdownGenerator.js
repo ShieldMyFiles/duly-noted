@@ -37,16 +37,22 @@ var MarkdownGenerator = (function () {
             }, function (err, files) {
                 var readme = "";
                 var i = 1;
-                lineReader.eachLine(that.readme, function (line, last) {
-                    var newLine = line;
-                    newLine = that.replaceExternalLinks(newLine, that.readme, i);
-                    newLine = that.replaceInternalLinks(newLine, that.readme, i);
-                    readme += "\n" + newLine;
-                    i++;
-                }, function () {
-                    that.generateIndexPage(readme);
+                if (that.readme !== null) {
+                    lineReader.eachLine(that.readme, function (line, last) {
+                        var newLine = line;
+                        newLine = that.replaceExternalLinks(newLine, that.readme, i);
+                        newLine = that.replaceInternalLinks(newLine, that.readme, i);
+                        readme += "\n" + newLine;
+                        i++;
+                    }, function () {
+                        that.generateIndexPage(readme);
+                        resolve(null);
+                    });
+                }
+                else {
+                    that.generateIndexPage("");
                     resolve(null);
-                });
+                }
             });
         });
     };
@@ -183,7 +189,7 @@ var MarkdownGenerator = (function () {
             });
         }
         var md = "# " + this.projectName + " documentation \n";
-        md += "### Collections \n";
+        md += "### Anchor Collections \n";
         for (var i = 0; i < outputMap.collections.length; i++) {
             md += "\n#### " + outputMap.collections[i].name + " \n";
             for (var x = 0; x < outputMap.collections[i].anchors.length; x++) {
@@ -191,7 +197,7 @@ var MarkdownGenerator = (function () {
             }
         }
         md += "\n------------------------------ \n";
-        md += "\n### Files \n";
+        md += "\n### Documentation Files \n";
         for (var i = 0; i < outputMap.files.length; i++) {
             var path_1 = outputMap.files[i].split("/");
             var name_2 = path_1;

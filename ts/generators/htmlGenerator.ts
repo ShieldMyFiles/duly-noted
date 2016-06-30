@@ -294,7 +294,9 @@ export class HtmlGenerator implements IHtmlGenerator {
                 }
             }
 
-            outputMap.readme = readFileSync(that.readme).toString();
+            if (this.readme !== null) {
+                outputMap.readme = readFileSync(that.readme).toString();
+            }
             let output = this.indexTemplate(outputMap);
             writeFileSync(path.join(that.outputDir, "index.html"), output, { flag: "w" });
         });

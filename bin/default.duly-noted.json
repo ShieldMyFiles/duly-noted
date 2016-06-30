@@ -1,0 +1,28 @@
+{
+    "projectName":"My Project's Name",
+    "files": [ ], 
+    "outputDir": "./docs", 
+    "indexFile":"README.md", 
+    "anchorRegExp": "!([a-zA-Z0-9\\-\\./]+)",
+    "linkRegExp": "(?:^|\\W)@([a-zA-Z0-9\\-\\./]+)",
+    "readme": "./README.md",
+    "externalReferences": [
+        {
+            "anchor": "wiki",
+            "path": "https://en.wikipedia.org/wiki/::"
+        },
+        {
+            "anchor":"so",
+            "path": "http://stackoverflow.com/questions/::"
+        },
+        {
+            "anchor":"issue",
+            "path": "https://github.com/{your repo name here}/issues/::"
+        }
+    ],
+    "generators": [ 
+        "markdown"
+    // ,"html"
+    ],
+    "leaveJSONFiles":false
+}

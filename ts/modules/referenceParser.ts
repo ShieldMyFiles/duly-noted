@@ -54,7 +54,7 @@ export class ReferenceParser implements IReferenceParser {
         this.rootCollection = new ReferenceCollection(parseLoc, logLevel);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
 
-        let commentPatternsFile = path.join(__dirname, "../comment-patterns.json");
+        let commentPatternsFile = path.join(__dirname, "../../bin/comment-patterns.json");
         logger.debug("Loading Comment Patterns from " + commentPatternsFile);
         this.commentPatterns = JSON.parse(readFileSync(commentPatternsFile).toString());
         this.externalReferences = config.externalReferences;

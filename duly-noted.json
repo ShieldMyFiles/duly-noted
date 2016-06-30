@@ -20,8 +20,16 @@
     "readme": "./README.md",
     "externalReferences": [
         {
-            "anchor": "issues",
-            "path": "https://bitbucket.org/shieldmyfiles/duly-noted/issues/::"
+            "anchor": "wiki",
+            "path": "https://en.wikipedia.org/wiki/::"
+        },
+        {
+            "anchor":"so",
+            "path": "http://stackoverflow.com/questions/::"
+        },
+        {
+            "anchor":"issue",
+            "path": "https://github.com/ShieldMyFiles/duly-noted/issues/::"
         }
     ],
     "generators": [
