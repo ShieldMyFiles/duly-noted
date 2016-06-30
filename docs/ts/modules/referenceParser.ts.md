@@ -76,7 +76,7 @@ export class ReferenceParser implements IReferenceParser {
 
 ```
 
-## Parse
+## Parse 
 Parser all files for anchors - produce a [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
 
 ```typescript
@@ -110,7 +110,7 @@ Parser all files for anchors - produce a [interfaces/IReferenceCollection](../..
 ```
 
 ## Parse As Markdown
-When a file is markdown, we parse the whole thing.
+When a file is markdown, we parse the whole thing. 
 
 ```typescript
     parseAsMarkdown(fileName: string): Q.Promise<{}> {
@@ -158,7 +158,7 @@ When a file is markdown, we parse the whole thing.
 
 ```
 
-## Parse File
+## Parse File 
 Parse a file to a file map. [ParseFile](#ParseFile)
 
 ```typescript
@@ -289,50 +289,46 @@ Parse a file to a file map. [ParseFile](#ParseFile)
  Inside a long comment - so the whole thing is a comment
 ```typescript
                
-```
- If this line contains a long comment closing symbol, then next line isn't long comment.
-```typescript
-               
                 } else {
-                    if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
-                        file.lines[lineNumber].comment = "";
-                        insideLongComment = false;
-```
- This long comment hasn't been closed, so we should parse it for links.
-```typescript
-                   
+
+                    file.lines[lineNumber].longComment = true;
+
+                    if (longCommentOpenMatch) {
+                        file.lines[lineNumber].comment = longCommentOpenMatch[1];
                     } else {
-
-                        file.lines[lineNumber].longComment = true;
-
-                        if (longCommentOpenMatch) {
-                            file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
+                        let match = XRegExp.exec(line, longCommentLineRegExp, 0);
+                        if (match && match[1]) {
+                            file.lines[lineNumber].comment = match[1];
                         } else {
-                            let match = XRegExp.exec(line, longCommentLineRegExp, 0);
-                            if (match && match[1]) {
-                              file.lines[lineNumber].comment = match[1].trim();
-                            } else {
 ```
  Blank Line inside long comment...
 ```typescript
-                              file.lines[lineNumber].comment = "";
-                            }
+                            file.lines[lineNumber].comment = "";
                         }
-
-                        that.parseComment(line, fileName, lineNumber)
-                        .then(() => {
-                            if (last) {
-                                that.writeOutFile(file)
-                                    .then(() => {
-                                        resolve(null);
-                                        return false;
-                                    })
-                                    .catch((err) => {
-                                        logger.fatal(err.message);
-                                    });
-                            }
-                        });
                     }
+
+```
+ If this line contains a long comment closing symbol, then next line isn't long comment, and we can remove the closing tag
+```typescript
+                   
+                    if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
+                        file.lines[lineNumber].comment = file.lines[lineNumber].comment.replace(longCommentCloseRegExp, "");
+                        insideLongComment = false;
+                    };
+
+                    that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
+                    .then(() => {
+                        if (last) {
+                            that.writeOutFile(file)
+                                .then(() => {
+                                    resolve(null);
+                                    return false;
+                                })
+                                .catch((err) => {
+                                    logger.fatal(err.message);
+                                });
+                        }
+                    });
 
 ```
  If this is the last line, then we can wrap things up.
@@ -385,7 +381,7 @@ Writes out a file map
 
 ## Parse Comment
 Once a comment is found (see [ParseFile](../.././ts/modules/referenceParser.ts.md#ParseFile)  above for example) this will parse
-that commant for anchors. It will add those anchors to the [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
+that commant for anchors. It will add those anchors to the [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection)  
 for the entire project.
 
 ```typescript

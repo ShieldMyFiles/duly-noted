@@ -4,13 +4,13 @@
  [authors/chris](../.././authors.md.md#authors/chris) 
  [license](../.././license.md.md#license) 
 
-Generates HTML pages for the source code,
-replacing links and anchors as it goes along.
-Builds a nice Index.html page with info and
-README.md content.
+ Generates HTML pages for the source code, 
+ replacing links and anchors as it goes along. 
+ Builds a nice Index.html page with info and 
+ README.md content. 
 
-Uses tempalate that employ handlebars as the
-templating engine.
+ Uses tempalate that employ handlebars as the 
+ templating engine.
 
 
 ```typescript
@@ -114,8 +114,8 @@ Creates HTML docs for a set of file maps and reference maps set on [classes/Html
 ```
 
 ## Process Files
-Processes the file map for a file, making output decisions based on
-code, comment, long comment presence
+Processes the file map for a file, making output decisions based on 
+code, comment, long comment presence 
 
 ```typescript
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
@@ -271,10 +271,10 @@ Processes a comment line, replacing links with links to external urls
     }
 
 ```
-
+ 
 ## Generates the "Index Page"
-This generates the index page, listing all the link collections,
-and sucks in the README.
+This generates the index page, listing all the link collections, 
+and sucks in the README. 
 
 ```typescript
     generateIndexPage(): void {

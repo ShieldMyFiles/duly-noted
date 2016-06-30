@@ -43,7 +43,7 @@ function run() {
             var projectPath = projectPathArray.join("/");
             var dnJSON = fs_1.readFileSync(path.join(projectPath, "/../bin/default.duly-noted.json")).toString();
             fs_1.writeFileSync("duly-noted.json", dnJSON);
-            logger.info("duly-noted.json file created. YOU NEED TO UPDATE IT TO FIT YOUR NEEDS. Duly Noted will not work off-the-shelf.");
+            logger.info("duly-noted.json file created. YOU SHOULD UPDATE IT TO FIT YOUR NEEDS.");
             logger.info("Seriously, stop reading the console, and go update your brand new duly-noted.json file aleady!");
             return;
         }

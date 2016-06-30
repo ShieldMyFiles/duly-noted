@@ -106,8 +106,8 @@ Creates Markdown docs for a set of file maps and reference maps set on [classes/
 ```
 
 ## Process Files
-Processes the file map for a file, making output decisions based on
-code, comment, long comment presence
+Processes the file map for a file, making output decisions based on 
+code, comment, long comment presence 
 
 ```typescript
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
@@ -290,8 +290,8 @@ Processes a comment line, replacing links with markdown links to external urls
 ```
 
 ## Generates the "Index Page"
-This generates the index page, listing all the link collections,
-and sucks in the README.
+This generates the index page, listing all the link collections, 
+and sucks in the README. 
 
 ```typescript
     generateIndexPage(readmeText?): void {
@@ -343,9 +343,9 @@ and sucks in the README.
 
 ```
 
-This shifts off the root folder b/c our index file is inside the output folder,
+This shifts off the root folder b/c our index file is inside the output folder, 
 not one level up. See @issues/5
-> EXAMPLE:
+> EXAMPLE: 
 > docs/myfile.ts.md is linked to as ./myfile.ts.md
 
 ```typescript

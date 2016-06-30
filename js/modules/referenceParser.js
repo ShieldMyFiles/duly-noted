@@ -170,38 +170,37 @@ var ReferenceParser = (function () {
                     }
                 }
                 else {
-                    if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
-                        file.lines[lineNumber].comment = "";
-                        insideLongComment = false;
+                    file.lines[lineNumber].longComment = true;
+                    if (longCommentOpenMatch) {
+                        file.lines[lineNumber].comment = longCommentOpenMatch[1];
                     }
                     else {
-                        file.lines[lineNumber].longComment = true;
-                        if (longCommentOpenMatch) {
-                            file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
+                        var match = XRegExp.exec(line, longCommentLineRegExp, 0);
+                        if (match && match[1]) {
+                            file.lines[lineNumber].comment = match[1];
                         }
                         else {
-                            var match = XRegExp.exec(line, longCommentLineRegExp, 0);
-                            if (match && match[1]) {
-                                file.lines[lineNumber].comment = match[1].trim();
-                            }
-                            else {
-                                file.lines[lineNumber].comment = "";
-                            }
+                            file.lines[lineNumber].comment = "";
                         }
-                        that.parseComment(line, fileName, lineNumber)
-                            .then(function () {
-                            if (last) {
-                                that.writeOutFile(file)
-                                    .then(function () {
-                                    resolve(null);
-                                    return false;
-                                })
-                                    .catch(function (err) {
-                                    logger.fatal(err.message);
-                                });
-                            }
-                        });
                     }
+                    if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
+                        file.lines[lineNumber].comment = file.lines[lineNumber].comment.replace(longCommentCloseRegExp, "");
+                        insideLongComment = false;
+                    }
+                    ;
+                    that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
+                        .then(function () {
+                        if (last) {
+                            that.writeOutFile(file)
+                                .then(function () {
+                                resolve(null);
+                                return false;
+                            })
+                                .catch(function (err) {
+                                logger.fatal(err.message);
+                            });
+                        }
+                    });
                     if (last) {
                         that.writeOutFile(file)
                             .then(function () {

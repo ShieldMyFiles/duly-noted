@@ -238,41 +238,40 @@ export class ReferenceParser implements IReferenceParser {
                         }
                     }
                 // Inside a long comment - so the whole thing is a comment
-                // If this line contains a long comment closing symbol, then next line isn't long comment.
                 } else {
-                    if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
-                        file.lines[lineNumber].comment = "";
-                        insideLongComment = false;
-                    // This long comment hasn't been closed, so we should parse it for links.
+
+                    file.lines[lineNumber].longComment = true;
+
+                    if (longCommentOpenMatch) {
+                        file.lines[lineNumber].comment = longCommentOpenMatch[1];
                     } else {
-
-                        file.lines[lineNumber].longComment = true;
-
-                        if (longCommentOpenMatch) {
-                            file.lines[lineNumber].comment = longCommentOpenMatch[1].trim();
+                        let match = XRegExp.exec(line, longCommentLineRegExp, 0);
+                        if (match && match[1]) {
+                            file.lines[lineNumber].comment = match[1];
                         } else {
-                            let match = XRegExp.exec(line, longCommentLineRegExp, 0);
-                            if (match && match[1]) {
-                              file.lines[lineNumber].comment = match[1].trim();
-                            } else {
-                              file.lines[lineNumber].comment = ""; // Blank Line inside long comment...
-                            }
+                            file.lines[lineNumber].comment = ""; // Blank Line inside long comment...
                         }
-
-                        that.parseComment(line, fileName, lineNumber)
-                        .then(() => {
-                            if (last) {
-                                that.writeOutFile(file)
-                                    .then(() => {
-                                        resolve(null);
-                                        return false;
-                                    })
-                                    .catch((err) => {
-                                        logger.fatal(err.message);
-                                    });
-                            }
-                        });
                     }
+
+                    // If this line contains a long comment closing symbol, then next line isn't long comment, and we can remove the closing tag
+                    if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
+                        file.lines[lineNumber].comment = file.lines[lineNumber].comment.replace(longCommentCloseRegExp, "");
+                        insideLongComment = false;
+                    };
+
+                    that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
+                    .then(() => {
+                        if (last) {
+                            that.writeOutFile(file)
+                                .then(() => {
+                                    resolve(null);
+                                    return false;
+                                })
+                                .catch((err) => {
+                                    logger.fatal(err.message);
+                                });
+                        }
+                    });
 
                     // If this is the last line, then we can wrap things up.
                     if (last) {

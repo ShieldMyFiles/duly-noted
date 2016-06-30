@@ -9,6 +9,10 @@ function getFileType(fileName) {
             return "javascript";
         case "html":
             return "html";
+        case "less":
+            return "less";
+        case "css":
+            return "css";
         default:
             return "plain/text";
     }

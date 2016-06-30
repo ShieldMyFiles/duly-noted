@@ -17,7 +17,22 @@
         "longCommentLineRegExp": "\\* (.*)",
         "longCommentCloseRegExp": "\\*\/"
     },
+    "less":{
+        "commentRegExp": "\\/\\/(.*)",
+        "longCommentOpenRegExp": "\\/\\*\\*(.*)",
+        "longCommentLineRegExp": "\\* (.*)",
+        "longCommentCloseRegExp": "\\*\/"
+    },
+    "css":{
+        "commentRegExp": "\\/\\/(.*)",
+        "longCommentOpenRegExp": "\\/\\*\\*(.*)",
+        "longCommentLineRegExp": "\\* (.*)",
+        "longCommentCloseRegExp": "\\*\/"
+    },
     "html":{
-        "commentRegExp": "<!--(.*)-->"
+        "commentRegExp": "<!--(.*)",
+        "longCommentOpenRegExp":"<!--(.*)",
+        "longCommentLineRegExp": "(.*)",
+        "longCommentCloseRegExp": "-->"
     }
 }

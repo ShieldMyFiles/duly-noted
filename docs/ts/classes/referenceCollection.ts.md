@@ -59,7 +59,7 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```
 
-### Creates an instance of [ReferenceCollection](../.././ts/classes/referenceCollection.ts.md#ReferenceCollection) 
+### Creates an instance of @ReferenceCollection
 
 ```typescript
     constructor(id: string, logLevel?: string) {
