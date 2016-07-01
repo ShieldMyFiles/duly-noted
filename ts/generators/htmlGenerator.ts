@@ -173,7 +173,7 @@ export class HtmlGenerator implements IHtmlGenerator {
         // Look at the line for anchors - replace them with links. 
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
             newComment =  newComment.substr(0, match.index) +
-            " <a name=\"" + match[1] + "\"><span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span>" + match[1] + "</a> " +
+            " <a name=\"" + match[1] + "\"><span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span></a> " + match[1] +
             newComment.substr(match.index + match[0].length);
 
             pos = match.index + match[0].length;

@@ -43,7 +43,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     projectName: string;
     outputFiles: string[] = [];
     htmlAnchors: boolean;
-    gitHubMarkdownAnchors: boolean;
+    gitHubHtmlAnchors: boolean;
 
     /**
      * ### Creates an instance of @classes/MarkdownGenerator
@@ -59,8 +59,10 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.readme = config.readme;
         this.projectName = config.projectName;
         this.indexFile = config.indexFile;
+
+        // For a discussion anchors in markdown see @issue/4
         this.htmlAnchors = config.markdownGeneratorOptions.htmlAnchors;
-        this.gitHubMarkdownAnchors = config.markdownGeneratorOptions.gitHubMarkdownAnchors;
+        this.gitHubHtmlAnchors = config.markdownGeneratorOptions.gitHubHtmlAnchors;
     }
 
     /**
@@ -185,13 +187,13 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             /**
              * Markdown doesn't natively support acnhors, but you can make them work 
              * with simple html. In GitHub, however, anchors are prefixed with 'user-content'
-             * For a discussion anchors in markdown see @issue/6
+             * For a discussion anchors in markdown see @issue/4
              */
-            if (this.htmlAnchors) {
+            if (this.htmlAnchors || this.gitHubHtmlAnchors) {
                 newComment =  newComment.substr(0, match.index) +
                 '<a name="' + anchor + '" id="' + anchor + '" ></a>';
 
-                if (this.gitHubMarkdownAnchors) {
+                if (this.gitHubHtmlAnchors) {
                     newComment += "[🔗](#user-content-" + anchor + ")" + match[1];
                 } else {
                     newComment += "[🔗](#" + anchor + ")" + match[1];
@@ -226,7 +228,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 logger.debug("found internal link: " + match[1] + " " + tag.path);
                 let anchor = match[1].replace("/", "-").toLowerCase();
 
-                if (this.gitHubMarkdownAnchors) {
+                if (this.gitHubHtmlAnchors) {
                     newComment +=  "[" + match[1] + "](" + linkPrefix + tag.path + ".md#user-content-" + anchor + ")";
                 } else {
                     newComment += "[" + match[1] + "](" + linkPrefix + tag.path + ".md#" + anchor + ")";
@@ -302,7 +304,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 anchors[x].path = anchors[x].path + ".md#";
 
                 // Adjustment for gitHub anchor links. See @issue/6
-                if (this.gitHubMarkdownAnchors) {
+                if (this.gitHubHtmlAnchors) {
                     anchors[x].path += "user-content-";
                 }
 

@@ -101,7 +101,7 @@ Settings are in order of precedence
 
 1. Command Line Input
 2. User's Config File
-3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/6) )
+3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/4) )
 
 ```typescript
 

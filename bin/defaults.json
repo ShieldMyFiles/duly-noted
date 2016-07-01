@@ -12,7 +12,7 @@
         "markdown"
      ],
     "markdownGeneratorOptions": {
-        "gitHubMarkdownAnchors": false,
+        "gitHubHtmlAnchors": false,
         "htmlAnchors": true
     },
     "leaveJSONFiles":false

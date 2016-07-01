@@ -36,8 +36,8 @@
         "markdown"
     ],
     "markdownGeneratorOptions": {
-        "gitHubMarkdownAnchors": true,
-        "htmlAnchors": true
+        "gitHubHtmlAnchors": true,
+        "htmlAnchors": false
     },
     "leaveJSONFiles":false
 }

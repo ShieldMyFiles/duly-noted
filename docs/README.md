@@ -6,8 +6,8 @@
 * [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator) 
 * [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator) 
 * [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-referenceparser) 
-* [IConfig](./ts/classes/IConfig.ts.md#user-content-iconfig) 
 * [license](./license.md.md#user-content-license) 
+* [IConfig](./ts/classes/IConfig.ts.md#user-content-iconfig) 
 * [ParseFile](./ts/modules/referenceParser.ts.md#user-content-parsefile) 
 
 #### authors 
@@ -115,18 +115,20 @@ duly-noted -i
 ```
 
 #### Config Settings, and Default Values
-| Setting            | Description                                                                                                                                                                                        | Default                                                                  |
-|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-| projectName        | A name for your project - used by generator for headings.                                                                                                                                          | "Fancy Project Name"                                                     |
-| files              | Array of file globs. The input code files you want to document with Duly Noted.                                                                                                                    | empty array                                                              |
-| indexFile          | Output documentation index/homepage name. For markdown + GitHub README.md can be helpful, as it auto-renders.                                                                                      | README.md                                                                |
-| outputDir          | Directory where documentation should be output.                                                                                                                                                    | ./docs                                                                   |
-| anchorRegExp       | The regular expression to use to identify anchors you want to be able to link to.                                                                                                                  | The default anchor start is `!`, as in `!ImAnAnchor`                     |
-| linkRegExp         | The regular expression to use to identify links.                                                                                                                                                   | The default link start is `@`, so to link to anchor above: `@ImAnAnchor` |
-| externalReferences | Array of External Reference objects, each with an `anchor` and a `path`.                                                                                                                           | none provided by default                                                 |
-| generators         | Array of generators you want to use to generate output. Currently `html` and `markdown` are available.                                                                                             | markdown                                                                 |
-| leaveJSONFiles     | Duly Noted parses your code files to a json map of comments and code. When it is done, it cleans up these json files automatically. If you want to leave these files undeleted, set this to `true`.| `false`                                                                  |
-
+| Setting                  ||Description                                                                                                                                                                                        | Default                                                                  |
+|-------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------|
+| projectName              || A name for your project - used by generator for headings.                                                                                                                                          | "Fancy Project Name"                                                    |
+| files                    || Array of file globs. The input code files you want to document with Duly Noted.                                                                                                                    | empty array                                                             |
+| indexFile                || Output documentation index/homepage name. For markdown + GitHub README.md can be helpful, as it auto-renders.                                                                                      | README.md                                                               |
+| outputDir                || Directory where documentation should be output.                                                                                                                                                    | ./docs                                                                  |
+| anchorRegExp             || The regular expression to use to identify anchors you want to be able to link to.                                                                                                                  | The default anchor start is `!`, as in `!ImAnAnchor`                    |
+| linkRegExp               || The regular expression to use to identify links.                                                                                                                                                   | The default link start is `@`, so to link to anchor above: `@ImAnAnchor`|
+| externalReferences       || Array of External Reference objects, each with an `anchor` and a `path`.                                                                                                                           | none provided by default                                                |
+| generators               || Array of generators you want to use to generate output. Currently `html` and `markdown` are available.                                                                                             | markdown                                                                |
+| leaveJSONFiles           || Duly Noted parses your code files to a json map of comments and code. When it is done, it cleans up these json files automatically. If you want to leave these files undeleted, set this to `true`.| `false`                                                                 |
+| markdownGeneratorOptions || Object for setting specific settings for Markdown Generator                                                                                                                                        |                                                                         |
+| ==>| gitHubHtmlAnchors    | Set to `true` to support anchor tags in GitHub. Only use if you are hosting docs in GitHub.                                                                                                        | `false`                                                                 |
+| ==>| htmlAnchors          | Set to `true` to insert html anchor tags in your markdown to support "#" links.                                                                                                                    | `true`                                                                  |
 
 ### Creating Links
 Duly Noted allows you to create both *internal* and *external* links.
@@ -148,6 +150,19 @@ You can link to another place in your source comments as follows:
 > **Pro Tip:**
 > The documentation index file will contain an automatically generated, organized list of links to each of the anchors in your code comments. (See [/docs](/docs) for an example of this). 
 > This list can be mighty helpful for quickly getting to specific spots buried in the code. For example, you can easily create a list of todos by simply starting todo comments with anchors like: `!todo/item1`, `!todo/item2`, `!todo/third-thing`, etc.
+
+#### A note internal link anchors in Markdown
+Often it is helpful to link to a specific place in the code, not just the code file itself. In HTML this is easy to accomplish by inserting a named anchor tag like:
+```html 
+<a name="my-place"></a>
+<a href="#my-place">link</a>
+```
+Markdown does not natively support the creation of such anchors, however, there are some work-arounds if you are hosting (rendering) on GitHub, or your viewer 
+supports `<a>`'s as HTML in-line with the Markdown. To insert `<a>` tags that will work as anchors in GitHub set `markdownGeneratorOptions.gitHubHtmlAnchors = true` in your `duly-noted.json` file.
+To insert plain-jane HTML `<a>` tags as anchors set `markdownGeneratorOptions.htmlAnchors = true`. If you would rather not muddle your Markdown with `<a>`'s at all then set both to `false`, and anchors will not be modified, but simply printed out.
+Note that BitBucket does not currently support html inline, so you are best to just set these both to `false` and add your voice to the legion of folks who requested they support some basic html in Markdown docs.
+
+> If you have an idea of how to better handle this anchor business please leave a comment on Issue #4. 
 
 #### External Links
 
@@ -180,6 +195,7 @@ The real power is in adding links to the external services you or your team use.
 
 ## Examples
 For this project, markdown docs were generated from our typescript source code. These docs are rendered in GitHub at [/docs](/docs).
+
 
 ________________________________
 

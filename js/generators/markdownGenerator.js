@@ -26,7 +26,7 @@ var MarkdownGenerator = (function () {
         this.projectName = config.projectName;
         this.indexFile = config.indexFile;
         this.htmlAnchors = config.markdownGeneratorOptions.htmlAnchors;
-        this.gitHubMarkdownAnchors = config.markdownGeneratorOptions.gitHubMarkdownAnchors;
+        this.gitHubHtmlAnchors = config.markdownGeneratorOptions.gitHubHtmlAnchors;
     }
     MarkdownGenerator.prototype.generate = function () {
         var _this = this;
@@ -119,10 +119,10 @@ var MarkdownGenerator = (function () {
         var newComment = comment;
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
             var anchor = match[1].replace("/", "-").toLowerCase();
-            if (this.htmlAnchors) {
+            if (this.htmlAnchors || this.gitHubHtmlAnchors) {
                 newComment = newComment.substr(0, match.index) +
                     '<a name="' + anchor + '" id="' + anchor + '" ></a>';
-                if (this.gitHubMarkdownAnchors) {
+                if (this.gitHubHtmlAnchors) {
                     newComment += "[🔗](#user-content-" + anchor + ")" + match[1];
                 }
                 else {
@@ -147,7 +147,7 @@ var MarkdownGenerator = (function () {
             else {
                 logger.debug("found internal link: " + match[1] + " " + tag.path);
                 var anchor = match[1].replace("/", "-").toLowerCase();
-                if (this.gitHubMarkdownAnchors) {
+                if (this.gitHubHtmlAnchors) {
                     newComment += "[" + match[1] + "](" + linkPrefix + tag.path + ".md#user-content-" + anchor + ")";
                 }
                 else {
@@ -198,7 +198,7 @@ var MarkdownGenerator = (function () {
             for (var x = 0; x < anchors.length; x++) {
                 var anchor = anchors[x].linkStub.replace("/", "-").toLowerCase();
                 anchors[x].path = anchors[x].path + ".md#";
-                if (this.gitHubMarkdownAnchors) {
+                if (this.gitHubHtmlAnchors) {
                     anchors[x].path += "user-content-";
                 }
                 if (name_1 !== "") {

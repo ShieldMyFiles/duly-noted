@@ -16,7 +16,7 @@ export declare class MarkdownGenerator implements IMarkdownGenerator {
     projectName: string;
     outputFiles: string[];
     htmlAnchors: boolean;
-    gitHubMarkdownAnchors: boolean;
+    gitHubHtmlAnchors: boolean;
     constructor(config: IConfig, logLevel?: string);
     generate(): Q.IPromise<{}>;
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void;

@@ -15,7 +15,7 @@ export interface IConfig {
     generators: string[];
     leaveJSONFiles: boolean;
     markdownGeneratorOptions: {
-        gitHubMarkdownAnchors: boolean,
+        gitHubHtmlAnchors: boolean,
         htmlAnchors: boolean
     };
 }
