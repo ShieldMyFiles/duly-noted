@@ -25,8 +25,6 @@
 
 
 
-
-[authors/chris](#authors-chris)
-<a id="test-anchor" name="test-anchor">test</a>
+<a name="authors-chris"></a>
 
 ____________________________________
