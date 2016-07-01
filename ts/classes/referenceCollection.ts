@@ -154,17 +154,21 @@ export class ReferenceCollection implements IReferenceCollection {
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
+
+                    for (let i = 0; i < this.subcollections.length; i++) {
+                        allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id,  depth + 1));
+                    }
                 } else {
                     allTags.push({
                         anchor: this.id + "/" + this.anchors[i].id,
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
-                }
-            }
 
-            for (let i = 0; i < this.subcollections.length; i++) {
-                allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id,  depth + 1));
+                    for (let i = 0; i < this.subcollections.length; i++) {
+                        allTags = allTags.concat(this.subcollections[i].getAllTags(this.id,  depth + 1));
+                    }
+                }
             }
         } else {
 

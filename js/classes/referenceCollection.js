@@ -79,6 +79,9 @@ var ReferenceCollection = (function () {
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
+                    for (var i_1 = 0; i_1 < this.subcollections.length; i_1++) {
+                        allTags = allTags.concat(this.subcollections[i_1].getAllTags(parentPath + "/" + this.id, depth + 1));
+                    }
                 }
                 else {
                     allTags.push({
@@ -86,10 +89,10 @@ var ReferenceCollection = (function () {
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
+                    for (var i_2 = 0; i_2 < this.subcollections.length; i_2++) {
+                        allTags = allTags.concat(this.subcollections[i_2].getAllTags(this.id, depth + 1));
+                    }
                 }
-            }
-            for (var i = 0; i < this.subcollections.length; i++) {
-                allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id, depth + 1));
             }
         }
         else {
