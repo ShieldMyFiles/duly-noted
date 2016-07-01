@@ -2,38 +2,38 @@
 ### Anchor Collections 
 
 ####  
-* [Index](./ts/index.ts.md#Index) 
-* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#HtmlGenerator) 
-* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
-* [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
-* [license](./license.md.md#license) 
-* [IConfig](./ts/classes/IConfig.ts.md#IConfig) 
-* [ParseFile](./ts/modules/referenceParser.ts.md#ParseFile) 
+* [Index](./ts/index.ts.md#user-content-Index) 
+* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-HtmlGenerator) 
+* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-MarkdownGenerator) 
+* [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-ReferenceParser) 
+* [license](./license.md.md#user-content-license) 
+* [IConfig](./ts/classes/IConfig.ts.md#user-content-IConfig) 
+* [ParseFile](./ts/modules/referenceParser.ts.md#user-content-ParseFile) 
 
 #### authors 
-* [chris](./authors.md.md#chris) 
+* [chris](./authors.md.md#user-content-chris) 
 
 #### TODO 
-* [commentRegExp](./ts/classes/IConfig.ts.md#commentRegExp) 
-* [errors](./ts/index.ts.md#errors) 
+* [commentRegExp](./ts/classes/IConfig.ts.md#user-content-commentRegExp) 
+* [errors](./ts/index.ts.md#user-content-errors) 
 
 #### interfaces 
-* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#IReferenceCollection) 
-* [IReferenceParser](./ts/modules/referenceParser.ts.md#IReferenceParser) 
-* [IAnchor](./ts/classes/referenceCollection.ts.md#IAnchor) 
-* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#IMarkdownGenerator) 
-* [ITag](./ts/classes/referenceCollection.ts.md#ITag) 
-* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#IHtmlGenerator) 
+* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-IReferenceCollection) 
+* [IReferenceParser](./ts/modules/referenceParser.ts.md#user-content-IReferenceParser) 
+* [IAnchor](./ts/classes/referenceCollection.ts.md#user-content-IAnchor) 
+* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-IMarkdownGenerator) 
+* [ITag](./ts/classes/referenceCollection.ts.md#user-content-ITag) 
+* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-IHtmlGenerator) 
 
 #### constant 
-* [parseLoc](./ts/modules/referenceParser.ts.md#parseLoc) 
-* [commentPatterns](./ts/modules/referenceParser.ts.md#commentPatterns) 
+* [parseLoc](./ts/modules/referenceParser.ts.md#user-content-parseLoc) 
+* [commentPatterns](./ts/modules/referenceParser.ts.md#user-content-commentPatterns) 
 
 #### classes 
-* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
-* [ReferenceParser](./ts/modules/referenceParser.ts.md#ReferenceParser) 
-* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#HtmlGenerator) 
-* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#ReferenceCollection) 
+* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-MarkdownGenerator) 
+* [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-ReferenceParser) 
+* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-HtmlGenerator) 
+* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-ReferenceCollection) 
 
 ------------------------------ 
 

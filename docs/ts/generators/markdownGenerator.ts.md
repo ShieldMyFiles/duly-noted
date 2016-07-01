@@ -339,7 +339,11 @@ and sucks in the README.
             let anchors = _.clone(collections[i].anchors);
             for (let x = 0; x < anchors.length; x++) {
                 let linkPrefix = that.getLinkPrefix(anchors[x].path);
-                anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
+                if (this.gitHubMarkdownAnchors) {
+                    anchors[x].path = anchors[x].path + ".md#user-content-" + anchors[x].linkStub;
+                } else {
+                    anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
+                }
             }
 
             let name = collections[i].name.split("/");
@@ -394,6 +398,7 @@ not one level up. See @issues/5
         writeFileSync(path.join(that.outputDir, that.indexFile), md, { flag: "w" });
     }
 
+
 ```
 
 Generate a link Prefix from a fileName
@@ -410,5 +415,4 @@ Generate a link Prefix from a fileName
         return linkPrefix;
     }
 }
-
 ```

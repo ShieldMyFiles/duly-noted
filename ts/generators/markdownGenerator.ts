@@ -293,7 +293,11 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             let anchors = _.clone(collections[i].anchors);
             for (let x = 0; x < anchors.length; x++) {
                 let linkPrefix = that.getLinkPrefix(anchors[x].path);
-                anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
+                if (this.gitHubMarkdownAnchors) {
+                    anchors[x].path = anchors[x].path + ".md#user-content-" + anchors[x].linkStub;
+                } else {
+                    anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
+                }
             }
 
             let name = collections[i].name.split("/");
@@ -346,6 +350,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         writeFileSync(path.join(that.outputDir, that.indexFile), md, { flag: "w" });
     }
 
+
     /**
      * Generate a link Prefix from a fileName
      * > NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.
@@ -360,4 +365,3 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         return linkPrefix;
     }
 }
-

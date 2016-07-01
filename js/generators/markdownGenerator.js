@@ -193,7 +193,12 @@ var MarkdownGenerator = (function () {
             var anchors = _.clone(collections[i].anchors);
             for (var x = 0; x < anchors.length; x++) {
                 var linkPrefix = that.getLinkPrefix(anchors[x].path);
-                anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
+                if (this.gitHubMarkdownAnchors) {
+                    anchors[x].path = anchors[x].path + ".md#user-content-" + anchors[x].linkStub;
+                }
+                else {
+                    anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
+                }
             }
             var name_1 = collections[i].name.split("/");
             name_1.shift();
