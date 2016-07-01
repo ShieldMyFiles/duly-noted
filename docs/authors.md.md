@@ -25,6 +25,6 @@
 
 
 
-<a id="authors-chris" name="authors-chris">&#128279 Anchor text?</a>
+<a id="authors-chris" name="authors-chris">🔗Anchor text?</a>
 Blah Blah Blag
 ____________________________________
