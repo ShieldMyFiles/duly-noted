@@ -191,19 +191,21 @@ var MarkdownGenerator = (function () {
         var collections = that.referenceCollection.getTagsByCollection();
         for (var i = 0; i < collections.length; i++) {
             var anchors = _.clone(collections[i].anchors);
-            for (var x = 0; x < anchors.length; x++) {
-                var linkPrefix = that.getLinkPrefix(anchors[x].path);
-                if (this.gitHubMarkdownAnchors) {
-                    anchors[x].path = anchors[x].path + ".md#user-content-" + anchors[x].linkStub;
-                }
-                else {
-                    anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
-                }
-            }
             var name_1 = collections[i].name.split("/");
             name_1.shift();
             name_1.shift();
             name_1 = name_1.join("/");
+            for (var x = 0; x < anchors.length; x++) {
+                var anchor = anchors[x].linkStub.replace("/", "-").toLowerCase();
+                anchors[x].path = anchors[x].path + ".md#";
+                if (this.gitHubMarkdownAnchors) {
+                    anchors[x].path += "user-content-";
+                }
+                if (name_1 !== "") {
+                    anchors[x].path += name_1.replace("/", "-").toLowerCase() + "-";
+                }
+                anchors[x].path += anchor;
+            }
             outputMap.collections.push({
                 name: name_1,
                 anchors: anchors

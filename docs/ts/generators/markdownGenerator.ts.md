@@ -337,19 +337,31 @@ and sucks in the README.
 
         for (let i = 0; i < collections.length; i++) {
             let anchors = _.clone(collections[i].anchors);
-            for (let x = 0; x < anchors.length; x++) {
-                let linkPrefix = that.getLinkPrefix(anchors[x].path);
-                if (this.gitHubMarkdownAnchors) {
-                    anchors[x].path = anchors[x].path + ".md#user-content-" + anchors[x].linkStub;
-                } else {
-                    anchors[x].path = anchors[x].path + ".md#" + anchors[x].linkStub;
-                }
-            }
-
             let name = collections[i].name.split("/");
             name.shift();
             name.shift();
             name = name.join("/");
+
+            for (let x = 0; x < anchors.length; x++) {
+                let anchor = anchors[x].linkStub.replace("/", "-").toLowerCase();
+
+                anchors[x].path = anchors[x].path + ".md#";
+
+```
+ Adjustment for gitHub anchor links. See [issue/6](https://github.com/ShieldMyFiles/duly-noted/issues/6) 
+```typescript
+               
+                if (this.gitHubMarkdownAnchors) {
+                    anchors[x].path += "user-content-";
+                }
+
+                if (name !== "") {
+                    anchors[x].path += name.replace("/", "-").toLowerCase() + "-";
+                }
+
+                anchors[x].path += anchor;
+
+            }
 
             outputMap.collections.push({
                 name: name,
@@ -415,4 +427,5 @@ Generate a link Prefix from a fileName
         return linkPrefix;
     }
 }
+
 ```
