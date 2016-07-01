@@ -42,6 +42,8 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     readme: string;
     projectName: string;
     outputFiles: string[] = [];
+    htmlAnchors: boolean;
+    gitHubMarkdownAnchors: boolean;
 
     /**
      * ### Creates an instance of @classes/MarkdownGenerator
@@ -57,6 +59,8 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.readme = config.readme;
         this.projectName = config.projectName;
         this.indexFile = config.indexFile;
+        this.htmlAnchors = config.markdownGeneratorOptions.htmlAnchors;
+        this.gitHubMarkdownAnchors = config.markdownGeneratorOptions.gitHubMarkdownAnchors;
     }
 
     /**
@@ -175,12 +179,26 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         let newComment: string = comment;
         // Look at the line for anchors - replace them with links. 
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
-            let anchor = match[1].replace("/", "-");
 
-            newComment =  newComment.substr(0, match.index) +
-            "[" + match[1] + "](#" + anchor + ")" +
+            let anchor = match[1].replace("/", "-").toLowerCase();
+
+            /**
+             * Markdown doesn't natively support acnhors, but you can make them work 
+             * with simple html. In GitHub, however, anchors are prefixed with 'user-content'
+             * For a discussion anchors in markdown see @issue/6
+             */
+            if (this.htmlAnchors) {
+                newComment =  newComment.substr(0, match.index) +
+                '<a name="' + anchor + '" id="' + anchor + '" ></a>';
+
+                if (this.gitHubMarkdownAnchors) {
+                    newComment += "[🔗" + match[1] + "](" + "#user-content-" + anchor + ")";
+                } else {
+                    newComment += "[🔗" + match[1] + "](#" + anchor + ")";
+                }
+            }
+
             newComment.substr(match.index + match[0].length);
-
             pos = match.index + match[0].length;
         }
 
@@ -206,9 +224,14 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             } else {
                 logger.debug("found internal link: " + match[1] + " " + tag.path);
-                let anchor = match[1].replace("/", "-");
-                newComment =  comment.substr(0, match.index) +
-                " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + anchor + ") " +
+                let anchor = match[1].replace("/", "-").toLowerCase();
+
+                if (this.gitHubMarkdownAnchors) {
+                    newComment +=  "[" + match[1] + "](" + linkPrefix + tag.path + ".md#user-content-" + anchor + ")";
+                } else {
+                    newComment += "[" + match[1] + "](" + linkPrefix + tag.path + ".md#" + anchor + ")";
+                }
+
                 newComment.substr(match.index + match[0].length);
             }
             pos = match.index + match[0].length;

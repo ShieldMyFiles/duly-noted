@@ -1,8 +1,8 @@
 
 
-# [Index](#Index)
- [authors/chris](.././authors.md.md#authors-chris) 
- [license](.././license.md.md#license) 
+# <a name="index" id="index" ></a>[🔗Index](#user-content-index)
+@authors/chris[authors/chris](.././authors.md.md#user-content-authors-chris)
+@license[license](.././license.md.md#user-content-license)
 
 This is the entry file to Duly Noted
 
@@ -28,8 +28,8 @@ let logger = log4js.getLogger("duly-noted::run");
 Basic code flow is:
 
 1. parse the cofiguration options using the following order of precedence
-2. get the files and pass those to the [ReferenceParser](.././ts/modules/referenceParser.ts.md#ReferenceParser) 
-3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator [MarkdownGenerator](.././ts/generators/markdownGenerator.ts.md#MarkdownGenerator) 
+2. get the files and pass those to the @ReferenceParser[ReferenceParser](.././ts/modules/referenceParser.ts.md#user-content-referenceparser)
+3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator[HtmlGenerator](.././ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator)[MarkdownGenerator](.././ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator)
 
 ```typescript
 export function run() {
@@ -101,7 +101,7 @@ Settings are in order of precedence
 
 1. Command Line Input
 2. User's Config File
-3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/3) )
+3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/6) )
 
 ```typescript
 
@@ -160,7 +160,7 @@ Settings are in order of precedence
                 })
                 .catch((err: Error) => {
 ```
- [TODO/errors](#TODO-errors) > An overall strategy is needed to identify and report errors.
+ <a name="todo-errors" id="todo-errors" ></a>[🔗TODO/errors](#user-content-todo-errors)
 ```typescript
                    
                     logger.error(err.message + err.stack);

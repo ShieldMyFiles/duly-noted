@@ -1,6 +1,6 @@
 
 
-[license](#license)
+<a name="license" id="license" ></a>[🔗license](#user-content-license)
 
 # The MIT License (MIT)
 ## Copyright (c) 2016

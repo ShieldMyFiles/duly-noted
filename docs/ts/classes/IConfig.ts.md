@@ -1,5 +1,5 @@
 
- [IConfig](#IConfig)
+ <a name="iconfig" id="iconfig" ></a>[🔗IConfig](#user-content-iconfig)
 ```typescript
 
 export interface IConfig {
@@ -9,7 +9,7 @@ export interface IConfig {
     indexFile: string;
     anchorRegExp: string;
 ```
- [TODO/commentRegExp](#TODO-commentRegExp) We should associate comment RegExp with file type - so we can support HTML comments
+ <a name="todo-commentregexp" id="todo-commentregexp" ></a>[🔗TODO/commentRegExp](#user-content-todo-commentregexp)
 ```typescript
     commentRegExp: string;
     longCommentOpenRegExp: string;
@@ -20,6 +20,10 @@ export interface IConfig {
     readme: string;
     generators: string[];
     leaveJSONFiles: boolean;
+    markdownGeneratorOptions: {
+        gitHubMarkdownAnchors: boolean,
+        htmlAnchors: boolean
+    };
 }
 
 export interface IExternalReference {

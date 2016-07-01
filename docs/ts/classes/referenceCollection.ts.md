@@ -15,7 +15,7 @@ let logger = log4js.getLogger("duly-noted::ReferenceCollection");
 
 ```
 
-## [interfaces/IReferenceCollection](#interfaces-IReferenceCollection)
+## <a name="interfaces-ireferencecollection" id="interfaces-ireferencecollection" ></a>[🔗interfaces/IReferenceCollection](#user-content-interfaces-ireferencecollection)
 
 ```typescript
 export interface IReferenceCollection {
@@ -26,7 +26,7 @@ export interface IReferenceCollection {
 
 ```
 
-## [interfaces/IAnchor](#interfaces-IAnchor)
+## <a name="interfaces-ianchor" id="interfaces-ianchor" ></a>[🔗interfaces/IAnchor](#user-content-interfaces-ianchor)
 
 ```typescript
 export interface IAnchor {
@@ -37,7 +37,7 @@ export interface IAnchor {
 
 ```
 
-## [interfaces/ITag](#interfaces-ITag)
+## <a name="interfaces-itag" id="interfaces-itag" ></a>[🔗interfaces/ITag](#user-content-interfaces-itag)
 
 ```typescript
 export interface ITag {
@@ -48,7 +48,7 @@ export interface ITag {
 
 ```
 
-## [classes/ReferenceCollection](#classes-ReferenceCollection)
+## <a name="classes-referencecollection" id="classes-referencecollection" ></a>[🔗classes/ReferenceCollection](#user-content-classes-referencecollection)
 
 ```typescript
 export class ReferenceCollection implements IReferenceCollection {
@@ -72,7 +72,7 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```
 
-## Recursively inflate a reference collection in the form of [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces-IReferenceCollection)  from flat data (likely from JSON file)
+## Recursively inflate a reference collection in the form of @interfaces/IReferenceCollection from flat data (likely from JSON file)[interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
 
 ```typescript
     public inflate(collection: IReferenceCollection) {
@@ -86,7 +86,7 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```
 
-## Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#interfaces-IAnchor)  to collection
+## Add an @interfaces/IAnchor to collection[interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ianchor)
 
 ```typescript
     public addAnchor(anchor: IAnchor): void {
@@ -100,7 +100,7 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```
 
-## Add a subcollection to this collection in the form of an [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces-IReferenceCollection) 
+## Add a subcollection to this collection in the form of an @interfaces/IReferenceCollection[interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
 
 ```typescript
     public addSubcollection(collection: IReferenceCollection): void {

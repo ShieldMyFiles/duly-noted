@@ -22,7 +22,10 @@
     ],
     "generators": [ 
         "markdown"
-    // ,"html"
     ],
+    "markdownGeneratorOptions": {
+        "gitHubMarkdownAnchors": false,
+        "htmlAnchors": true
+    },
     "leaveJSONFiles":false
 }

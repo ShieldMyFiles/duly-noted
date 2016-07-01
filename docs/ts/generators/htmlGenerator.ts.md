@@ -1,8 +1,8 @@
 
 
-# [HtmlGenerator](#HtmlGenerator)
- [authors/chris](../.././authors.md.md#authors-chris) 
- [license](../.././license.md.md#license) 
+# <a name="htmlgenerator" id="htmlgenerator" ></a>[🔗HtmlGenerator](#user-content-htmlgenerator)
+ @authors/chris[authors/chris](../.././authors.md.md#user-content-authors-chris)
+ @license[license](../.././license.md.md#user-content-license)
 
  Generates HTML pages for the source code, 
  replacing links and anchors as it goes along. 
@@ -34,7 +34,7 @@ let logger = log4js.getLogger("duly-noted::HtmlGenerator");
 
 ```
 
-[interfaces/IHtmlGenerator](#interfaces-IHtmlGenerator)
+<a name="interfaces-ihtmlgenerator" id="interfaces-ihtmlgenerator" ></a>[🔗interfaces/IHtmlGenerator](#user-content-interfaces-ihtmlgenerator)
 
 ```typescript
 export interface IHtmlGenerator {
@@ -43,7 +43,7 @@ export interface IHtmlGenerator {
 
 ```
 
-## [classes/HtmlGenerator](#classes-HtmlGenerator)
+## <a name="classes-htmlgenerator" id="classes-htmlgenerator" ></a>[🔗classes/HtmlGenerator](#user-content-classes-htmlgenerator)
 
 ```typescript
 export class HtmlGenerator implements IHtmlGenerator {
@@ -62,7 +62,7 @@ export class HtmlGenerator implements IHtmlGenerator {
 
 ```
 
-### Creates an instance of [classes/HtmlGenerator](../.././ts/generators/htmlGenerator.ts.md#classes-HtmlGenerator) 
+### Creates an instance of @classes/HtmlGenerator[classes/HtmlGenerator](../.././ts/generators/htmlGenerator.ts.md#user-content-classes-htmlgenerator)
 
 ```typescript
     constructor(config: IConfig, logLevel?: string) {
@@ -92,7 +92,7 @@ export class HtmlGenerator implements IHtmlGenerator {
 ```
 
 ## Generate HTML Docs
-Creates HTML docs for a set of file maps and reference maps set on [classes/HtmlGenerator](../.././ts/generators/htmlGenerator.ts.md#classes-HtmlGenerator)  construction.
+Creates HTML docs for a set of file maps and reference maps set on @classes/HtmlGenerator construction.[classes/HtmlGenerator](../.././ts/generators/htmlGenerator.ts.md#user-content-classes-htmlgenerator)
 
 ```typescript
     public generate(): Q.IPromise<{}> {

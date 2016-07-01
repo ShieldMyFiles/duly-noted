@@ -14,6 +14,10 @@ export interface IConfig {
     readme: string;
     generators: string[];
     leaveJSONFiles: boolean;
+    markdownGeneratorOptions: {
+        gitHubMarkdownAnchors: boolean,
+        htmlAnchors: boolean
+    };
 }
 
 export interface IExternalReference {

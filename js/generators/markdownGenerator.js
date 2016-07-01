@@ -25,6 +25,8 @@ var MarkdownGenerator = (function () {
         this.readme = config.readme;
         this.projectName = config.projectName;
         this.indexFile = config.indexFile;
+        this.htmlAnchors = config.markdownGeneratorOptions.htmlAnchors;
+        this.gitHubMarkdownAnchors = config.markdownGeneratorOptions.gitHubMarkdownAnchors;
     }
     MarkdownGenerator.prototype.generate = function () {
         var _this = this;
@@ -116,10 +118,18 @@ var MarkdownGenerator = (function () {
         var match;
         var newComment = comment;
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
-            var anchor = match[1].replace("/", "-");
-            newComment = newComment.substr(0, match.index) +
-                "[" + match[1] + "](#" + anchor + ")" +
-                newComment.substr(match.index + match[0].length);
+            var anchor = match[1].replace("/", "-").toLowerCase();
+            if (this.htmlAnchors) {
+                newComment = newComment.substr(0, match.index) +
+                    '<a name="' + anchor + '" id="' + anchor + '" ></a>';
+                if (this.gitHubMarkdownAnchors) {
+                    newComment += "[🔗" + match[1] + "](" + "#user-content-" + anchor + ")";
+                }
+                else {
+                    newComment += "[🔗" + match[1] + "](#" + anchor + ")";
+                }
+            }
+            newComment.substr(match.index + match[0].length);
             pos = match.index + match[0].length;
         }
         return newComment;
@@ -136,10 +146,14 @@ var MarkdownGenerator = (function () {
             }
             else {
                 logger.debug("found internal link: " + match[1] + " " + tag.path);
-                var anchor = match[1].replace("/", "-");
-                newComment = comment.substr(0, match.index) +
-                    " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + anchor + ") " +
-                    newComment.substr(match.index + match[0].length);
+                var anchor = match[1].replace("/", "-").toLowerCase();
+                if (this.gitHubMarkdownAnchors) {
+                    newComment += "[" + match[1] + "](" + linkPrefix + tag.path + ".md#user-content-" + anchor + ")";
+                }
+                else {
+                    newComment += "[" + match[1] + "](" + linkPrefix + tag.path + ".md#" + anchor + ")";
+                }
+                newComment.substr(match.index + match[0].length);
             }
             pos = match.index + match[0].length;
         }
