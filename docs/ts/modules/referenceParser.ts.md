@@ -1,6 +1,6 @@
 
 
-# <a name="referenceparser" id="referenceparser" ></a>[🔗ReferenceParser](#user-content-referenceparser)
+# <a name="referenceparser" id="referenceparser" ></a>[🔗](#user-content-referenceparser)ReferenceParser
  @authors/chris[authors/chris](../.././authors.md.md#user-content-authors-chris)
  @license[license](../.././license.md.md#user-content-license)
 
@@ -23,7 +23,7 @@ let logger = log4js.getLogger("duly-noted::ReferenceParser");
 
 ```
 
-## <a name="interfaces-ireferenceparser" id="interfaces-ireferenceparser" ></a>[🔗interfaces/IReferenceParser](#user-content-interfaces-ireferenceparser)
+## <a name="interfaces-ireferenceparser" id="interfaces-ireferenceparser" ></a>[🔗](#user-content-interfaces-ireferenceparser)interfaces/IReferenceParser
 
 ```typescript
 export interface IReferenceParser {
@@ -32,13 +32,13 @@ export interface IReferenceParser {
 
 ```
 
-## <a name="constant-parseloc" id="constant-parseloc" ></a>[🔗constant/parseLoc](#user-content-constant-parseloc)
+## <a name="constant-parseloc" id="constant-parseloc" ></a>[🔗](#user-content-constant-parseloc)constant/parseLoc
 
 ```typescript
 export const parseLoc = "duly-noted";
 ```
 
-## <a name="constant-commentpatterns" id="constant-commentpatterns" ></a>[🔗constant/commentPatterns](#user-content-constant-commentpatterns)
+## <a name="constant-commentpatterns" id="constant-commentpatterns" ></a>[🔗](#user-content-constant-commentpatterns)constant/commentPatterns
 
 ```typescript
 export const commentPatterns = "duly-noted";
@@ -46,7 +46,7 @@ export const commentPatterns = "duly-noted";
 
 ```
 
-## <a name="classes-referenceparser" id="classes-referenceparser" ></a>[🔗classes/ReferenceParser](#user-content-classes-referenceparser)
+## <a name="classes-referenceparser" id="classes-referenceparser" ></a>[🔗](#user-content-classes-referenceparser)classes/ReferenceParser
 
 ```typescript
 export class ReferenceParser implements IReferenceParser {
@@ -159,7 +159,7 @@ When a file is markdown, we parse the whole thing.
 ```
 
 ## Parse File 
-Parse a file to a file map. <a name="parsefile" id="parsefile" ></a>[🔗ParseFile](#user-content-parsefile)
+Parse a file to a file map. <a name="parsefile" id="parsefile" ></a>[🔗](#user-content-parsefile)ParseFile
 
 ```typescript
     parseFile(fileName: string): Q.Promise<{}> {

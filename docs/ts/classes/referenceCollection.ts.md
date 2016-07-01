@@ -15,7 +15,7 @@ let logger = log4js.getLogger("duly-noted::ReferenceCollection");
 
 ```
 
-## <a name="interfaces-ireferencecollection" id="interfaces-ireferencecollection" ></a>[🔗interfaces/IReferenceCollection](#user-content-interfaces-ireferencecollection)
+## <a name="interfaces-ireferencecollection" id="interfaces-ireferencecollection" ></a>[🔗](#user-content-interfaces-ireferencecollection)interfaces/IReferenceCollection
 
 ```typescript
 export interface IReferenceCollection {
@@ -26,7 +26,7 @@ export interface IReferenceCollection {
 
 ```
 
-## <a name="interfaces-ianchor" id="interfaces-ianchor" ></a>[🔗interfaces/IAnchor](#user-content-interfaces-ianchor)
+## <a name="interfaces-ianchor" id="interfaces-ianchor" ></a>[🔗](#user-content-interfaces-ianchor)interfaces/IAnchor
 
 ```typescript
 export interface IAnchor {
@@ -37,7 +37,7 @@ export interface IAnchor {
 
 ```
 
-## <a name="interfaces-itag" id="interfaces-itag" ></a>[🔗interfaces/ITag](#user-content-interfaces-itag)
+## <a name="interfaces-itag" id="interfaces-itag" ></a>[🔗](#user-content-interfaces-itag)interfaces/ITag
 
 ```typescript
 export interface ITag {
@@ -48,7 +48,7 @@ export interface ITag {
 
 ```
 
-## <a name="classes-referencecollection" id="classes-referencecollection" ></a>[🔗classes/ReferenceCollection](#user-content-classes-referencecollection)
+## <a name="classes-referencecollection" id="classes-referencecollection" ></a>[🔗](#user-content-classes-referencecollection)classes/ReferenceCollection
 
 ```typescript
 export class ReferenceCollection implements IReferenceCollection {

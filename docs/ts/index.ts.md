@@ -1,6 +1,6 @@
 
 
-# <a name="index" id="index" ></a>[🔗Index](#user-content-index)
+# <a name="index" id="index" ></a>[🔗](#user-content-index)Index
 @authors/chris[authors/chris](.././authors.md.md#user-content-authors-chris)
 @license[license](.././license.md.md#user-content-license)
 
@@ -160,7 +160,7 @@ Settings are in order of precedence
                 })
                 .catch((err: Error) => {
 ```
- <a name="todo-errors" id="todo-errors" ></a>[🔗TODO/errors](#user-content-todo-errors)
+ <a name="todo-errors" id="todo-errors" ></a>[🔗](#user-content-todo-errors)TODO/errors
 ```typescript
                    
                     logger.error(err.message + err.stack);

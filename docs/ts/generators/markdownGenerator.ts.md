@@ -1,6 +1,6 @@
 
 
-# <a name="markdowngenerator" id="markdowngenerator" ></a>[🔗MarkdownGenerator](#user-content-markdowngenerator)
+# <a name="markdowngenerator" id="markdowngenerator" ></a>[🔗](#user-content-markdowngenerator)MarkdownGenerator
  @authors/chris[authors/chris](../.././authors.md.md#user-content-authors-chris)
  @license[license](../.././license.md.md#user-content-license)
 
@@ -25,7 +25,7 @@ let logger = log4js.getLogger("duly-noted::MarkdownGenerator");
 
 ```
 
-<a name="interfaces-imarkdowngenerator" id="interfaces-imarkdowngenerator" ></a>[🔗interfaces/IMarkdownGenerator](#user-content-interfaces-imarkdowngenerator)
+<a name="interfaces-imarkdowngenerator" id="interfaces-imarkdowngenerator" ></a>[🔗](#user-content-interfaces-imarkdowngenerator)interfaces/IMarkdownGenerator
 
 ```typescript
 export interface IMarkdownGenerator {
@@ -34,7 +34,7 @@ export interface IMarkdownGenerator {
 
 ```
 
-## <a name="classes-markdowngenerator" id="classes-markdowngenerator" ></a>[🔗classes/MarkdownGenerator](#user-content-classes-markdowngenerator)
+## <a name="classes-markdowngenerator" id="classes-markdowngenerator" ></a>[🔗](#user-content-classes-markdowngenerator)classes/MarkdownGenerator
 
 ```typescript
 export class MarkdownGenerator implements IMarkdownGenerator {
@@ -226,9 +226,9 @@ For a discussion anchors in markdown see [issue/6](https://github.com/ShieldMyFi
                 '<a name="' + anchor + '" id="' + anchor + '" ></a>';
 
                 if (this.gitHubMarkdownAnchors) {
-                    newComment += "[🔗" + match[1] + "](" + "#user-content-" + anchor + ")";
+                    newComment += "[🔗](#user-content-" + anchor + ")" + match[1];
                 } else {
-                    newComment += "[🔗" + match[1] + "](#" + anchor + ")";
+                    newComment += "[🔗](#" + anchor + ")" + match[1];
                 }
             }
 

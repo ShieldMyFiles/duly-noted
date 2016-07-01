@@ -1,5 +1,5 @@
 
- <a name="iconfig" id="iconfig" ></a>[🔗IConfig](#user-content-iconfig)
+ <a name="iconfig" id="iconfig" ></a>[🔗](#user-content-iconfig)IConfig
 ```typescript
 
 export interface IConfig {
@@ -9,7 +9,7 @@ export interface IConfig {
     indexFile: string;
     anchorRegExp: string;
 ```
- <a name="todo-commentregexp" id="todo-commentregexp" ></a>[🔗TODO/commentRegExp](#user-content-todo-commentregexp)
+ <a name="todo-commentregexp" id="todo-commentregexp" ></a>[🔗](#user-content-todo-commentregexp)TODO/commentRegExp
 ```typescript
     commentRegExp: string;
     longCommentOpenRegExp: string;

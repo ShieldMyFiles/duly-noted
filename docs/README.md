@@ -6,8 +6,8 @@
 * [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator) 
 * [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator) 
 * [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-referenceparser) 
-* [license](./license.md.md#user-content-license) 
 * [IConfig](./ts/classes/IConfig.ts.md#user-content-iconfig) 
+* [license](./license.md.md#user-content-license) 
 * [ParseFile](./ts/modules/referenceParser.ts.md#user-content-parsefile) 
 
 #### authors 

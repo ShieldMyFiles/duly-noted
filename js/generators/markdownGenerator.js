@@ -123,10 +123,10 @@ var MarkdownGenerator = (function () {
                 newComment = newComment.substr(0, match.index) +
                     '<a name="' + anchor + '" id="' + anchor + '" ></a>';
                 if (this.gitHubMarkdownAnchors) {
-                    newComment += "[🔗" + match[1] + "](" + "#user-content-" + anchor + ")";
+                    newComment += "[🔗](#user-content-" + anchor + ")" + match[1];
                 }
                 else {
-                    newComment += "[🔗" + match[1] + "](#" + anchor + ")";
+                    newComment += "[🔗](#" + anchor + ")" + match[1];
                 }
             }
             newComment.substr(match.index + match[0].length);

@@ -1,6 +1,6 @@
 
 
-# <a name="htmlgenerator" id="htmlgenerator" ></a>[🔗HtmlGenerator](#user-content-htmlgenerator)
+# <a name="htmlgenerator" id="htmlgenerator" ></a>[🔗](#user-content-htmlgenerator)HtmlGenerator
  @authors/chris[authors/chris](../.././authors.md.md#user-content-authors-chris)
  @license[license](../.././license.md.md#user-content-license)
 
@@ -34,7 +34,7 @@ let logger = log4js.getLogger("duly-noted::HtmlGenerator");
 
 ```
 
-<a name="interfaces-ihtmlgenerator" id="interfaces-ihtmlgenerator" ></a>[🔗interfaces/IHtmlGenerator](#user-content-interfaces-ihtmlgenerator)
+<a name="interfaces-ihtmlgenerator" id="interfaces-ihtmlgenerator" ></a>[🔗](#user-content-interfaces-ihtmlgenerator)interfaces/IHtmlGenerator
 
 ```typescript
 export interface IHtmlGenerator {
@@ -43,7 +43,7 @@ export interface IHtmlGenerator {
 
 ```
 
-## <a name="classes-htmlgenerator" id="classes-htmlgenerator" ></a>[🔗classes/HtmlGenerator](#user-content-classes-htmlgenerator)
+## <a name="classes-htmlgenerator" id="classes-htmlgenerator" ></a>[🔗](#user-content-classes-htmlgenerator)classes/HtmlGenerator
 
 ```typescript
 export class HtmlGenerator implements IHtmlGenerator {
