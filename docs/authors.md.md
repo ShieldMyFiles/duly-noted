@@ -26,5 +26,5 @@
 
 
 <a id="authors-chris" name="authors-chris"></a>
-[🔗authors-chris]("#user-content-authors-chris)
+[🔗authors-chris](#user-content-authors-chris)
 ____________________________________
