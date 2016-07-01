@@ -175,8 +175,10 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         let newComment: string = comment;
         // Look at the line for anchors - replace them with links. 
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
+            let anchor = match[1].replace("/", "-");
+
             newComment =  newComment.substr(0, match.index) +
-            "[" + match[1] + "](#" + match[1] + ")" +
+            "[" + match[1] + "](#" + anchor + ")" +
             newComment.substr(match.index + match[0].length);
 
             pos = match.index + match[0].length;
@@ -204,8 +206,9 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             } else {
                 logger.debug("found internal link: " + match[1] + " " + tag.path);
+                let anchor = match[1].replace("/", "-");
                 newComment =  comment.substr(0, match.index) +
-                " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + match[1] + ") " +
+                " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + anchor + ") " +
                 newComment.substr(match.index + match[0].length);
             }
             pos = match.index + match[0].length;

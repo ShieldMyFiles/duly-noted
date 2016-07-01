@@ -1,7 +1,7 @@
 
 
 # [MarkdownGenerator](#MarkdownGenerator)
- [authors/chris](../.././authors.md.md#authors/chris) 
+ [authors/chris](../.././authors.md.md#authors-chris) 
  [license](../.././license.md.md#license) 
 
 ```typescript
@@ -25,7 +25,7 @@ let logger = log4js.getLogger("duly-noted::MarkdownGenerator");
 
 ```
 
-[interfaces/IMarkdownGenerator](#interfaces/IMarkdownGenerator)
+[interfaces/IMarkdownGenerator](#interfaces-IMarkdownGenerator)
 
 ```typescript
 export interface IMarkdownGenerator {
@@ -34,7 +34,7 @@ export interface IMarkdownGenerator {
 
 ```
 
-## [classes/MarkdownGenerator](#classes/MarkdownGenerator)
+## [classes/MarkdownGenerator](#classes-MarkdownGenerator)
 
 ```typescript
 export class MarkdownGenerator implements IMarkdownGenerator {
@@ -51,7 +51,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 
 ```
 
-### Creates an instance of [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator) 
+### Creates an instance of [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes-MarkdownGenerator) 
 
 ```typescript
     constructor(config: IConfig, logLevel?: string) {
@@ -70,7 +70,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 ```
 
 ## Generate Markdown Docs
-Creates Markdown docs for a set of file maps and reference maps set on [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes/MarkdownGenerator)  construction.
+Creates Markdown docs for a set of file maps and reference maps set on [classes/MarkdownGenerator](../.././ts/generators/markdownGenerator.ts.md#classes-MarkdownGenerator)  construction.
 
 ```typescript
     public generate(): Q.IPromise<{}> {
@@ -207,8 +207,10 @@ Processes a comment line, replacing anchors with markdown anchor link tags
 ```typescript
        
         while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
+            let anchor = match[1].replace("/", "-");
+
             newComment =  newComment.substr(0, match.index) +
-            "[" + match[1] + "](#" + match[1] + ")" +
+            "[" + match[1] + "](#" + anchor + ")" +
             newComment.substr(match.index + match[0].length);
 
             pos = match.index + match[0].length;
@@ -241,8 +243,9 @@ Processes a comment line, replacing links with markdown links
                 logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
             } else {
                 logger.debug("found internal link: " + match[1] + " " + tag.path);
+                let anchor = match[1].replace("/", "-");
                 newComment =  comment.substr(0, match.index) +
-                " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + match[1] + ") " +
+                " [" + match[1] + "](" + linkPrefix + tag.path + ".md#" + anchor + ") " +
                 newComment.substr(match.index + match[0].length);
             }
             pos = match.index + match[0].length;

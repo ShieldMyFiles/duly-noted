@@ -1,7 +1,7 @@
 
 
 # [Index](#Index)
- [authors/chris](.././authors.md.md#authors/chris) 
+ [authors/chris](.././authors.md.md#authors-chris) 
  [license](.././license.md.md#license) 
 
 This is the entry file to Duly Noted
@@ -160,7 +160,7 @@ Settings are in order of precedence
                 })
                 .catch((err: Error) => {
 ```
- [TODO/errors](#TODO/errors) > An overall strategy is needed to identify and report errors.
+ [TODO/errors](#TODO-errors) > An overall strategy is needed to identify and report errors.
 ```typescript
                    
                     logger.error(err.message + err.stack);

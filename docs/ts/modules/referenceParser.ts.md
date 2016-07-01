@@ -1,7 +1,7 @@
 
 
 # [ReferenceParser](#ReferenceParser)
- [authors/chris](../.././authors.md.md#authors/chris) 
+ [authors/chris](../.././authors.md.md#authors-chris) 
  [license](../.././license.md.md#license) 
 
 ```typescript
@@ -23,7 +23,7 @@ let logger = log4js.getLogger("duly-noted::ReferenceParser");
 
 ```
 
-## [interfaces/IReferenceParser](#interfaces/IReferenceParser)
+## [interfaces/IReferenceParser](#interfaces-IReferenceParser)
 
 ```typescript
 export interface IReferenceParser {
@@ -32,13 +32,13 @@ export interface IReferenceParser {
 
 ```
 
-## [constant/parseLoc](#constant/parseLoc)
+## [constant/parseLoc](#constant-parseLoc)
 
 ```typescript
 export const parseLoc = "duly-noted";
 ```
 
-## [constant/commentPatterns](#constant/commentPatterns)
+## [constant/commentPatterns](#constant-commentPatterns)
 
 ```typescript
 export const commentPatterns = "duly-noted";
@@ -46,7 +46,7 @@ export const commentPatterns = "duly-noted";
 
 ```
 
-## [classes/ReferenceParser](#classes/ReferenceParser)
+## [classes/ReferenceParser](#classes-ReferenceParser)
 
 ```typescript
 export class ReferenceParser implements IReferenceParser {
@@ -58,7 +58,7 @@ export class ReferenceParser implements IReferenceParser {
 
 ```
 
-### Creates an instance of [classes/ReferenceParser](../.././ts/modules/referenceParser.ts.md#classes/ReferenceParser) 
+### Creates an instance of [classes/ReferenceParser](../.././ts/modules/referenceParser.ts.md#classes-ReferenceParser) 
 
 ```typescript
     constructor(config: IConfig, logLevel?: string) {
@@ -77,7 +77,7 @@ export class ReferenceParser implements IReferenceParser {
 ```
 
 ## Parse 
-Parser all files for anchors - produce a [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
+Parser all files for anchors - produce a [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces-IReferenceCollection) 
 
 ```typescript
     public parse(): Q.Promise<IReferenceCollection> {
@@ -381,7 +381,7 @@ Writes out a file map
 
 ## Parse Comment
 Once a comment is found (see [ParseFile](../.././ts/modules/referenceParser.ts.md#ParseFile)  above for example) this will parse
-that commant for anchors. It will add those anchors to the [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection)  
+that commant for anchors. It will add those anchors to the [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces-IReferenceCollection)  
 for the entire project.
 
 ```typescript

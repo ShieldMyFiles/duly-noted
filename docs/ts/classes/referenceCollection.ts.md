@@ -15,7 +15,7 @@ let logger = log4js.getLogger("duly-noted::ReferenceCollection");
 
 ```
 
-## [interfaces/IReferenceCollection](#interfaces/IReferenceCollection)
+## [interfaces/IReferenceCollection](#interfaces-IReferenceCollection)
 
 ```typescript
 export interface IReferenceCollection {
@@ -26,7 +26,7 @@ export interface IReferenceCollection {
 
 ```
 
-## [interfaces/IAnchor](#interfaces/IAnchor)
+## [interfaces/IAnchor](#interfaces-IAnchor)
 
 ```typescript
 export interface IAnchor {
@@ -37,7 +37,7 @@ export interface IAnchor {
 
 ```
 
-## [interfaces/ITag](#interfaces/ITag)
+## [interfaces/ITag](#interfaces-ITag)
 
 ```typescript
 export interface ITag {
@@ -48,7 +48,7 @@ export interface ITag {
 
 ```
 
-## [classes/ReferenceCollection](#classes/ReferenceCollection)
+## [classes/ReferenceCollection](#classes-ReferenceCollection)
 
 ```typescript
 export class ReferenceCollection implements IReferenceCollection {
@@ -72,7 +72,7 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```
 
-## Recursively inflate a reference collection in the form of [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection)  from flat data (likely from JSON file)
+## Recursively inflate a reference collection in the form of [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces-IReferenceCollection)  from flat data (likely from JSON file)
 
 ```typescript
     public inflate(collection: IReferenceCollection) {
@@ -86,7 +86,7 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```
 
-## Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#interfaces/IAnchor)  to collection
+## Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#interfaces-IAnchor)  to collection
 
 ```typescript
     public addAnchor(anchor: IAnchor): void {
@@ -100,7 +100,7 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```
 
-## Add a subcollection to this collection in the form of an [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces/IReferenceCollection) 
+## Add a subcollection to this collection in the form of an [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#interfaces-IReferenceCollection) 
 
 ```typescript
     public addSubcollection(collection: IReferenceCollection): void {
@@ -176,17 +176,21 @@ Recursively cull all of the tags.
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
+
+                    for (let i = 0; i < this.subcollections.length; i++) {
+                        allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id,  depth + 1));
+                    }
                 } else {
                     allTags.push({
                         anchor: this.id + "/" + this.anchors[i].id,
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
-                }
-            }
 
-            for (let i = 0; i < this.subcollections.length; i++) {
-                allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id,  depth + 1));
+                    for (let i = 0; i < this.subcollections.length; i++) {
+                        allTags = allTags.concat(this.subcollections[i].getAllTags(this.id,  depth + 1));
+                    }
+                }
             }
         } else {
 
