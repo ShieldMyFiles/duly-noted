@@ -25,6 +25,6 @@
 
 
 
-<a id="authors-chris" name="authors-chris">🔗Anchor text?</a>
-Blah Blah Blag
+<a id="authors-chris" name="authors-chris"></a>
+[🔗authors-chris]("#user-content-authors-chris)
 ____________________________________
