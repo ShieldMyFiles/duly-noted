@@ -188,7 +188,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             return comment;
         } else {
 
-            let anchor = match[1].replace("/", "-").toLowerCase();
+            let anchor = match[1].replace(/\//g, "-").toLowerCase();
 
             /**
              * Markdown doesn't natively support acnhors, but you can make them work 
@@ -232,7 +232,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             let externalTag =  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
             if (externalTag) {
                 logger.debug("found external link: " + match[1]);
-                let anchor = match[1].replace("/", "-").toLowerCase();
+                let anchor = match[1].replace(/\//g, "-").toLowerCase();
                 comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");
                 return this.replaceLinks(comment, fileName, line, pos + match[0].length);
             }
@@ -245,7 +245,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 return comment;
             } else {
                 logger.debug("found internal link: " + match[1] + " " + internalTag.path);
-                let anchor = match[1].replace("/", "-").toLowerCase();
+                let anchor = match[1].replace(/\//g, "-").toLowerCase();
 
                 // Make GitHub-hosted Markdown adjustment. See @issue/4
                 if (this.gitHubHtmlAnchors) {
@@ -284,7 +284,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             name = name.join("/");
 
             for (let x = 0; x < anchors.length; x++) {
-                let anchor = anchors[x].linkStub.replace("/", "-").toLowerCase();
+                let anchor = anchors[x].linkStub.replace(/\//g, "-").toLowerCase();
 
                 anchors[x].path = anchors[x].path + ".md#";
 
@@ -294,7 +294,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 }
 
                 if (name !== "") {
-                    anchors[x].path += name.replace("/", "-").toLowerCase() + "-";
+                    anchors[x].path += name.replace(/\//g, "-").toLowerCase() + "-";
                 }
 
                 anchors[x].path += anchor;

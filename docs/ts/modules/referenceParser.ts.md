@@ -7,14 +7,14 @@
 This code parse files, build maps of each the code file, 
 as well as collections of internal and external references. 
 Examples below:
- * Example Code Map: [ReferenceParser/example-output/code-map](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-example-output/code-map)
- * Example Reference Map: [ReferenceParser/example-output/reference-collection](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-example-output/reference-collection)
+ * Example Code Map: [ReferenceParser/example-output/code-map](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-example-output-code-map)
+ * Example Reference Map: [ReferenceParser/example-output/reference-collection](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-example-output-reference-collection)
 
 These files are typically deleted at the end of the [Index/run](../.././ts/index.ts.md#user-content-index-run) 
 process, however, you can leave them by setting `leaveJSONFiles = true`
 in your 'duly-noted.json' file. 
 
-These files are ouput at [ReferenceParser/constants/parseLoc](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-constants/parseloc) .
+These files are ouput at [ReferenceParser/constants/parseLoc](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-constants-parseloc) .
  
 
 ```typescript
@@ -44,7 +44,7 @@ export interface IReferenceParser {
 }
 
 ```
- <a name="referenceparser-constants/parseloc" id="referenceparser-constants/parseloc" ></a>[🔗](#user-content-referenceparser-constants/parseloc)ReferenceParser/constants/parseLoc
+ <a name="referenceparser-constants-parseloc" id="referenceparser-constants-parseloc" ></a>[🔗](#user-content-referenceparser-constants-parseloc)ReferenceParser/constants/parseLoc
 Location to store output JSON file and reference collection maps.
 
 ```typescript
@@ -429,7 +429,7 @@ for the entire project.
 }
 
 ```
- <a name="referenceparser-example-output/reference-collection" id="referenceparser-example-output/reference-collection" ></a>[🔗](#user-content-referenceparser-example-output/reference-collection)ReferenceParser/example-output/reference-collection
+ <a name="referenceparser-example-output-reference-collection" id="referenceparser-example-output-reference-collection" ></a>[🔗](#user-content-referenceparser-example-output-reference-collection)ReferenceParser/example-output/reference-collection
 ### Example output JSON file for references
 ```json
  {
@@ -473,7 +473,7 @@ for the entire project.
    }
 ```
 
-<a name="referenceparser-example-output/code-map" id="referenceparser-example-output/code-map" ></a>[🔗](#user-content-referenceparser-example-output/code-map)ReferenceParser/example-output/code-map
+<a name="referenceparser-example-output-code-map" id="referenceparser-example-output-code-map" ></a>[🔗](#user-content-referenceparser-example-output-code-map)ReferenceParser/example-output/code-map
 ## Example Output JSON map for code file.
 ```json
 {

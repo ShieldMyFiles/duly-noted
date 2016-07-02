@@ -118,7 +118,7 @@ var MarkdownGenerator = (function () {
             return comment;
         }
         else {
-            var anchor = match[1].replace("/", "-").toLowerCase();
+            var anchor = match[1].replace(/\//g, "-").toLowerCase();
             if (this.htmlAnchors || this.gitHubHtmlAnchors) {
                 var replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
                 if (this.gitHubHtmlAnchors) {
@@ -144,7 +144,7 @@ var MarkdownGenerator = (function () {
             var externalTag = _.findWhere(this.externalReferences, { anchor: tagArray[0] });
             if (externalTag) {
                 logger.debug("found external link: " + match[1]);
-                var anchor = match[1].replace("/", "-").toLowerCase();
+                var anchor = match[1].replace(/\//g, "-").toLowerCase();
                 comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");
                 return this.replaceLinks(comment, fileName, line, pos + match[0].length);
             }
@@ -155,7 +155,7 @@ var MarkdownGenerator = (function () {
             }
             else {
                 logger.debug("found internal link: " + match[1] + " " + internalTag.path);
-                var anchor = match[1].replace("/", "-").toLowerCase();
+                var anchor = match[1].replace(/\//g, "-").toLowerCase();
                 if (this.gitHubHtmlAnchors) {
                     comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#user-content-" + anchor + ")");
                 }
@@ -183,13 +183,13 @@ var MarkdownGenerator = (function () {
             name_1.shift();
             name_1 = name_1.join("/");
             for (var x = 0; x < anchors.length; x++) {
-                var anchor = anchors[x].linkStub.replace("/", "-").toLowerCase();
+                var anchor = anchors[x].linkStub.replace(/\//g, "-").toLowerCase();
                 anchors[x].path = anchors[x].path + ".md#";
                 if (this.gitHubHtmlAnchors) {
                     anchors[x].path += "user-content-";
                 }
                 if (name_1 !== "") {
-                    anchors[x].path += name_1.replace("/", "-").toLowerCase() + "-";
+                    anchors[x].path += name_1.replace(/\//g, "-").toLowerCase() + "-";
                 }
                 anchors[x].path += anchor;
             }
