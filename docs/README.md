@@ -231,7 +231,7 @@ You can define external reference patterns in your `duly-noted.json` in the form
 ```
 
 Adding an external link to a comment works just like adding an internal link -  [wiki](https://en.wikipedia.org/wiki/::) ` with one major change - the `::` in external reference path will be replace in order by items in the link. 
-For example, using   [wiki/Software](https://en.wikipedia.org/wiki/::) _documentation` in a comment will link to: `https://en.wikipedia.org/wiki/Software_documentation`
+For example, using   [wiki/Software](https://en.wikipedia.org/wiki/Software) _documentation` in a comment will link to: `https://en.wikipedia.org/wiki/Software_documentation`
 
 
 > **Pro Tip:**

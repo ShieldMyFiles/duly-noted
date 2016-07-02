@@ -5,7 +5,7 @@
  [authors/chris](../.././authors.md.md#user-content-authors-chris)
  [license](../.././license.md.md#user-content-license)
 
-See [so/17213297](http://stackoverflow.com/questions/::) 
+See [so/17213297](http://stackoverflow.com/questions/17213297) 
 
 ```typescript
 import Q = require("q");

@@ -231,6 +231,11 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             let tagArray = match[1].split("/");
             let externalTag =  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
             if (externalTag) {
+
+                for (let i = 1; i < tagArray.length; i++) {
+                    externalTag.path = externalTag.path.replace("::", tagArray[i]);
+                }
+
                 logger.debug("found external link: " + match[1]);
                 let anchor = match[1].replace(/\//g, "-").toLowerCase();
                 comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");

@@ -30,7 +30,7 @@ Basic code flow is:
 1. parse the cofiguration options using the following order of precedence:
      1. Command Line Input
      2. User's Config File (`duly-noted.json`)
-     3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/::) )
+     3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/3) )
 2. get the files and pass those to the [ReferenceParser/parse](.././ts/modules/referenceParser.ts.md#user-content-referenceparser-parse)
 3. output the reponse to either/both [HtmlGenerator/generate](.././ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-generate) or [MarkdownGenerator/generate](.././ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-generate)
 
@@ -108,7 +108,7 @@ Settings are in order of precedence
 
 1. Command Line Input
 2. User's Config File
-3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/::) )
+3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/3) )
 
 ```typescript
 

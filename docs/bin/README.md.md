@@ -38,7 +38,7 @@ the various supported languages.
 ## defaults.json
 This file contains the default values for settings.
 When any new settings is added a default should be set here
-so that those folks we are upgrading don't face breaking changes. See [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/::) 
+so that those folks we are upgrading don't face breaking changes. See [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/3) 
 
 Please remember to document all settings in the main README.md.
 
