@@ -5,35 +5,35 @@
 * [Index](./ts/index.ts.md#user-content-index) 
 * [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator) 
 * [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator) 
-* [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-referenceparser) 
-* [license](./license.md.md#user-content-license) 
 * [IConfig](./ts/classes/IConfig.ts.md#user-content-iconfig) 
+* [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-referenceparser) 
 * [ParseFile](./ts/modules/referenceParser.ts.md#user-content-parsefile) 
+* [license](./license.md.md#user-content-license) 
+
+#### TODO 
+* [errors](./ts/index.ts.md#user-content-todo-errors) 
+* [commentRegExp](./ts/classes/IConfig.ts.md#user-content-todo-commentregexp) 
+
+#### interfaces 
+* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-interfaces-ihtmlgenerator) 
+* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-interfaces-imarkdowngenerator) 
+* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection) 
+* [IAnchor](./ts/classes/referenceCollection.ts.md#user-content-interfaces-ianchor) 
+* [ITag](./ts/classes/referenceCollection.ts.md#user-content-interfaces-itag) 
+* [IReferenceParser](./ts/modules/referenceParser.ts.md#user-content-interfaces-ireferenceparser) 
+
+#### classes 
+* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-classes-htmlgenerator) 
+* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-classes-markdowngenerator) 
+* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-classes-referencecollection) 
+* [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-classes-referenceparser) 
 
 #### authors 
 * [chris](./authors.md.md#user-content-authors-chris) 
 
-#### TODO 
-* [commentRegExp](./ts/classes/IConfig.ts.md#user-content-todo-commentregexp) 
-* [errors](./ts/index.ts.md#user-content-todo-errors) 
-
-#### interfaces 
-* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection) 
-* [IReferenceParser](./ts/modules/referenceParser.ts.md#user-content-interfaces-ireferenceparser) 
-* [IAnchor](./ts/classes/referenceCollection.ts.md#user-content-interfaces-ianchor) 
-* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-interfaces-imarkdowngenerator) 
-* [ITag](./ts/classes/referenceCollection.ts.md#user-content-interfaces-itag) 
-* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-interfaces-ihtmlgenerator) 
-
 #### constant 
 * [parseLoc](./ts/modules/referenceParser.ts.md#user-content-constant-parseloc) 
 * [commentPatterns](./ts/modules/referenceParser.ts.md#user-content-constant-commentpatterns) 
-
-#### classes 
-* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-classes-markdowngenerator) 
-* [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-classes-referenceparser) 
-* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-classes-htmlgenerator) 
-* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-classes-referencecollection) 
 
 ------------------------------ 
 
@@ -115,20 +115,20 @@ duly-noted -i
 ```
 
 #### Config Settings, and Default Values
-| Setting                  ||Description                                                                                                                                                                                        | Default                                                                  |
-|-------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------|
-| projectName              || A name for your project - used by generator for headings.                                                                                                                                          | "Fancy Project Name"                                                    |
-| files                    || Array of file globs. The input code files you want to document with Duly Noted.                                                                                                                    | empty array                                                             |
-| indexFile                || Output documentation index/homepage name. For markdown + GitHub README.md can be helpful, as it auto-renders.                                                                                      | README.md                                                               |
-| outputDir                || Directory where documentation should be output.                                                                                                                                                    | ./docs                                                                  |
-| anchorRegExp             || The regular expression to use to identify anchors you want to be able to link to.                                                                                                                  | The default anchor start is `!`, as in `!ImAnAnchor`                    |
-| linkRegExp               || The regular expression to use to identify links.                                                                                                                                                   | The default link start is `@`, so to link to anchor above: `@ImAnAnchor`|
-| externalReferences       || Array of External Reference objects, each with an `anchor` and a `path`.                                                                                                                           | none provided by default                                                |
-| generators               || Array of generators you want to use to generate output. Currently `html` and `markdown` are available.                                                                                             | markdown                                                                |
-| leaveJSONFiles           || Duly Noted parses your code files to a json map of comments and code. When it is done, it cleans up these json files automatically. If you want to leave these files undeleted, set this to `true`.| `false`                                                                 |
-| markdownGeneratorOptions || Object for setting specific settings for Markdown Generator                                                                                                                                        |                                                                         |
-| ==>| gitHubHtmlAnchors    | Set to `true` to support anchor tags in GitHub. Only use if you are hosting docs in GitHub.                                                                                                        | `false`                                                                 |
-| ==>| htmlAnchors          | Set to `true` to insert html anchor tags in your markdown to support "#" links.                                                                                                                    | `true`                                                                  |
+| Setting                  |Description                                                                                                                                                                                      | Default                                                                 |
+|:-------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| projectName              | A name for your project - used by generator for headings.                                                                                                                                          | "Fancy Project Name"                                                    |
+| files                    | Array of file globs. The input code files you want to document with Duly Noted.                                                                                                                    | empty array                                                             |
+| indexFile                | Output documentation index/homepage name. For markdown + GitHub README.md can be helpful, as it auto-renders.                                                                                      | README.md                                                               |
+| outputDir                | Directory where documentation should be output.                                                                                                                                                    | ./docs                                                                  |
+| anchorRegExp             | The regular expression to use to identify anchors you want to be able to link to.                                                                                                                  | The default anchor start is `!`, as in `!ImAnAnchor`                    |
+| linkRegExp               | The regular expression to use to identify links.                                                                                                                                                   | The default link start is `@`, so to link to anchor above: `@ImAnAnchor`|
+| externalReferences       | Array of External Reference objects, each with an `anchor` and a `path`.                                                                                                                           | none provided by default                                                |
+| generators               | Array of generators you want to use to generate output. Currently `html` and `markdown` are available.                                                                                             | markdown                                                                |
+| leaveJSONFiles           | Duly Noted parses your code files to a json map of comments and code. When it is done, it cleans up these json files automatically. If you want to leave these files undeleted, set this to `true`.| `false`                                                                 |
+| markdownGeneratorOptions | Object for setting specific settings for Markdown Generator                                                                                                                                        |                                                                         |
+|     .gitHubHtmlAnchors   | Set to `true` to support anchor tags in GitHub. Only use if you are hosting docs in GitHub.                                                                                                        | `false`                                                                 |
+|     .htmlAnchors         | Set to `true` to insert html anchor tags in your markdown to support "#" links.                                                                                                                    | `true`                                                                  |
 
 ### Creating Links
 Duly Noted allows you to create both *internal* and *external* links.
