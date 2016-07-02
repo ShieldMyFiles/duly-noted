@@ -1,5 +1,4 @@
 /** !interfaces/IConfig
- *
  * # IConfig
  * 
  * This allows for strongly-typed representation of 'duly-noted.json' config file.
@@ -10,7 +9,7 @@ export interface IConfig {
     outputDir: string;
     indexFile: string;
     anchorRegExp: string;
-    commentRegExp: string; // !TODO/commentRegExp We should associate comment RegExp with file type - so we can support HTML comments
+    commentRegExp: string;
     longCommentOpenRegExp: string;
     longCommentCloseRegExp: string;
     longCommentLineRegExp: string;

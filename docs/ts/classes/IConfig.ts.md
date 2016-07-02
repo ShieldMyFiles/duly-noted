@@ -1,6 +1,5 @@
 
  <a name="interfaces-iconfig" id="interfaces-iconfig" ></a>[🔗](#user-content-interfaces-iconfig)interfaces/IConfig
-
 # IConfig
 
 This allows for strongly-typed representation of 'duly-noted.json' config file.
@@ -12,9 +11,6 @@ export interface IConfig {
     outputDir: string;
     indexFile: string;
     anchorRegExp: string;
-```
- <a name="todo-commentregexp" id="todo-commentregexp" ></a>[🔗](#user-content-todo-commentregexp)TODO/commentRegExp We should associate comment RegExp with file type - so we can support HTML comments
-```typescript
     commentRegExp: string;
     longCommentOpenRegExp: string;
     longCommentCloseRegExp: string;

@@ -1,9 +1,10 @@
 /** !helpers/q-helpers
- * # Get File Type
+ * # Q Promise Helpers
+ * 
  * @authors/chris
  * @license
  * 
- * See so/17213297
+ * See @so/17213297
  */
 import Q = require("q");
 

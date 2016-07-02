@@ -83,9 +83,6 @@
 * [chris](./authors.md.md#user-content-authors-chris) 
 * [joe](./authors.md.md#user-content-authors-joe) 
 
-#### TODO 
-* [commentRegExp](./ts/classes/IConfig.ts.md#user-content-todo-commentregexp) 
-
 #### todo 
 * [report-errors](./ts/index.ts.md#user-content-todo-report-errors) 
 

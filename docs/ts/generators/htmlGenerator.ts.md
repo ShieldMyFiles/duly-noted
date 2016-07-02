@@ -195,7 +195,10 @@ Processes a comment line, replacing anchors with markdown anchor link tags
             return comment;
         } else {
 
-            let anchor = match[1].replace("/", "-").toLowerCase();
+```
+g, "-").toLowerCase();
+```typescript
+            let anchor = match[1].replace(/
             let replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
             replacementText += "[🔗](#" + anchor + ")";
 
@@ -234,7 +237,10 @@ This function calls itself recursively until all links are replaced.
             let externalTag =  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
             if (externalTag) {
                 logger.debug("found external link: " + match[1]);
-                let anchor = match[1].replace("/", "-").toLowerCase();
+```
+g, "-").toLowerCase();
+```typescript
+                let anchor = match[1].replace(/
                 comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");
                 return this.replaceLinks(comment, fileName, line, pos + match[0].length);
             }
@@ -249,7 +255,10 @@ This function calls itself recursively until all links are replaced.
                 return comment;
             } else {
                 logger.debug("found internal link: " + match[1] + " " + internalTag.path);
-                let anchor = match[1].replace("/", "-").toLowerCase();
+```
+g, "-").toLowerCase();
+```typescript
+                let anchor = match[1].replace(/
                 comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#" + anchor + ")");
             }
             return this.replaceLinks(comment, fileName, line, pos + match[0].length);
@@ -288,10 +297,16 @@ and sucks in the user's defined README.
             name = name.join("/");
 
             for (let x = 0; x < anchors.length; x++) {
-                let anchor = anchors[x].linkStub.replace("/", "-").toLowerCase();
+```
+g, "-").toLowerCase();
+```typescript
+                let anchor = anchors[x].linkStub.replace(/
                 anchors[x].path = anchors[x].path + ".html#";
                 if (name !== "") {
-                    anchors[x].path += name.replace("/", "-").toLowerCase() + "-";
+```
+g, "-").toLowerCase() + "-";
+```typescript
+                    anchors[x].path += name.replace(/
                 }
 
                 anchors[x].path += anchor;

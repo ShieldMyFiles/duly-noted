@@ -331,8 +331,24 @@ code, comment, long comment </p>
         if (!match) {
             return comment;
         } else {
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>g, &quot;-&quot;).toLowerCase();</p>
 
-            let anchor &#x3D; match[1].replace(&quot;/&quot;, &quot;-&quot;).toLowerCase();
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">            let anchor &#x3D; match[1].replace(/
             let replacementText &#x3D; &#x27;&lt;a name&#x3D;&quot;&#x27; + anchor + &#x27;&quot; id&#x3D;&quot;&#x27; + anchor + &#x27;&quot; &gt;&lt;/a&gt;&#x27;;
             replacementText +&#x3D; &quot;[🔗](#&quot; + anchor + &quot;)&quot;;
 
@@ -408,8 +424,24 @@ This function calls itself recursively until all links are replaced.</p>
             let tagArray &#x3D; match[1].split(&quot;/&quot;);
             let externalTag &#x3D;  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
             if (externalTag) {
-                logger.debug(&quot;found external link: &quot; + match[1]);
-                let anchor &#x3D; match[1].replace(&quot;/&quot;, &quot;-&quot;).toLowerCase();
+                logger.debug(&quot;found external link: &quot; + match[1]);</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>g, &quot;-&quot;).toLowerCase();</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">                let anchor &#x3D; match[1].replace(/
                 comment &#x3D; comment.replace(match[0], &quot; [&quot; + match[1] + &quot;](&quot; + externalTag.path + &quot;) &quot;);
                 return this.replaceLinks(comment, fileName, line, pos + match[0].length);
             }
@@ -436,8 +468,24 @@ This function calls itself recursively until all links are replaced.</p>
                 logger.warn(&quot;link: &quot; + match[1] + &quot; in &quot; + fileName + &quot;:&quot; + line + &quot;:&quot; + pos + &quot; does not have a cooresponding anchor, so link cannot be created.&quot;);
                 return comment;
             } else {
-                logger.debug(&quot;found internal link: &quot; + match[1] + &quot; &quot; + internalTag.path);
-                let anchor &#x3D; match[1].replace(&quot;/&quot;, &quot;-&quot;).toLowerCase();
+                logger.debug(&quot;found internal link: &quot; + match[1] + &quot; &quot; + internalTag.path);</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>g, &quot;-&quot;).toLowerCase();</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">                let anchor &#x3D; match[1].replace(/
                 comment &#x3D; comment.replace(match[0], &quot; [&quot; + match[1] + &quot;](&quot; + linkPrefix + internalTag.path + &quot;.md#&quot; + anchor + &quot;)&quot;);
             }
             return this.replaceLinks(comment, fileName, line, pos + match[0].length);
@@ -500,11 +548,43 @@ and sucks in the user&#39;s defined README. </p>
             name.shift();
             name &#x3D; name.join(&quot;/&quot;);
 
-            for (let x &#x3D; 0; x &lt; anchors.length; x++) {
-                let anchor &#x3D; anchors[x].linkStub.replace(&quot;/&quot;, &quot;-&quot;).toLowerCase();
+            for (let x &#x3D; 0; x &lt; anchors.length; x++) {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>g, &quot;-&quot;).toLowerCase();</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">                let anchor &#x3D; anchors[x].linkStub.replace(/
                 anchors[x].path &#x3D; anchors[x].path + &quot;.html#&quot;;
-                if (name !&#x3D;&#x3D; &quot;&quot;) {
-                    anchors[x].path +&#x3D; name.replace(&quot;/&quot;, &quot;-&quot;).toLowerCase() + &quot;-&quot;;
+                if (name !&#x3D;&#x3D; &quot;&quot;) {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>g, &quot;-&quot;).toLowerCase() + &quot;-&quot;;</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">                    anchors[x].path +&#x3D; name.replace(/
                 }
 
                 anchors[x].path +&#x3D; anchor;
