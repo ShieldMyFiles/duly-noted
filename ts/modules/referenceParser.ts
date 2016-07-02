@@ -1,7 +1,90 @@
-/**
- * # !ReferenceParser
- *  @authors/chris
- *  @license
+/** !ReferenceParser/main
+ * # Reference Parser
+ * @authors/chris
+ * @license
+ *
+ * This code parse files, build maps of each the code file, 
+ * as well as collections of internal and external references.
+ * 
+ * These files are typically deleted at the end of the @Index/run 
+ * process, however, you can leave them by setting `leaveJSONFiles = true`
+ * in your 'duly-noted.json' file. 
+ * 
+ * These files are ouput at @ReferenceParser/constants/parseLoc .
+ *  
+ * ### Example output JSON file for references
+ * ```json
+ *  {
+ *   "id": "duly-noted",
+ *   "anchors": [
+ *        {
+ *            "id": "license",
+ *            "line": 1,
+ *            "file": "./license.md"
+ *        },
+ *        ...
+ *    ],
+ *    "subcollections": [
+ *        {
+ *            "id": "Index",
+ *            "anchors": [
+ *                {
+ *                    "id": "main",
+ *                    "line": 0,
+ *                    "file": "./ts/index.ts"
+ *                },
+ *                {
+ *                    "id": "run",
+ *                    "line": 21,
+ *                    "file": "./ts/index.ts"
+ *                },
+ *                {
+ *                    "id": "getFiles",
+ *                    "line": 162,
+ *                    "file": "./ts/index.ts"
+ *                },
+ *                {
+ *                    "id": "deleteDir",
+ *                    "line": 175,
+ *                    "file": "./ts/index.ts"
+ *                }
+ *            ],
+ *            "subcollections": []
+ *        },
+ *        ...
+ *    }
+ * ```
+ * 
+ * ## Example Output JSON map for code file.
+ * ```json
+ * {
+ *    "name": "./ts/index.ts",
+ *    "lines": [
+ *        ...
+ *        {
+ *            "number": 5,
+ *            "longComment": true,
+ *            "comment": "This is the entry file to Duly Noted, "
+ *        },
+ *        {
+ *            "number": 6,
+ *            "longComment": true,
+ *            "comment": "it contains function that launches from the Command Line"
+ *        },
+ *        {
+ *            "number": 7,
+ *            "longComment": true,
+ *            "comment": ""
+ *        },
+ *        {
+ *            "number": 8,
+ *            "code": "import {IConfig} from \"./classes/IConfig\";"
+ *        },
+ *        ...
+ *    ]
+ * }
+ *
+ * ```
  */
 
 import {IReferenceCollection, IAnchor, ReferenceCollection} from "../classes/referenceCollection";
@@ -19,25 +102,20 @@ import {doInOrder, doNext} from "../helpers/helpers";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::ReferenceParser");
 
-/**
- * ## !interfaces/IReferenceParser
+/** !interfaces/IReferenceParser
+ * ## Interface for ReferenceParser
  */
 export interface IReferenceParser {
     parse(): Q.Promise<IReferenceCollection>;
 }
 
-/**
- * ## !constant/parseLoc
+/** !ReferenceParser/constants/parseLoc
+ * Location to store output JSON file and reference collection maps.
  */
 export const parseLoc = "duly-noted";
-/**
- * ## !constant/commentPatterns
- */
-export const commentPatterns = "duly-noted";
 
-
-/**
- * ## !classes/ReferenceParser
+/** !ReferenceParser/class
+ * ## Reference Parser Class
  */
 export class ReferenceParser implements IReferenceParser {
     files: string[];
@@ -46,8 +124,8 @@ export class ReferenceParser implements IReferenceParser {
     commentPatterns: {}[];
     externalReferences: IExternalReference[];
 
-    /**
-     * ### Creates an instance of @classes/ReferenceParser
+    /** !ReferenceParser/constructor
+     * ### Creates an instance of @ReferenceParser/class
      */
     constructor(config: IConfig, logLevel?: string) {
         this.files = config.files;
@@ -62,7 +140,7 @@ export class ReferenceParser implements IReferenceParser {
         logger.debug("ready");
     }
 
-    /**
+    /** !ReferenceParser/parse
      * ## Parse 
      * Parser all files for anchors - produce a @interfaces/IReferenceCollection
      */
@@ -71,8 +149,13 @@ export class ReferenceParser implements IReferenceParser {
         return Q.Promise<IReferenceCollection>((resolve, reject) => {
             logger.info("Starting parse actions for " + that.files.length + " files.");
 
+            /** 
+             *  Build a collection of parse actions. 
+             * 
+             *  * If file is Markdown, then use @ReferenceParser/parseAsMarkdown
+             *  * Otherwise pass to @ReferenceParser/parseFile 
+             */
             let parseActions = [];
-
             for (let i = 0; i < that.files.length; i++) {
                 let fileName = that.files[i].split(".");
                 let extension = fileName[fileName.length - 1];
@@ -85,6 +168,7 @@ export class ReferenceParser implements IReferenceParser {
 
             Q.all(parseActions)
             .then(() => {
+                // Once all parse actions are complete write our the files.
                 logger.debug("Saving out internalReferences.json & externalReferences.json");
                 writeFileSync(path.join(parseLoc, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
                 writeFileSync(path.join(parseLoc, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
@@ -93,7 +177,7 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 
-    /**
+    /** !ReferenceParser/parseAsMarkdown
      * ## Parse As Markdown
      * When a file is markdown, we parse the whole thing. 
      */
@@ -134,9 +218,9 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 
-    /**
+    /** !ReferenceParser/parseFile
      * ## Parse File 
-     * Parse a file to a file map. !ParseFile
+     * Parse a file to a file map.
      */
     parseFile(fileName: string): Q.Promise<{}> {
         logger.debug("parsing code file: " + fileName);
@@ -161,24 +245,27 @@ export class ReferenceParser implements IReferenceParser {
                 logger.debug("Using comment patten for " + file.type);
                 commentRegExp = new RegExp(that.commentPatterns[file.type]["commentRegExp"]);
 
-                if (that.commentPatterns[file.type]["longCommentOpenRegExp"]) longCommentOpenRegExp =  new RegExp(that.commentPatterns[file.type]["longCommentOpenRegExp"]);
+                // Set RegEx for open a long comment
+                if (that.commentPatterns[file.type]["longCommentOpenRegExp"]) longCommentOpenRegExp = new RegExp(that.commentPatterns[file.type]["longCommentOpenRegExp"]);
                 else longCommentOpenRegExp = undefined;
 
-                if (that.commentPatterns[file.type]["longCommentLineRegExp"]) longCommentLineRegExp =  new RegExp(that.commentPatterns[file.type]["longCommentLineRegExp"]);
+                // Set RegEx for continues a long comment
+                if (that.commentPatterns[file.type]["longCommentLineRegExp"]) longCommentLineRegExp = new RegExp(that.commentPatterns[file.type]["longCommentLineRegExp"]);
                 else longCommentLineRegExp = undefined;
 
-                if (that.commentPatterns[file.type]["longCommentCloseRegExp"]) longCommentCloseRegExp =  new RegExp(that.commentPatterns[file.type]["longCommentCloseRegExp"]);
+                // Set RegEx for closes a long comment
+                if (that.commentPatterns[file.type]["longCommentCloseRegExp"]) longCommentCloseRegExp = new RegExp(that.commentPatterns[file.type]["longCommentCloseRegExp"]);
                 else longCommentLineRegExp = undefined;
             } else {
                 logger.debug("Using default comment patten.");
                 commentRegExp =  new RegExp(that.commentPatterns["default"]["commentRegExp"]);
-                longCommentOpenRegExp =  new RegExp(that.commentPatterns["default"]["longCommentOpenRegExp"]);
-                longCommentLineRegExp =  new RegExp(that.commentPatterns["default"]["longCommentLineRegExp"]);
-                longCommentCloseRegExp =  new RegExp(that.commentPatterns["default"]["longCommentCloseRegExp"]);
+                longCommentOpenRegExp = new RegExp(that.commentPatterns["default"]["longCommentOpenRegExp"]);
+                longCommentLineRegExp = new RegExp(that.commentPatterns["default"]["longCommentLineRegExp"]);
+                longCommentCloseRegExp = new RegExp(that.commentPatterns["default"]["longCommentCloseRegExp"]);
             }
 
             // Line numbering traditionally starts at 1 (not 0)
-            let lineNumber = 0;
+            let lineNumber = 1;
             // Read each line of the file.
             lineReader.eachLine(fileName, (line, last) => {
 
@@ -195,7 +282,7 @@ export class ReferenceParser implements IReferenceParser {
                     longCommentOpenMatch = false;
                 }
 
-                if (!insideLongComment && longCommentOpenMatch) { // These comments must come at beginning of line.
+                if (!insideLongComment && longCommentOpenMatch) {
                     insideLongComment = true;
                     file.lines[lineNumber].longComment = true;
                 }
@@ -223,7 +310,7 @@ export class ReferenceParser implements IReferenceParser {
                                     });
                                 }
                             });
-                    // Not a comment (code only)
+                    // This is not a comment (code only)
                     } else {
                         file.lines[lineNumber].code = line;
                         if (last) {
@@ -291,7 +378,7 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 
-    /**
+    /** !ReferenceParser/writeOutFile
      * ## Write Out File
      * Writes out a file map
      */
@@ -315,9 +402,9 @@ export class ReferenceParser implements IReferenceParser {
         });
     }
 
-    /**
+    /** !ReferenceParser/parseComment
      * ## Parse Comment
-     * Once a comment is found (see @ParseFile above for example) this will parse
+     * Once a comment is found (see @ReferenceParser/parseFile above for example) this will parse
      * that commant for anchors. It will add those anchors to the @interfaces/IReferenceCollection 
      * for the entire project.
      */

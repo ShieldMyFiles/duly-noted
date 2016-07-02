@@ -1,8 +1,91 @@
 
-
-# <a name="referenceparser" id="referenceparser" ></a>[🔗](#user-content-referenceparser)ReferenceParser
+ <a name="referenceparser-main" id="referenceparser-main" ></a>[🔗](#user-content-referenceparser-main)ReferenceParser/main
+# Reference Parser
  [authors/chris](../.././authors.md.md#user-content-authors-chris)
  [license](../.././license.md.md#user-content-license)
+
+This code parse files, build maps of each the code file, 
+as well as collections of internal and external references.
+
+These files are typically deleted at the end of the [Index/run](../.././ts/index.ts.md#user-content-index-run) 
+process, however, you can leave them by setting `leaveJSONFiles = true`
+in your 'duly-noted.json' file. 
+
+These files are ouput at [ReferenceParser/constants/parseLoc](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-constants/parseloc) .
+ 
+### Example output JSON file for references
+```json
+ {
+  "id": "duly-noted",
+  "anchors": [
+       {
+           "id": "license",
+           "line": 1,
+           "file": "./license.md"
+       },
+       ...
+   ],
+   "subcollections": [
+       {
+           "id": "Index",
+           "anchors": [
+               {
+                   "id": "main",
+                   "line": 0,
+                   "file": "./ts/index.ts"
+               },
+               {
+                   "id": "run",
+                   "line": 21,
+                   "file": "./ts/index.ts"
+               },
+               {
+                   "id": "getFiles",
+                   "line": 162,
+                   "file": "./ts/index.ts"
+               },
+               {
+                   "id": "deleteDir",
+                   "line": 175,
+                   "file": "./ts/index.ts"
+               }
+           ],
+           "subcollections": []
+       },
+       ...
+   }
+```
+
+## Example Output JSON map for code file.
+```json
+{
+   "name": "./ts/index.ts",
+   "lines": [
+       ...
+       {
+           "number": 5,
+           "longComment": true,
+           "comment": "This is the entry file to Duly Noted, "
+       },
+       {
+           "number": 6,
+           "longComment": true,
+           "comment": "it contains function that launches from the Command Line"
+       },
+       {
+           "number": 7,
+           "longComment": true,
+           "comment": ""
+       },
+       {
+           "number": 8,
+           "code": "import {IConfig} from \"./classes/IConfig\";"
+       },
+       ...
+   ]
+}
+
+```
 
 ```typescript
 
@@ -22,8 +105,8 @@ import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::ReferenceParser");
 
 ```
-
-## <a name="interfaces-ireferenceparser" id="interfaces-ireferenceparser" ></a>[🔗](#user-content-interfaces-ireferenceparser)interfaces/IReferenceParser
+ <a name="interfaces-ireferenceparser" id="interfaces-ireferenceparser" ></a>[🔗](#user-content-interfaces-ireferenceparser)interfaces/IReferenceParser
+## Interface for ReferenceParser
 
 ```typescript
 export interface IReferenceParser {
@@ -31,22 +114,15 @@ export interface IReferenceParser {
 }
 
 ```
-
-## <a name="constant-parseloc" id="constant-parseloc" ></a>[🔗](#user-content-constant-parseloc)constant/parseLoc
+ <a name="referenceparser-constants/parseloc" id="referenceparser-constants/parseloc" ></a>[🔗](#user-content-referenceparser-constants/parseloc)ReferenceParser/constants/parseLoc
+Location to store output JSON file and reference collection maps.
 
 ```typescript
 export const parseLoc = "duly-noted";
-```
-
-## <a name="constant-commentpatterns" id="constant-commentpatterns" ></a>[🔗](#user-content-constant-commentpatterns)constant/commentPatterns
-
-```typescript
-export const commentPatterns = "duly-noted";
-
 
 ```
-
-## <a name="classes-referenceparser" id="classes-referenceparser" ></a>[🔗](#user-content-classes-referenceparser)classes/ReferenceParser
+ <a name="referenceparser-class" id="referenceparser-class" ></a>[🔗](#user-content-referenceparser-class)ReferenceParser/class
+## Reference Parser Class
 
 ```typescript
 export class ReferenceParser implements IReferenceParser {
@@ -57,8 +133,8 @@ export class ReferenceParser implements IReferenceParser {
     externalReferences: IExternalReference[];
 
 ```
-
-### Creates an instance of [classes/ReferenceParser](../.././ts/modules/referenceParser.ts.md#user-content-classes-referenceparser)
+ <a name="referenceparser-constructor" id="referenceparser-constructor" ></a>[🔗](#user-content-referenceparser-constructor)ReferenceParser/constructor
+### Creates an instance of [ReferenceParser/class](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-class)
 
 ```typescript
     constructor(config: IConfig, logLevel?: string) {
@@ -75,7 +151,7 @@ export class ReferenceParser implements IReferenceParser {
     }
 
 ```
-
+ <a name="referenceparser-parse" id="referenceparser-parse" ></a>[🔗](#user-content-referenceparser-parse)ReferenceParser/parse
 ## Parse 
 Parser all files for anchors - produce a [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
 
@@ -85,8 +161,15 @@ Parser all files for anchors - produce a [interfaces/IReferenceCollection](../..
         return Q.Promise<IReferenceCollection>((resolve, reject) => {
             logger.info("Starting parse actions for " + that.files.length + " files.");
 
-            let parseActions = [];
+```
+ 
+ Build a collection of parse actions. 
 
+ * If file is Markdown, then use [ReferenceParser/parseAsMarkdown](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-parseasmarkdown)
+ * Otherwise pass to [ReferenceParser/parseFile](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-parsefile) 
+
+```typescript
+            let parseActions = [];
             for (let i = 0; i < that.files.length; i++) {
                 let fileName = that.files[i].split(".");
                 let extension = fileName[fileName.length - 1];
@@ -99,6 +182,10 @@ Parser all files for anchors - produce a [interfaces/IReferenceCollection](../..
 
             Q.all(parseActions)
             .then(() => {
+```
+ Once all parse actions are complete write our the files.
+```typescript
+               
                 logger.debug("Saving out internalReferences.json & externalReferences.json");
                 writeFileSync(path.join(parseLoc, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
                 writeFileSync(path.join(parseLoc, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
@@ -108,7 +195,7 @@ Parser all files for anchors - produce a [interfaces/IReferenceCollection](../..
     }
 
 ```
-
+ <a name="referenceparser-parseasmarkdown" id="referenceparser-parseasmarkdown" ></a>[🔗](#user-content-referenceparser-parseasmarkdown)ReferenceParser/parseAsMarkdown
 ## Parse As Markdown
 When a file is markdown, we parse the whole thing. 
 
@@ -157,9 +244,9 @@ When a file is markdown, we parse the whole thing.
     }
 
 ```
-
+ <a name="referenceparser-parsefile" id="referenceparser-parsefile" ></a>[🔗](#user-content-referenceparser-parsefile)ReferenceParser/parseFile
 ## Parse File 
-Parse a file to a file map. <a name="parsefile" id="parsefile" ></a>[🔗](#user-content-parsefile)ParseFile
+Parse a file to a file map.
 
 ```typescript
     parseFile(fileName: string): Q.Promise<{}> {
@@ -188,27 +275,39 @@ Parse a file to a file map. <a name="parsefile" id="parsefile" ></a>[🔗](#user
                 logger.debug("Using comment patten for " + file.type);
                 commentRegExp = new RegExp(that.commentPatterns[file.type]["commentRegExp"]);
 
-                if (that.commentPatterns[file.type]["longCommentOpenRegExp"]) longCommentOpenRegExp =  new RegExp(that.commentPatterns[file.type]["longCommentOpenRegExp"]);
+```
+ Set RegEx for open a long comment
+```typescript
+               
+                if (that.commentPatterns[file.type]["longCommentOpenRegExp"]) longCommentOpenRegExp = new RegExp(that.commentPatterns[file.type]["longCommentOpenRegExp"]);
                 else longCommentOpenRegExp = undefined;
 
-                if (that.commentPatterns[file.type]["longCommentLineRegExp"]) longCommentLineRegExp =  new RegExp(that.commentPatterns[file.type]["longCommentLineRegExp"]);
+```
+ Set RegEx for continues a long comment
+```typescript
+               
+                if (that.commentPatterns[file.type]["longCommentLineRegExp"]) longCommentLineRegExp = new RegExp(that.commentPatterns[file.type]["longCommentLineRegExp"]);
                 else longCommentLineRegExp = undefined;
 
-                if (that.commentPatterns[file.type]["longCommentCloseRegExp"]) longCommentCloseRegExp =  new RegExp(that.commentPatterns[file.type]["longCommentCloseRegExp"]);
+```
+ Set RegEx for closes a long comment
+```typescript
+               
+                if (that.commentPatterns[file.type]["longCommentCloseRegExp"]) longCommentCloseRegExp = new RegExp(that.commentPatterns[file.type]["longCommentCloseRegExp"]);
                 else longCommentLineRegExp = undefined;
             } else {
                 logger.debug("Using default comment patten.");
                 commentRegExp =  new RegExp(that.commentPatterns["default"]["commentRegExp"]);
-                longCommentOpenRegExp =  new RegExp(that.commentPatterns["default"]["longCommentOpenRegExp"]);
-                longCommentLineRegExp =  new RegExp(that.commentPatterns["default"]["longCommentLineRegExp"]);
-                longCommentCloseRegExp =  new RegExp(that.commentPatterns["default"]["longCommentCloseRegExp"]);
+                longCommentOpenRegExp = new RegExp(that.commentPatterns["default"]["longCommentOpenRegExp"]);
+                longCommentLineRegExp = new RegExp(that.commentPatterns["default"]["longCommentLineRegExp"]);
+                longCommentCloseRegExp = new RegExp(that.commentPatterns["default"]["longCommentCloseRegExp"]);
             }
 
 ```
  Line numbering traditionally starts at 1 (not 0)
 ```typescript
            
-            let lineNumber = 0;
+            let lineNumber = 1;
 ```
  Read each line of the file.
 ```typescript
@@ -231,9 +330,6 @@ Parse a file to a file map. <a name="parsefile" id="parsefile" ></a>[🔗](#user
                     longCommentOpenMatch = false;
                 }
 
-```
- These comments must come at beginning of line.
-```typescript
                 if (!insideLongComment && longCommentOpenMatch) {
                     insideLongComment = true;
                     file.lines[lineNumber].longComment = true;
@@ -269,7 +365,7 @@ Parse a file to a file map. <a name="parsefile" id="parsefile" ></a>[🔗](#user
                                 }
                             });
 ```
- Not a comment (code only)
+ This is not a comment (code only)
 ```typescript
                    
                     } else {
@@ -352,7 +448,7 @@ Parse a file to a file map. <a name="parsefile" id="parsefile" ></a>[🔗](#user
     }
 
 ```
-
+ <a name="referenceparser-writeoutfile" id="referenceparser-writeoutfile" ></a>[🔗](#user-content-referenceparser-writeoutfile)ReferenceParser/writeOutFile
 ## Write Out File
 Writes out a file map
 
@@ -378,9 +474,9 @@ Writes out a file map
     }
 
 ```
-
+ <a name="referenceparser-parsecomment" id="referenceparser-parsecomment" ></a>[🔗](#user-content-referenceparser-parsecomment)ReferenceParser/parseComment
 ## Parse Comment
-Once a comment is found (see [ParseFile](../.././ts/modules/referenceParser.ts.md#user-content-parsefile) above for example) this will parse
+Once a comment is found (see [ReferenceParser/parseFile](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-parsefile) above for example) this will parse
 that commant for anchors. It will add those anchors to the [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection) 
 for the entire project.
 

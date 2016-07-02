@@ -10,7 +10,6 @@ var Q = require("q");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceParser");
 exports.parseLoc = "duly-noted";
-exports.commentPatterns = "duly-noted";
 var ReferenceParser = (function () {
     function ReferenceParser(config, logLevel) {
         this.files = config.files;

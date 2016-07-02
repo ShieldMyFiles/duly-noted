@@ -6,7 +6,6 @@ export interface IReferenceParser {
     parse(): Q.Promise<IReferenceCollection>;
 }
 export declare const parseLoc: string;
-export declare const commentPatterns: string;
 export declare class ReferenceParser implements IReferenceParser {
     files: string[];
     rootCollection: IReferenceCollection;

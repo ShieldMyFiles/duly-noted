@@ -1,9 +1,10 @@
-/**
- * # !Index
+/** !Index/main
+ * # Main Program File
  * @authors/chris
  * @license
  *
- * This is the entry file to Duly Noted
+ * This is the entry file to Duly Noted, 
+ * it contains function that launches from the Command Line
  */
 import {IConfig} from "./classes/IConfig";
 import program = require("commander");
@@ -18,13 +19,16 @@ import {HtmlGenerator} from "./generators/htmlGenerator";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::run");
 
-/**
+/** !Index/run
  * ## Run
  * 
  * Basic code flow is:
  * 
- * 1. parse the cofiguration options using the following order of precedence
- * 2. get the files and pass those to the @ReferenceParser
+ * 1. parse the cofiguration options using the following order of precedence:
+ *      1. Command Line Input
+ *      2. User's Config File (`duly-noted.json`)
+ *      3. Defaults values (see @issue/3)
+ * 2. get the files and pass those to the @ReferenceParser/parse
  * 3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator
  */
 export function run() {
@@ -44,7 +48,7 @@ export function run() {
         .option("-v, --verbose", "Chatty Cathy mode")
         .parse(process.argv);
 
-    //### Set verbose mode
+    // ### Set verbose mode
     if (program.verbose) {
         logLevel = "DEUBG";
     } else {
@@ -53,7 +57,7 @@ export function run() {
     logger.setLevel(logLevel);
 
 
-    //### Init - copies example duly-noted.json
+    // ### Init - copies example duly-noted.json
     if (program.init) {
         try {
             let config = JSON.parse(readFileSync("duly-noted.json").toString());
@@ -70,7 +74,7 @@ export function run() {
         }
     }
 
-    //### Load the config file, or advise init
+    // ### Load the config file, or advise init
     try {
         logger.info("Parsing config file.")
         config = JSON.parse(readFileSync(program.config).toString());
@@ -107,26 +111,42 @@ export function run() {
     }
 
     logger.debug("Starting Reference Parsing.");
+
+    // Run @Index/getFiles on each glob, wait for all actions.
     Q.all(getFiles)
         .then((results) => {
             let files = _.flatten(results);
             let referenceParser = new ReferenceParser(config, logLevel);
 
+            /**
+             * Then pass each of the files into the @ReferenceParser/parse
+             * The output of this will be a JSON map of the references for 
+             * all of the files, along with line-by-line comment maps.
+             */
             referenceParser.parse()
                 .then((response) => {
+
+                    /**
+                     * Once parsed, trigger generators. 
+                     * These will use the JSON maps created by @ReferenceParser/parse 
+                     * and build the output documentation files.
+                     */
                     logger.info("Parsing complete, beginning export.");
                     let generatorActions = [];
 
+                    // Trigger @HtmlGenerator/generate
                     if (_.contains(config.generators, "html")) {
                         generatorActions.push(new HtmlGenerator(config, logLevel).generate());
                     }
 
+                    // Trigger @MarkdownGenerator/generate
                     if (_.contains(config.generators, "markdown")) {
                         generatorActions.push(new MarkdownGenerator(config, logLevel).generate());
                     }
 
                     Q.all(generatorActions)
                         .then(() => {
+                            // Once all generators are done we can clean up JSON maps.
                             if (!config.leaveJSONFiles) {
                                 logger.info("Cleaning up - Removing JSON parse files.");
                                 deleteDir(parseLoc);
@@ -134,13 +154,13 @@ export function run() {
                         });
                 })
                 .catch((err: Error) => {
-                    // !TODO/errors > An overall strategy is needed to identify and report errors.
+                    // !todo/report-errors An overall strategy is needed to identify and report errors.
                     logger.error(err.message + err.stack);
                 });
         });
 }
 
-/**
+/** !Index/getFiles
  * ## Get Files from Glob
  * This is a simple helper to get a set of files from a glob.
  */
@@ -153,7 +173,7 @@ function getFilesFromGlob(globString: string): Q.Promise<string[]> {
     });
 }
 
-/**
+/** !Index/deleteDir
  * ## Delete a directory
  * This is a simple helper to recursively delete a directory, and any sub-directories and files it contains.
  */
