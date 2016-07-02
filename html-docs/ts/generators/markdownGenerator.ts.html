@@ -167,7 +167,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> For a discussion anchors in markdown see <a href="https://github.com/ShieldMyFiles/duly-noted/issues/3">issue/4</a> </p>
+                    <p> For a discussion anchors in markdown see <a href="https://github.com/ShieldMyFiles/duly-noted/issues/4">issue/4</a> </p>
 
                     </div>
 
@@ -464,7 +464,7 @@ code, comment, long comment </p>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <p>Markdown doesn&#39;t natively support acnhors, but you can make them work 
 with simple html. In GitHub, however, anchors are prefixed with &#39;user-content&#39;
-For a discussion anchors in markdown see <a href="https://github.com/ShieldMyFiles/duly-noted/issues/3">issue/4</a> </p>
+For a discussion anchors in markdown see <a href="https://github.com/ShieldMyFiles/duly-noted/issues/4">issue/4</a> </p>
 
                     </div>
 
@@ -554,14 +554,14 @@ This function calls itself recursively until all links are replaced.</p>
                         <pre>
                             <code class="typescript">           
             let tagArray &#x3D; match[1].split(&quot;/&quot;);
-            let externalTag &#x3D;  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
+            let externalTag &#x3D; _.clone(_.findWhere(this.externalReferences, {anchor: tagArray[0]}));
             if (externalTag) {
 
                 for (let i &#x3D; 1; i &lt; tagArray.length; i++) {
                     externalTag.path &#x3D; externalTag.path.replace(&quot;::&quot;, tagArray[i]);
                 }
 
-                logger.debug(&quot;found external link: &quot; + match[1]);</code>
+                logger.debug(&quot;found external link: &quot; + externalTag.path);</code>
                         </pre>
                     </div>
             </div>
@@ -647,7 +647,7 @@ This function calls itself recursively until all links are replaced.</p>
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> Make GitHub-hosted Markdown adjustment. See <a href="https://github.com/ShieldMyFiles/duly-noted/issues/3">issue/4</a> </p>
+                    <p> Make GitHub-hosted Markdown adjustment. See <a href="https://github.com/ShieldMyFiles/duly-noted/issues/4">issue/4</a> </p>
 
                     </div>
 
@@ -734,7 +734,7 @@ and sucks in the user&#39;s defined README. </p>
             <div class="row">    
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> Adjustment for gitHub anchor links. See <a href="https://github.com/ShieldMyFiles/duly-noted/issues/3">issue/4</a> </p>
+                    <p> Adjustment for gitHub anchor links. See <a href="https://github.com/ShieldMyFiles/duly-noted/issues/4">issue/4</a> </p>
 
                     </div>
 
@@ -802,7 +802,7 @@ and sucks in the user&#39;s defined README. </p>
             
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <p>This shifts off the root folder b/c our index file is inside the output folder, 
-not one level up. See <a href="https://github.com/ShieldMyFiles/duly-noted/issues/3">issue/5</a> </p>
+not one level up. See <a href="https://github.com/ShieldMyFiles/duly-noted/issues/5">issue/5</a> </p>
 <blockquote>
 <p>EXAMPLE: 
 docs/myfile.ts.md is linked to as ./myfile.ts.md</p>

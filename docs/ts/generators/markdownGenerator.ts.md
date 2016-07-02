@@ -74,7 +74,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.indexFile = config.indexFile;
 
 ```
- For a discussion anchors in markdown see [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/3) 
+ For a discussion anchors in markdown see [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/4) 
 ```typescript
        
         this.htmlAnchors = config.markdownGeneratorOptions.htmlAnchors;
@@ -232,7 +232,7 @@ g, "-").toLowerCase();
 
 Markdown doesn't natively support acnhors, but you can make them work 
 with simple html. In GitHub, however, anchors are prefixed with 'user-content'
-For a discussion anchors in markdown see [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/3) 
+For a discussion anchors in markdown see [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/4) 
 
 ```typescript
             if (this.htmlAnchors || this.gitHubHtmlAnchors) {
@@ -277,14 +277,14 @@ This function calls itself recursively until all links are replaced.
 ```typescript
            
             let tagArray = match[1].split("/");
-            let externalTag =  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
+            let externalTag = _.clone(_.findWhere(this.externalReferences, {anchor: tagArray[0]}));
             if (externalTag) {
 
                 for (let i = 1; i < tagArray.length; i++) {
                     externalTag.path = externalTag.path.replace("::", tagArray[i]);
                 }
 
-                logger.debug("found external link: " + match[1]);
+                logger.debug("found external link: " + externalTag.path);
 ```
 g, "-").toLowerCase();
 ```typescript
@@ -313,7 +313,7 @@ g, "-").toLowerCase();
                 let anchor = match[1].replace(/
 
 ```
- Make GitHub-hosted Markdown adjustment. See [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/3) 
+ Make GitHub-hosted Markdown adjustment. See [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/4) 
 ```typescript
                
                 if (this.gitHubHtmlAnchors) {
@@ -362,7 +362,7 @@ g, "-").toLowerCase();
                 anchors[x].path = anchors[x].path + ".md#";
 
 ```
- Adjustment for gitHub anchor links. See [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/3) 
+ Adjustment for gitHub anchor links. See [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/4) 
 ```typescript
                
                 if (this.gitHubHtmlAnchors) {
@@ -405,7 +405,7 @@ g, "-").toLowerCase() + "-";
 ```
 
 This shifts off the root folder b/c our index file is inside the output folder, 
-not one level up. See [issue/5](https://github.com/ShieldMyFiles/duly-noted/issues/3) 
+not one level up. See [issue/5](https://github.com/ShieldMyFiles/duly-noted/issues/5) 
 > EXAMPLE: 
 > docs/myfile.ts.md is linked to as ./myfile.ts.md
 

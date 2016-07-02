@@ -422,14 +422,13 @@ This function calls itself recursively until all links are replaced.</p>
                         <pre>
                             <code class="typescript">           
             let tagArray &#x3D; match[1].split(&quot;/&quot;);
-            let externalTag &#x3D;  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
+            let externalTag &#x3D;  _.clone(_.findWhere(this.externalReferences, {anchor: tagArray[0]}));
             if (externalTag) {
-                logger.debug(&quot;found external link: &quot; + match[1]);
-
                 for (let i &#x3D; 1; i &lt; tagArray.length; i++) {
                     externalTag.path &#x3D; externalTag.path.replace(&quot;::&quot;, tagArray[i]);
                 }
-</code>
+
+                logger.debug(&quot;found external link: &quot; + externalTag.path);</code>
                         </pre>
                     </div>
             </div>

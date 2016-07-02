@@ -141,12 +141,12 @@ var MarkdownGenerator = (function () {
         }
         else {
             var tagArray = match[1].split("/");
-            var externalTag = _.findWhere(this.externalReferences, { anchor: tagArray[0] });
+            var externalTag = _.clone(_.findWhere(this.externalReferences, { anchor: tagArray[0] }));
             if (externalTag) {
                 for (var i = 1; i < tagArray.length; i++) {
                     externalTag.path = externalTag.path.replace("::", tagArray[i]);
                 }
-                logger.debug("found external link: " + match[1]);
+                logger.debug("found external link: " + externalTag.path);
                 var anchor = match[1].replace(/\//g, "-").toLowerCase();
                 comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");
                 return this.replaceLinks(comment, fileName, line, pos + match[0].length);
