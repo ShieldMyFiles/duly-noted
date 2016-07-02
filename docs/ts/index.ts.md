@@ -53,7 +53,7 @@ export function run() {
         .parse(process.argv);
 
 ```
- ### Set verbose mode
+### Set verbose mode
 ```typescript
    
     if (program.verbose) {
@@ -65,7 +65,7 @@ export function run() {
 
 
 ```
- ### Init - copies example duly-noted.json
+### Init - copies example duly-noted.json
 ```typescript
    
     if (program.init) {
@@ -85,7 +85,7 @@ export function run() {
     }
 
 ```
- ### Load the config file, or advise init
+### Load the config file, or advise init
 ```typescript
    
     try {

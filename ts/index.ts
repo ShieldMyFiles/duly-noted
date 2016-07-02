@@ -48,7 +48,7 @@ export function run() {
         .option("-v, --verbose", "Chatty Cathy mode")
         .parse(process.argv);
 
-    // ### Set verbose mode
+    //### Set verbose mode
     if (program.verbose) {
         logLevel = "DEUBG";
     } else {
@@ -57,7 +57,7 @@ export function run() {
     logger.setLevel(logLevel);
 
 
-    // ### Init - copies example duly-noted.json
+    //### Init - copies example duly-noted.json
     if (program.init) {
         try {
             let config = JSON.parse(readFileSync("duly-noted.json").toString());
@@ -74,7 +74,7 @@ export function run() {
         }
     }
 
-    // ### Load the config file, or advise init
+    //### Load the config file, or advise init
     try {
         logger.info("Parsing config file.")
         config = JSON.parse(readFileSync(program.config).toString());
