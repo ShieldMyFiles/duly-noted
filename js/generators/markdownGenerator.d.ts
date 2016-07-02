@@ -20,9 +20,8 @@ export declare class MarkdownGenerator implements IMarkdownGenerator {
     constructor(config: IConfig, logLevel?: string);
     generate(): Q.IPromise<{}>;
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void;
-    replaceAnchors(comment: string, fileName: string, line: number): string;
-    replaceInternalLinks(comment: string, fileName: string, line: number): string;
-    replaceExternalLinks(comment: string, fileName: string, line: number): string;
+    replaceAnchors(comment: string, fileName: string, line: number, position?: number): any;
+    replaceLinks(comment: string, fileName: string, line: number, position?: number): any;
     generateIndexPage(readmeText?: any): void;
     getLinkPrefix(fileName: string): string;
 }

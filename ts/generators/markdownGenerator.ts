@@ -83,8 +83,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
                 if (that.readme !== null) {
                     lineReader.eachLine(that.readme, (line, last) => {
                         let newLine = line;
-                        newLine = that.replaceExternalLinks(newLine, that.readme, i);
-                        newLine = that.replaceInternalLinks(newLine, that.readme, i);
+                        newLine = that.replaceLinks(newLine, that.readme, i);
                         readme +=  "\n" + newLine;
                         i++;
                     }, () => {
@@ -119,8 +118,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             for (let i = 0; i < file.lines.length; i++) {
                 if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
                     file.lines[i].comment = this.replaceAnchors(file.lines[i].comment, file.name, i);
-                    file.lines[i].comment = this.replaceExternalLinks(file.lines[i].comment, file.name, i);
-                    file.lines[i].comment = this.replaceInternalLinks(file.lines[i].comment, file.name, i);
+                    file.lines[i].comment = this.replaceLinks(file.lines[i].comment, file.name, i);
                 }
             }
 
@@ -175,12 +173,15 @@ export class MarkdownGenerator implements IMarkdownGenerator {
      * ## Replace Anchors
      * Processes a comment line, replacing anchors with markdown anchor link tags
      */
-    replaceAnchors(comment: string,  fileName: string, line: number) {
-        let pos = 0;
-        let match;
-        let newComment: string = comment;
+    replaceAnchors(comment: string,  fileName: string, line: number, position?: number) {
+        let pos = position || 0;
+
         // Look at the line for anchors - replace them with links. 
-        while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
+        let match = XRegExp.exec(comment, this.anchorRegExp, pos, false);
+
+        if (!match) {
+            return comment;
+        } else {
 
             let anchor = match[1].replace("/", "-").toLowerCase();
 
@@ -190,21 +191,18 @@ export class MarkdownGenerator implements IMarkdownGenerator {
              * For a discussion anchors in markdown see @issue/4
              */
             if (this.htmlAnchors || this.gitHubHtmlAnchors) {
-                newComment =  newComment.substr(0, match.index) +
-                '<a name="' + anchor + '" id="' + anchor + '" ></a>';
+                let replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
 
                 if (this.gitHubHtmlAnchors) {
-                    newComment += "[🔗](#user-content-" + anchor + ")" + match[1];
+                    replacementText += "[🔗](#user-content-" + anchor + ")" + match[1];
                 } else {
-                    newComment += "[🔗](#" + anchor + ")" + match[1];
+                    replacementText += "[🔗](#" + anchor + ")" + match[1];
                 }
+
+                comment = comment.replace(match[0], replacementText);
+                return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
             }
-
-            newComment.substr(match.index + match[0].length);
-            pos = match.index + match[0].length;
         }
-
-        return newComment;
     }
 
     /**
@@ -212,65 +210,46 @@ export class MarkdownGenerator implements IMarkdownGenerator {
      * > Run this AFTER external link replacement to ensure warning accuracy
      * Processes a comment line, replacing links with markdown links
      */
-    replaceInternalLinks(comment: string, fileName: string, line: number) {
-        let pos = 0;
-        let match;
-        let newComment: string = comment;
+    replaceLinks(comment: string, fileName: string, line: number, position?: number) {
+        let pos = position || 0;
 
         let linkPrefix = this.getLinkPrefix(fileName);
 
         // Look at the line for anchors - replace them with links. 
-        while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
-            let tag =  _.findWhere(this.tags, {anchor: match[1]});
-            if (!tag) {
-                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
+        let match = XRegExp.exec(comment, this.linkRegExp, pos, false);
+
+        if (!match) {
+            return comment;
+        } else {
+
+            // Look external link.
+            let tagArray = match[1].split("/");
+            let externalTag =  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
+            if (externalTag) {
+                logger.debug("found external link: " + match[1]);
+                let anchor = match[1].replace("/", "-").toLowerCase();
+                comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");
+                return this.replaceLinks(comment, fileName, line, pos + match[0].length);
+            }
+
+            // Look for internal link.
+            let internalTag =  _.findWhere(this.tags, {anchor: match[1]});
+            if (!internalTag) {
+                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a cooresponding anchor, so link cannot be created.");
+                return comment;
             } else {
-                logger.debug("found internal link: " + match[1] + " " + tag.path);
+                logger.debug("found internal link: " + match[1] + " " + internalTag.path);
                 let anchor = match[1].replace("/", "-").toLowerCase();
 
                 if (this.gitHubHtmlAnchors) {
-                    newComment +=  "[" + match[1] + "](" + linkPrefix + tag.path + ".md#user-content-" + anchor + ")";
+                    comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#user-content-" + anchor + ")");
+
                 } else {
-                    newComment += "[" + match[1] + "](" + linkPrefix + tag.path + ".md#" + anchor + ")";
+                    comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#" + anchor + ")");
                 }
-
-                newComment.substr(match.index + match[0].length);
             }
-            pos = match.index + match[0].length;
+            return this.replaceLinks(comment, fileName, line, pos + match[0].length);
         }
-
-        return newComment;
-    }
-
-    /**
-     * ## Replace External Links
-     * > Run this BEFORE internal link replacement
-     * Processes a comment line, replacing links with markdown links to external urls
-     */
-    replaceExternalLinks(comment: string, fileName: string, line: number) {
-        let pos = 0;
-        let match;
-        let newComment: string = comment;
-
-        // Look at the line for external references - replace them with links. 
-        while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
-            let tagArray = match[1].split("/");
-            let tag =  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
-
-            if (tag) {
-                logger.debug("found external link: " + match[1]);
-                for (let i = 1; i < tagArray.length; i++) {
-                    tag.path = tag.path.replace("::", tagArray[i]);
-                }
-
-                newComment =  comment.substr(0, match.index) +
-                " [" + match[1] + "](" + tag.path + ") " +
-                newComment.substr(match.index + match[0].length);
-            }
-
-            pos = match.index + match[0].length;
-        }
-        return newComment;
     }
 
     /**
@@ -340,7 +319,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 
             /**
              * This shifts off the root folder b/c our index file is inside the output folder, 
-             * not one level up. See @issues/5
+             * not one level up. See @issue/5
              * > EXAMPLE: 
              * > docs/myfile.ts.md is linked to as ./myfile.ts.md
              */

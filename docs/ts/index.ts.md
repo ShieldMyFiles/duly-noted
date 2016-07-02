@@ -1,13 +1,12 @@
 
 
 # <a name="index" id="index" ></a>[🔗](#user-content-index)Index
-@authors/chris[authors/chris](.././authors.md.md#user-content-authors-chris)
-@license[license](.././license.md.md#user-content-license)
+ [authors/chris](.././authors.md.md#user-content-authors-chris)
+ [license](.././license.md.md#user-content-license)
 
 This is the entry file to Duly Noted
 
 ```typescript
-import {IProgram} from "./classes/IProgram";
 import {IConfig} from "./classes/IConfig";
 import program = require("commander");
 import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync, readdirSync, rmdirSync, statSync} from "fs";
@@ -28,8 +27,8 @@ let logger = log4js.getLogger("duly-noted::run");
 Basic code flow is:
 
 1. parse the cofiguration options using the following order of precedence
-2. get the files and pass those to the @ReferenceParser[ReferenceParser](.././ts/modules/referenceParser.ts.md#user-content-referenceparser)
-3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator[HtmlGenerator](.././ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator)[MarkdownGenerator](.././ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator)
+2. get the files and pass those to the [ReferenceParser](.././ts/modules/referenceParser.ts.md#user-content-referenceparser)
+3. output the reponse to either/both [HtmlGenerator](.././ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator) or [MarkdownGenerator](.././ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator)
 
 ```typescript
 export function run() {
@@ -101,7 +100,7 @@ Settings are in order of precedence
 
 1. Command Line Input
 2. User's Config File
-3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/4) )
+3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/::) )
 
 ```typescript
 
@@ -160,7 +159,7 @@ Settings are in order of precedence
                 })
                 .catch((err: Error) => {
 ```
- <a name="todo-errors" id="todo-errors" ></a>[🔗](#user-content-todo-errors)TODO/errors
+ <a name="todo-errors" id="todo-errors" ></a>[🔗](#user-content-todo-errors)TODO/errors > An overall strategy is needed to identify and report errors.
 ```typescript
                    
                     logger.error(err.message + err.stack);

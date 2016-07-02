@@ -42,8 +42,7 @@ var MarkdownGenerator = (function () {
                 if (that.readme !== null) {
                     lineReader.eachLine(that.readme, function (line, last) {
                         var newLine = line;
-                        newLine = that.replaceExternalLinks(newLine, that.readme, i);
-                        newLine = that.replaceInternalLinks(newLine, that.readme, i);
+                        newLine = that.replaceLinks(newLine, that.readme, i);
                         readme += "\n" + newLine;
                         i++;
                     }, function () {
@@ -72,8 +71,7 @@ var MarkdownGenerator = (function () {
             for (var i = 0; i < file_1.lines.length; i++) {
                 if (typeof (file_1.lines[i].comment) === "string" && file_1.lines[i].comment !== "" && file_1.lines[i].comment !== null) {
                     file_1.lines[i].comment = this.replaceAnchors(file_1.lines[i].comment, file_1.name, i);
-                    file_1.lines[i].comment = this.replaceExternalLinks(file_1.lines[i].comment, file_1.name, i);
-                    file_1.lines[i].comment = this.replaceInternalLinks(file_1.lines[i].comment, file_1.name, i);
+                    file_1.lines[i].comment = this.replaceLinks(file_1.lines[i].comment, file_1.name, i);
                 }
             }
             for (var i = 0; i < file_1.lines.length; i++) {
@@ -113,71 +111,60 @@ var MarkdownGenerator = (function () {
             next();
         }
     };
-    MarkdownGenerator.prototype.replaceAnchors = function (comment, fileName, line) {
-        var pos = 0;
-        var match;
-        var newComment = comment;
-        while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
+    MarkdownGenerator.prototype.replaceAnchors = function (comment, fileName, line, position) {
+        var pos = position || 0;
+        var match = XRegExp.exec(comment, this.anchorRegExp, pos, false);
+        if (!match) {
+            return comment;
+        }
+        else {
             var anchor = match[1].replace("/", "-").toLowerCase();
             if (this.htmlAnchors || this.gitHubHtmlAnchors) {
-                newComment = newComment.substr(0, match.index) +
-                    '<a name="' + anchor + '" id="' + anchor + '" ></a>';
+                var replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
                 if (this.gitHubHtmlAnchors) {
-                    newComment += "[🔗](#user-content-" + anchor + ")" + match[1];
+                    replacementText += "[🔗](#user-content-" + anchor + ")" + match[1];
                 }
                 else {
-                    newComment += "[🔗](#" + anchor + ")" + match[1];
+                    replacementText += "[🔗](#" + anchor + ")" + match[1];
                 }
+                comment = comment.replace(match[0], replacementText);
+                return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
             }
-            newComment.substr(match.index + match[0].length);
-            pos = match.index + match[0].length;
         }
-        return newComment;
     };
-    MarkdownGenerator.prototype.replaceInternalLinks = function (comment, fileName, line) {
-        var pos = 0;
-        var match;
-        var newComment = comment;
+    MarkdownGenerator.prototype.replaceLinks = function (comment, fileName, line, position) {
+        var pos = position || 0;
         var linkPrefix = this.getLinkPrefix(fileName);
-        while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
-            var tag = _.findWhere(this.tags, { anchor: match[1] });
-            if (!tag) {
-                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
+        var match = XRegExp.exec(comment, this.linkRegExp, pos, false);
+        if (!match) {
+            return comment;
+        }
+        else {
+            var tagArray = match[1].split("/");
+            var externalTag = _.findWhere(this.externalReferences, { anchor: tagArray[0] });
+            if (externalTag) {
+                logger.debug("found external link: " + match[1]);
+                var anchor = match[1].replace("/", "-").toLowerCase();
+                comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");
+                return this.replaceLinks(comment, fileName, line, pos + match[0].length);
+            }
+            var internalTag = _.findWhere(this.tags, { anchor: match[1] });
+            if (!internalTag) {
+                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a cooresponding anchor, so link cannot be created.");
+                return comment;
             }
             else {
-                logger.debug("found internal link: " + match[1] + " " + tag.path);
+                logger.debug("found internal link: " + match[1] + " " + internalTag.path);
                 var anchor = match[1].replace("/", "-").toLowerCase();
                 if (this.gitHubHtmlAnchors) {
-                    newComment += "[" + match[1] + "](" + linkPrefix + tag.path + ".md#user-content-" + anchor + ")";
+                    comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#user-content-" + anchor + ")");
                 }
                 else {
-                    newComment += "[" + match[1] + "](" + linkPrefix + tag.path + ".md#" + anchor + ")";
+                    comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#" + anchor + ")");
                 }
-                newComment.substr(match.index + match[0].length);
             }
-            pos = match.index + match[0].length;
+            return this.replaceLinks(comment, fileName, line, pos + match[0].length);
         }
-        return newComment;
-    };
-    MarkdownGenerator.prototype.replaceExternalLinks = function (comment, fileName, line) {
-        var pos = 0;
-        var match;
-        var newComment = comment;
-        while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
-            var tagArray = match[1].split("/");
-            var tag = _.findWhere(this.externalReferences, { anchor: tagArray[0] });
-            if (tag) {
-                logger.debug("found external link: " + match[1]);
-                for (var i = 1; i < tagArray.length; i++) {
-                    tag.path = tag.path.replace("::", tagArray[i]);
-                }
-                newComment = comment.substr(0, match.index) +
-                    " [" + match[1] + "](" + tag.path + ") " +
-                    newComment.substr(match.index + match[0].length);
-            }
-            pos = match.index + match[0].length;
-        }
-        return newComment;
     };
     MarkdownGenerator.prototype.generateIndexPage = function (readmeText) {
         logger.info("generating Duly Noted Index file.");

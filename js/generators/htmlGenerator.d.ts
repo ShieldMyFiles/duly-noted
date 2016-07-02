@@ -19,9 +19,8 @@ export declare class HtmlGenerator implements IHtmlGenerator {
     constructor(config: IConfig, logLevel?: string);
     generate(): Q.IPromise<{}>;
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void;
-    replaceAnchors(comment: string, fileName: string, line: number): string;
-    replaceInternalLinks(comment: string, fileName: string, line: number): string;
-    replaceExternalLinks(comment: string, fileName: string, line: number): string;
+    replaceAnchors(comment: string, fileName: string, line: number, position?: number): any;
+    replaceLinks(comment: string, fileName: string, line: number, position?: number): any;
     generateIndexPage(): void;
     getLinkPrefix(fileName: string): string;
     markdownHelper(context: any, options: any): string;

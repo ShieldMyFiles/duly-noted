@@ -5,7 +5,6 @@
  *
  * This is the entry file to Duly Noted
  */
-import {IProgram} from "./classes/IProgram";
 import {IConfig} from "./classes/IConfig";
 import program = require("commander");
 import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync, readdirSync, rmdirSync, statSync} from "fs";

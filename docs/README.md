@@ -5,35 +5,35 @@
 * [Index](./ts/index.ts.md#user-content-index) 
 * [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator) 
 * [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator) 
-* [IConfig](./ts/classes/IConfig.ts.md#user-content-iconfig) 
 * [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-referenceparser) 
-* [ParseFile](./ts/modules/referenceParser.ts.md#user-content-parsefile) 
 * [license](./license.md.md#user-content-license) 
-
-#### TODO 
-* [errors](./ts/index.ts.md#user-content-todo-errors) 
-* [commentRegExp](./ts/classes/IConfig.ts.md#user-content-todo-commentregexp) 
-
-#### interfaces 
-* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-interfaces-ihtmlgenerator) 
-* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-interfaces-imarkdowngenerator) 
-* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection) 
-* [IAnchor](./ts/classes/referenceCollection.ts.md#user-content-interfaces-ianchor) 
-* [ITag](./ts/classes/referenceCollection.ts.md#user-content-interfaces-itag) 
-* [IReferenceParser](./ts/modules/referenceParser.ts.md#user-content-interfaces-ireferenceparser) 
-
-#### classes 
-* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-classes-htmlgenerator) 
-* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-classes-markdowngenerator) 
-* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-classes-referencecollection) 
-* [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-classes-referenceparser) 
+* [IConfig](./ts/classes/IConfig.ts.md#user-content-iconfig) 
+* [ParseFile](./ts/modules/referenceParser.ts.md#user-content-parsefile) 
 
 #### authors 
 * [chris](./authors.md.md#user-content-authors-chris) 
 
+#### TODO 
+* [commentRegExp](./ts/classes/IConfig.ts.md#user-content-todo-commentregexp) 
+* [errors](./ts/index.ts.md#user-content-todo-errors) 
+
+#### interfaces 
+* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection) 
+* [IReferenceParser](./ts/modules/referenceParser.ts.md#user-content-interfaces-ireferenceparser) 
+* [IAnchor](./ts/classes/referenceCollection.ts.md#user-content-interfaces-ianchor) 
+* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-interfaces-imarkdowngenerator) 
+* [ITag](./ts/classes/referenceCollection.ts.md#user-content-interfaces-itag) 
+* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-interfaces-ihtmlgenerator) 
+
 #### constant 
 * [parseLoc](./ts/modules/referenceParser.ts.md#user-content-constant-parseloc) 
 * [commentPatterns](./ts/modules/referenceParser.ts.md#user-content-constant-commentpatterns) 
+
+#### classes 
+* [MarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-classes-markdowngenerator) 
+* [ReferenceParser](./ts/modules/referenceParser.ts.md#user-content-classes-referenceparser) 
+* [HtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-classes-htmlgenerator) 
+* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-classes-referencecollection) 
 
 ------------------------------ 
 
@@ -179,7 +179,7 @@ You can define external reference patterns in your `duly-noted.json` in the form
 ```
 
 Adding an external link to a comment works just like adding an internal link -  [wiki](https://en.wikipedia.org/wiki/::) ` with one major change - the `::` in external reference path will be replace in order by items in the link. 
-For example, using   [wiki/Software](https://en.wikipedia.org/wiki/Software) _documentation` in a comment will link to: `https://en.wikipedia.org/wiki/Software_documentation`
+For example, using   [wiki/Software](https://en.wikipedia.org/wiki/::) _documentation` in a comment will link to: `https://en.wikipedia.org/wiki/Software_documentation`
 
 
 > **Pro Tip:**

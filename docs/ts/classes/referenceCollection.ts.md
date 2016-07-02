@@ -72,7 +72,7 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```
 
-## Recursively inflate a reference collection in the form of @interfaces/IReferenceCollection from flat data (likely from JSON file)[interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
+## Recursively inflate a reference collection in the form of [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection) from flat data (likely from JSON file)
 
 ```typescript
     public inflate(collection: IReferenceCollection) {
@@ -86,7 +86,7 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```
 
-## Add an @interfaces/IAnchor to collection[interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ianchor)
+## Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ianchor) to collection
 
 ```typescript
     public addAnchor(anchor: IAnchor): void {
@@ -100,7 +100,7 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```
 
-## Add a subcollection to this collection in the form of an @interfaces/IReferenceCollection[interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
+## Add a subcollection to this collection in the form of an [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
 
 ```typescript
     public addSubcollection(collection: IReferenceCollection): void {

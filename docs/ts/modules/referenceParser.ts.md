@@ -1,8 +1,8 @@
 
 
 # <a name="referenceparser" id="referenceparser" ></a>[🔗](#user-content-referenceparser)ReferenceParser
- @authors/chris[authors/chris](../.././authors.md.md#user-content-authors-chris)
- @license[license](../.././license.md.md#user-content-license)
+ [authors/chris](../.././authors.md.md#user-content-authors-chris)
+ [license](../.././license.md.md#user-content-license)
 
 ```typescript
 
@@ -58,7 +58,7 @@ export class ReferenceParser implements IReferenceParser {
 
 ```
 
-### Creates an instance of @classes/ReferenceParser[classes/ReferenceParser](../.././ts/modules/referenceParser.ts.md#user-content-classes-referenceparser)
+### Creates an instance of [classes/ReferenceParser](../.././ts/modules/referenceParser.ts.md#user-content-classes-referenceparser)
 
 ```typescript
     constructor(config: IConfig, logLevel?: string) {
@@ -77,7 +77,7 @@ export class ReferenceParser implements IReferenceParser {
 ```
 
 ## Parse 
-Parser all files for anchors - produce a @interfaces/IReferenceCollection[interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
+Parser all files for anchors - produce a [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
 
 ```typescript
     public parse(): Q.Promise<IReferenceCollection> {
@@ -380,8 +380,8 @@ Writes out a file map
 ```
 
 ## Parse Comment
-Once a comment is found (see @ParseFile above for example) this will parse[ParseFile](../.././ts/modules/referenceParser.ts.md#user-content-parsefile)
-that commant for anchors. It will add those anchors to the @interfaces/IReferenceCollection [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
+Once a comment is found (see [ParseFile](../.././ts/modules/referenceParser.ts.md#user-content-parsefile) above for example) this will parse
+that commant for anchors. It will add those anchors to the [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection) 
 for the entire project.
 
 ```typescript

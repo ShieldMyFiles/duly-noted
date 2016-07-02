@@ -9,7 +9,7 @@ export interface IConfig {
     indexFile: string;
     anchorRegExp: string;
 ```
- <a name="todo-commentregexp" id="todo-commentregexp" ></a>[🔗](#user-content-todo-commentregexp)TODO/commentRegExp
+ <a name="todo-commentregexp" id="todo-commentregexp" ></a>[🔗](#user-content-todo-commentregexp)TODO/commentRegExp We should associate comment RegExp with file type - so we can support HTML comments
 ```typescript
     commentRegExp: string;
     longCommentOpenRegExp: string;

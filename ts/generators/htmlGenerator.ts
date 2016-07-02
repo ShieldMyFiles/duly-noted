@@ -114,8 +114,7 @@ export class HtmlGenerator implements IHtmlGenerator {
         for (let i = 0; i < file.lines.length; i++) {
             if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
                 file.lines[i].comment = this.replaceAnchors(file.lines[i].comment, file.name, i);
-                file.lines[i].comment = this.replaceExternalLinks(file.lines[i].comment, file.name, i);
-                file.lines[i].comment = this.replaceInternalLinks(file.lines[i].comment, file.name, i);
+                file.lines[i].comment = this.replaceLinks(file.lines[i].comment, file.name, i);
             }
         }
 
@@ -164,83 +163,62 @@ export class HtmlGenerator implements IHtmlGenerator {
 
     /**
      * ## Replace Anchors
-     * Processes a comment line, replacing anchors with a:href anchor tags
+     * Processes a comment line, replacing anchors with markdown anchor link tags
      */
-    replaceAnchors(comment: string,  fileName: string, line: number) {
-        let pos = 0;
-        let match;
-        let newComment: string = comment;
+    replaceAnchors(comment: string,  fileName: string, line: number, position?: number) {
+        let pos = position || 0;
+
         // Look at the line for anchors - replace them with links. 
-        while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
-            newComment =  newComment.substr(0, match.index) +
-            " <a name=\"" + match[1] + "\"><span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span></a> " + match[1] +
-            newComment.substr(match.index + match[0].length);
+        let match = XRegExp.exec(comment, this.anchorRegExp, pos, false);
 
-            pos = match.index + match[0].length;
+        if (!match) {
+            return comment;
+        } else {
+
+            let anchor = match[1].replace("/", "-").toLowerCase();
+            let replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
+            replacementText += "[🔗](#" + anchor + ")" + match[1];
+
+            comment = comment.replace(match[0], replacementText);
+            return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
         }
-
-        return newComment;
     }
 
 
-    /**
-     * ## Replace Links
-     * > Run this AFTER external link replacement to ensure warning accuracy
-     * Processes a comment line, replacing links with links
-     */
-    replaceInternalLinks(comment: string, fileName: string, line: number) {
-        let pos = 0;
-        let match;
-        let newComment: string = comment;
+    replaceLinks(comment: string, fileName: string, line: number, position?: number) {
+        let pos = position || 0;
 
         let linkPrefix = this.getLinkPrefix(fileName);
 
         // Look at the line for anchors - replace them with links. 
-        while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
-            let tag =  _.findWhere(this.tags, {anchor: match[1]});
-            if (!tag) {
-                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
-            } else {
-                logger.debug("found internal link: " + match[1]);
-                newComment =  comment.substr(0, match.index) +
-                " [" + match[1] + "](" + linkPrefix + tag.path + ".html#" + match[1] + ") " +
-                newComment.substr(match.index + match[0].length);
-            }
-            pos = match.index + match[0].length;
-        }
+        let match = XRegExp.exec(comment, this.linkRegExp, pos, false);
 
-        return newComment;
-    }
+        if (!match) {
+            return comment;
+        } else {
 
-    /**
-     * ## Replace External Links
-     * > Run this BEFORE internal link replacement
-     * Processes a comment line, replacing links with links to external urls
-     */
-    replaceExternalLinks(comment: string, fileName: string, line: number) {
-        let pos = 0;
-        let match;
-        let newComment: string = comment;
-
-        // Look at the line for external references - replace them with links. 
-        while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
+            // Look external link.
             let tagArray = match[1].split("/");
-            let tag =  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
-
-            if (tag) {
+            let externalTag =  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
+            if (externalTag) {
                 logger.debug("found external link: " + match[1]);
-                for (let i = 1; i < tagArray.length; i++) {
-                    tag.path = tag.path.replace("::", tagArray[i]);
-                }
-
-                newComment =  comment.substr(0, match.index - 1) +
-                " [" + match[1] + "](" + tag.path + ") " +
-                newComment.substr(match.index + match[0].length);
+                let anchor = match[1].replace("/", "-").toLowerCase();
+                comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");
+                return this.replaceLinks(comment, fileName, line, pos + match[0].length);
             }
 
-            pos = match.index + match[0].length;
+            // Look for internal link.
+            let internalTag =  _.findWhere(this.tags, {anchor: match[1]});
+            if (!internalTag) {
+                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a cooresponding anchor, so link cannot be created.");
+                return comment;
+            } else {
+                logger.debug("found internal link: " + match[1] + " " + internalTag.path);
+                let anchor = match[1].replace("/", "-").toLowerCase();
+                comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#" + anchor + ")");
+            }
+            return this.replaceLinks(comment, fileName, line, pos + match[0].length);
         }
-        return newComment;
     }
 
     /** 
@@ -264,15 +242,20 @@ export class HtmlGenerator implements IHtmlGenerator {
 
         for (let i = 0; i < collections.length; i++) {
             let anchors = _.clone(collections[i].anchors);
-            for (let x = 0; x < anchors.length; x++) {
-                let linkPrefix = that.getLinkPrefix(anchors[x].path);
-                anchors[x].path = anchors[x].path + ".html#" + anchors[x].linkStub;
-            }
-
             let name = collections[i].name.split("/");
             name.shift();
             name.shift();
             name = name.join("/");
+
+            for (let x = 0; x < anchors.length; x++) {
+                let anchor = anchors[x].linkStub.replace("/", "-").toLowerCase();
+                anchors[x].path = anchors[x].path + ".html#";
+                if (name !== "") {
+                    anchors[x].path += name.replace("/", "-").toLowerCase() + "-";
+                }
+
+                anchors[x].path += anchor;
+            }
 
             outputMap.collections.push({
                 name: name,
@@ -281,7 +264,6 @@ export class HtmlGenerator implements IHtmlGenerator {
         }
 
         files(this.outputDir, (error, files) => {
-
             // Files
             for (let i = 0; i < files.length; i++) {
                 let fileNameArray = files[i].split(".");

@@ -55,8 +55,7 @@ var HtmlGenerator = (function () {
         for (var i = 0; i < file.lines.length; i++) {
             if (typeof (file.lines[i].comment) === "string" && file.lines[i].comment !== "" && file.lines[i].comment !== null) {
                 file.lines[i].comment = this.replaceAnchors(file.lines[i].comment, file.name, i);
-                file.lines[i].comment = this.replaceExternalLinks(file.lines[i].comment, file.name, i);
-                file.lines[i].comment = this.replaceInternalLinks(file.lines[i].comment, file.name, i);
+                file.lines[i].comment = this.replaceLinks(file.lines[i].comment, file.name, i);
             }
         }
         var outputMap = {
@@ -99,57 +98,48 @@ var HtmlGenerator = (function () {
             }
         });
     };
-    HtmlGenerator.prototype.replaceAnchors = function (comment, fileName, line) {
-        var pos = 0;
-        var match;
-        var newComment = comment;
-        while (match = XRegExp.exec(newComment, this.anchorRegExp, pos, false)) {
-            newComment = newComment.substr(0, match.index) +
-                " <a name=\"" + match[1] + "\"><span class=\"glyphicon glyphicon-link\" aria-hidden=\"true\"></span></a> " + match[1] +
-                newComment.substr(match.index + match[0].length);
-            pos = match.index + match[0].length;
+    HtmlGenerator.prototype.replaceAnchors = function (comment, fileName, line, position) {
+        var pos = position || 0;
+        var match = XRegExp.exec(comment, this.anchorRegExp, pos, false);
+        if (!match) {
+            return comment;
         }
-        return newComment;
+        else {
+            var anchor = match[1].replace("/", "-").toLowerCase();
+            var replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
+            replacementText += "[🔗](#" + anchor + ")" + match[1];
+            comment = comment.replace(match[0], replacementText);
+            return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
+        }
     };
-    HtmlGenerator.prototype.replaceInternalLinks = function (comment, fileName, line) {
-        var pos = 0;
-        var match;
-        var newComment = comment;
+    HtmlGenerator.prototype.replaceLinks = function (comment, fileName, line, position) {
+        var pos = position || 0;
         var linkPrefix = this.getLinkPrefix(fileName);
-        while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
-            var tag = _.findWhere(this.tags, { anchor: match[1] });
-            if (!tag) {
-                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + " does not have a cooresponding anchor, so link cannot be created.");
+        var match = XRegExp.exec(comment, this.linkRegExp, pos, false);
+        if (!match) {
+            return comment;
+        }
+        else {
+            var tagArray = match[1].split("/");
+            var externalTag = _.findWhere(this.externalReferences, { anchor: tagArray[0] });
+            if (externalTag) {
+                logger.debug("found external link: " + match[1]);
+                var anchor = match[1].replace("/", "-").toLowerCase();
+                comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");
+                return this.replaceLinks(comment, fileName, line, pos + match[0].length);
+            }
+            var internalTag = _.findWhere(this.tags, { anchor: match[1] });
+            if (!internalTag) {
+                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a cooresponding anchor, so link cannot be created.");
+                return comment;
             }
             else {
-                logger.debug("found internal link: " + match[1]);
-                newComment = comment.substr(0, match.index) +
-                    " [" + match[1] + "](" + linkPrefix + tag.path + ".html#" + match[1] + ") " +
-                    newComment.substr(match.index + match[0].length);
+                logger.debug("found internal link: " + match[1] + " " + internalTag.path);
+                var anchor = match[1].replace("/", "-").toLowerCase();
+                comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#" + anchor + ")");
             }
-            pos = match.index + match[0].length;
+            return this.replaceLinks(comment, fileName, line, pos + match[0].length);
         }
-        return newComment;
-    };
-    HtmlGenerator.prototype.replaceExternalLinks = function (comment, fileName, line) {
-        var pos = 0;
-        var match;
-        var newComment = comment;
-        while (match = XRegExp.exec(newComment, this.linkRegExp, pos, false)) {
-            var tagArray = match[1].split("/");
-            var tag = _.findWhere(this.externalReferences, { anchor: tagArray[0] });
-            if (tag) {
-                logger.debug("found external link: " + match[1]);
-                for (var i = 1; i < tagArray.length; i++) {
-                    tag.path = tag.path.replace("::", tagArray[i]);
-                }
-                newComment = comment.substr(0, match.index - 1) +
-                    " [" + match[1] + "](" + tag.path + ") " +
-                    newComment.substr(match.index + match[0].length);
-            }
-            pos = match.index + match[0].length;
-        }
-        return newComment;
     };
     HtmlGenerator.prototype.generateIndexPage = function () {
         var _this = this;
@@ -164,14 +154,18 @@ var HtmlGenerator = (function () {
         var collections = that.referenceCollection.getTagsByCollection();
         for (var i = 0; i < collections.length; i++) {
             var anchors = _.clone(collections[i].anchors);
-            for (var x = 0; x < anchors.length; x++) {
-                var linkPrefix = that.getLinkPrefix(anchors[x].path);
-                anchors[x].path = anchors[x].path + ".html#" + anchors[x].linkStub;
-            }
             var name_1 = collections[i].name.split("/");
             name_1.shift();
             name_1.shift();
             name_1 = name_1.join("/");
+            for (var x = 0; x < anchors.length; x++) {
+                var anchor = anchors[x].linkStub.replace("/", "-").toLowerCase();
+                anchors[x].path = anchors[x].path + ".html#";
+                if (name_1 !== "") {
+                    anchors[x].path += name_1.replace("/", "-").toLowerCase() + "-";
+                }
+                anchors[x].path += anchor;
+            }
             outputMap.collections.push({
                 name: name_1,
                 anchors: anchors
