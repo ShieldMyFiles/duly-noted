@@ -68,6 +68,15 @@ function run() {
     for (var i = 0; i < config.files.length; i++) {
         getFiles.push(getFilesFromGlob(config.files[i]));
     }
+    if (!config.markdownGeneratorOptions) {
+        config.markdownGeneratorOptions = defaults.markdownGeneratorOptions;
+    }
+    if (!config.markdownGeneratorOptions.gitHubHtmlAnchors) {
+        config.markdownGeneratorOptions.gitHubHtmlAnchors = defaults.markdownGeneratorOptions.gitHubHtmlAnchors;
+    }
+    if (!config.markdownGeneratorOptions.htmlAnchors) {
+        config.markdownGeneratorOptions.htmlAnchors = defaults.markdownGeneratorOptions.htmlAnchors;
+    }
     logger.debug("Starting Reference Parsing.");
     Q.all(getFiles)
         .then(function (results) {

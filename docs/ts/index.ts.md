@@ -138,6 +138,22 @@ Settings are in order of precedence
         getFiles.push(getFilesFromGlob(config.files[i]));
     }
 
+```
+ MarkdownGenerator Settings
+```typescript
+   
+    if (!config.markdownGeneratorOptions) {
+        config.markdownGeneratorOptions = defaults.markdownGeneratorOptions;
+    }
+
+    if (!config.markdownGeneratorOptions.gitHubHtmlAnchors) {
+        config.markdownGeneratorOptions.gitHubHtmlAnchors = defaults.markdownGeneratorOptions.gitHubHtmlAnchors;
+    }
+
+    if (!config.markdownGeneratorOptions.htmlAnchors) {
+        config.markdownGeneratorOptions.htmlAnchors = defaults.markdownGeneratorOptions.htmlAnchors;
+    }
+
     logger.debug("Starting Reference Parsing.");
 
 ```

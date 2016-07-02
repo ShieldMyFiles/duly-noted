@@ -308,6 +308,35 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
     for (let i &#x3D; 0; i &lt; config.files.length; i++) {
         getFiles.push(getFilesFromGlob(config.files[i]));
     }
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> MarkdownGenerator Settings</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">   
+    if (!config.markdownGeneratorOptions) {
+        config.markdownGeneratorOptions &#x3D; defaults.markdownGeneratorOptions;
+    }
+
+    if (!config.markdownGeneratorOptions.gitHubHtmlAnchors) {
+        config.markdownGeneratorOptions.gitHubHtmlAnchors &#x3D; defaults.markdownGeneratorOptions.gitHubHtmlAnchors;
+    }
+
+    if (!config.markdownGeneratorOptions.htmlAnchors) {
+        config.markdownGeneratorOptions.htmlAnchors &#x3D; defaults.markdownGeneratorOptions.htmlAnchors;
+    }
 
     logger.debug(&quot;Starting Reference Parsing.&quot;);
 </code>
