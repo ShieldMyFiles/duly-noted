@@ -1,5 +1,5 @@
-/**
- *# !ReferenceCollection
+/** !ReferenceCollection/main
+ *# Reference Collection
  *@authors/chris
  *@license
  * 
@@ -38,8 +38,8 @@ export interface ITag {
     linkStub: string;
 }
 
-/**
- * ## !classes/ReferenceCollection
+/** !ReferenceCollection/class
+ * ## Reference Collection Class
  */
 export class ReferenceCollection implements IReferenceCollection {
     id: string;
@@ -47,8 +47,8 @@ export class ReferenceCollection implements IReferenceCollection {
     subcollections: IReferenceCollection[];
     logLevel: string;
 
-    /**
-     * ### Creates an instance of @ReferenceCollection
+    /** !ReferenceCollection/constructor
+     * ### Creates an instance of @ReferenceCollection/class
      */
     constructor(id: string, logLevel?: string) {
         this.logLevel = logLevel || "DEBUG";
@@ -58,8 +58,9 @@ export class ReferenceCollection implements IReferenceCollection {
         this.subcollections = [];
     }
 
-    /**
-     * ## Recursively inflate a reference collection in the form of @interfaces/IReferenceCollection from flat data (likely from JSON file)
+    /** !ReferenceCollection/inflate
+     * ## Inflate
+     * Recursively inflate a reference collection in the form of @interfaces/IReferenceCollection from flat data (likely from JSON file)
      */
     public inflate(collection: IReferenceCollection) {
         this.id = collection.id;
@@ -70,8 +71,9 @@ export class ReferenceCollection implements IReferenceCollection {
         return this;
     }
 
-    /**
-     * ## Add an @interfaces/IAnchor to collection
+    /** !ReferenceCollection/addAnchor
+     * ## Add Anchor
+     * Add an @interfaces/IAnchor to collection
      */
     public addAnchor(anchor: IAnchor): void {
         let existing = findWhere(this.anchors, {id: anchor.id});
@@ -82,28 +84,31 @@ export class ReferenceCollection implements IReferenceCollection {
         this.anchors.push(anchor);
     }
 
-    /**
-     * ## Add a subcollection to this collection in the form of an @interfaces/IReferenceCollection
+    /** !ReferenceCollection/addSubcollection
+     * ## Add Subcollection
+     * Add a subcollection to this collection in the form of an @interfaces/IReferenceCollection
      */
     public addSubcollection(collection: IReferenceCollection): void {
         let existingAnchor = findWhere(this.anchors, {id: collection.id});
         if (existingAnchor) {
-            logger.error("Cannot add collection '" + collection.id + "' because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
+            logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
             return;
         }
 
         let existingCollection = findWhere(this.anchors, {id: collection.id});
         if (existingCollection) {
-            logger.error("Cannot add collection '" + collection.id + "' because it was already defined as a subcollection of '" + collection.id +  "'");
+            logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as a subcollection of '" + collection.id +  "'");
             return;
         }
 
         this.subcollections.push(collection);
     }
 
-    /**
-     * ## Add Anchor Tag to the appropriate subcollection
-     * Recursively skims the collection and subcollections to place anchor in the correct place.
+    /** !ReferenceCollection/addAnchorTag
+     * ## Add Anchor Tag
+     * Add Anchor Tag to the appropriate subcollection by
+     * recursively skiming the collection and subcollections 
+     * to place anchor in the correct place.
      */
     public addAnchorTag(anchorTag: string[], fileName: string, lineNumber: number): void {
         logger.debug("processing new anchorTag: " + JSON.stringify(anchorTag));
@@ -136,9 +141,10 @@ export class ReferenceCollection implements IReferenceCollection {
         }
     }
 
-    /**
-     * ## Get All the tags in a collection and its subcollections
-     * Recursively cull all of the tags.
+    /** !ReferenceCollection/getAllTags
+     * ## Get All Tags
+     * Get All the tags in a collection and its subcollections
+     * by recursively culling all of the tags.
      */
     public getAllTags(parentPath?: string, depth?: number): ITag[] {
         parentPath = parentPath || "";
@@ -188,8 +194,9 @@ export class ReferenceCollection implements IReferenceCollection {
         return allTags;
     }
 
-    /**
-     * ## Get a list of anchors sorted by an array of all the collections.
+    /** !ReferenceCollection/getTagsByCollection
+     * ## Get Tags By Collection
+     * Get a list of anchors sorted by an array of all the collections.
      */
     public getTagsByCollection (allCollections?, parentPath?) {
         allCollections = allCollections || [];

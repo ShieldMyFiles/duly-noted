@@ -1,3 +1,6 @@
+/** !interfaces/ILine
+ * ILine
+ */
 export interface ILine {
     number: number;
     comment?: string;
@@ -5,6 +8,9 @@ export interface ILine {
     longComment?: boolean;
 }
 
+/** !interfaces/IFile
+ * IFile
+ */
 export interface IFile {
     name: string;
     lines: ILine[];

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="../..//css/default.css">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="../..//scripts/highlight.js"></script>
+        <style>
+            body {
+                padding-top: 50px;
+            }
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+            pre {
+                display: block;
+                padding: 0;
+                margin: 0 0 30px 0;
+                font-size: 11px;
+                line-height: 1.42857143;
+                color: #333;
+                word-break: break-all;
+                word-wrap: break-word;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="../..//index.html">Duly-Noted</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> <a name="markdowngenerator-main" id="markdowngenerator-main" ></a><a href="#markdowngenerator-main">🔗</a></p>
+<h1 id="markdown-generator">Markdown Generator</h1>
+<p> <a href="../.././authors.md.md#authors-chris">authors/chris</a>
+ <a href="../.././license.md.md#license">license</a></p>
+<p>This is a generator that takes the reference maps produced by
+ <a href="../.././ts/modules/referenceParser.ts.md#referenceparser-parse">ReferenceParser/parse</a> and turns them into nice markdown documentation files.</p>
+<p>Markdown will be saved to the <code>outputDir</code> set in <code>duly-noted.json</code></p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">
+import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from &quot;../classes/referenceCollection&quot;;
+import {parseLoc} from &quot;../modules/referenceParser&quot;;
+import {IConfig, IExternalReference} from &quot;../classes/IConfig&quot;;
+import {readFiles, files} from &quot;node-dir&quot;;
+import {IFile, ILine} from &quot;../classes/IFile&quot;;
+import XRegExp &#x3D; require(&quot;xregexp&quot;);
+import {writeFileSync, mkdirSync, accessSync, F_OK, unlinkSync, readFileSync} from &quot;fs&quot;;
+import mkdirp &#x3D; require(&quot;mkdirp&quot;);
+import * as path from &quot;path&quot;;
+import _ &#x3D; require(&quot;underscore&quot;);
+import lineReader &#x3D; require(&quot;line-reader&quot;);
+import Q &#x3D; require(&quot;q&quot;);
+
+import log4js &#x3D; require(&quot;log4js&quot;);
+let logger &#x3D; log4js.getLogger(&quot;duly-noted::MarkdownGenerator&quot;);
+
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p><a name="interfaces-imarkdowngenerator" id="interfaces-imarkdowngenerator" ></a><a href="#interfaces-imarkdowngenerator">🔗</a></p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export interface IMarkdownGenerator {
+    generate(): void;
+}
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> <a name="markdowngenerator-class" id="markdowngenerator-class" ></a><a href="#markdowngenerator-class">🔗</a></p>
+<h2 id="markdown-generator-class">Markdown Generator Class</h2>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">export class MarkdownGenerator implements IMarkdownGenerator {
+    outputDir: string;
+    indexFile: string;
+    externalReferences: IExternalReference[];
+    anchorRegExp: RegExp;
+    linkRegExp: RegExp;
+    referenceCollection: ReferenceCollection;
+    tags: ITag[] &#x3D; [];
+    readme: string;
+    projectName: string;
+    outputFiles: string[] &#x3D; [];
+    htmlAnchors: boolean;
+    gitHubHtmlAnchors: boolean;
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> <a name="markdowngenerator-constructor" id="markdowngenerator-constructor" ></a><a href="#markdowngenerator-constructor">🔗</a></p>
+<h3 id="creates-an-instance-of-markdowngenerator-class-ts-generators-markdowngenerator-ts-md-markdowngenerator-class-">Creates an instance of <a href="../.././ts/generators/markdownGenerator.ts.md#markdowngenerator-class">MarkdownGenerator/class</a></h3>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    constructor(config: IConfig, logLevel?: string) {
+        logger.setLevel(logLevel || &quot;DEBUG&quot;);
+        this.outputDir &#x3D; config.outputDir;
+        this.externalReferences &#x3D; JSON.parse(readFileSync(path.join(parseLoc, &quot;externalReferences.json&quot;)).toString());
+        this.anchorRegExp &#x3D; new RegExp(config.anchorRegExp);
+        this.linkRegExp &#x3D; new RegExp(config.linkRegExp);
+        this.referenceCollection &#x3D; new ReferenceCollection(&quot;&quot;).inflate(JSON.parse(readFileSync(path.join(parseLoc, &quot;internalReferences.json&quot;)).toString()));
+        this.tags &#x3D; this.referenceCollection.getAllTags();
+        this.readme &#x3D; config.readme;
+        this.projectName &#x3D; config.projectName;
+        this.indexFile &#x3D; config.indexFile;
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> For a discussion anchors in markdown see <a href="https://github.com/ShieldMyFiles/duly-noted/issues/::">issue/4</a> </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       
+        this.htmlAnchors &#x3D; config.markdownGeneratorOptions.htmlAnchors;
+        this.gitHubHtmlAnchors &#x3D; config.markdownGeneratorOptions.gitHubHtmlAnchors;
+    }
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> <a name="markdowngenerator-generate" id="markdowngenerator-generate" ></a><a href="#markdowngenerator-generate">🔗</a></p>
+<h2 id="generate-markdown-docs">Generate Markdown Docs</h2>
+<p>Creates Markdown docs for a set of file maps and reference maps set in <a href="../.././ts/generators/markdownGenerator.ts.md#markdowngenerator-constructor">MarkdownGenerator/constructor</a> .</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    public generate(): Q.IPromise&lt;{}&gt; {
+        return Q.Promise((resolve, reject) &#x3D;&gt; {
+            logger.info(&quot;Generating Markdown Docs.&quot;);
+            let that &#x3D; this;
+            this.outputFiles &#x3D; [];
+            readFiles(parseLoc, {match: /.json$/, exclude: /internalReferences.json|externalReferences.json/, recursive: true}, (err, content, next) &#x3D;&gt; {
+                that.proccessFile(err, content, next, that.outputDir);
+            }, (err, files) &#x3D;&gt; {
+                let readme &#x3D; &quot;&quot;;
+                let i &#x3D; 1;
+
+                if (that.readme !&#x3D;&#x3D; null) {
+                    lineReader.eachLine(that.readme, (line, last) &#x3D;&gt; {
+                        let newLine &#x3D; line;
+                        newLine &#x3D; that.replaceLinks(newLine, that.readme, i);
+                        readme +&#x3D;  &quot;\n&quot; + newLine;
+                        i++;
+                    }, () &#x3D;&gt; {
+                        that.generateIndexPage(readme);
+                        resolve(null);
+                    });
+                } else {
+                    that.generateIndexPage(&quot;&quot;);
+                    resolve(null);
+                }
+            });
+        });
+    }
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> <a name="markdowngenerator-processfiles" id="markdowngenerator-processfiles" ></a><a href="#markdowngenerator-processfiles">🔗</a></p>
+<h2 id="process-files">Process Files</h2>
+<p>Processes the file map for a file, making output decisions based on 
+code, comment, long comment </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
+        let file: IFile &#x3D; JSON.parse(content);
+        let that &#x3D; this;
+        logger.debug(&quot;Processing &quot; + file.name);
+
+        if (err) {
+            logger.error(err.message);
+        } else {
+            let file: IFile &#x3D; JSON.parse(content);
+            let output: string &#x3D; &quot;&quot;;
+            let inCodeBlock &#x3D; false;
+
+            for (let i &#x3D; 0; i &lt; file.lines.length; i++) {
+                if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; &quot;&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
+                    file.lines[i].comment &#x3D; this.replaceAnchors(file.lines[i].comment, file.name, i);
+                    file.lines[i].comment &#x3D; this.replaceLinks(file.lines[i].comment, file.name, i);
+                }
+            }
+
+            for (let i &#x3D; 0; i &lt; file.lines.length; i++) {
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Comment</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">               
+                if (typeof(file.lines[i].comment) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].comment !&#x3D;&#x3D; null) {
+                    if (inCodeBlock) {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Close the current block of code. </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">                        output +&#x3D; &quot;\n&quot; + &quot;&#x60;&#x60;&#x60;&quot; ;
+                        inCodeBlock &#x3D; false;
+                    }
+
+                    output +&#x3D; &quot;\n&quot; + file.lines[i].comment;
+                }
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Code</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">               
+                if (typeof(file.lines[i].code) &#x3D;&#x3D;&#x3D; &quot;string&quot; &amp;&amp; file.lines[i].code !&#x3D;&#x3D; null) {
+                    if (!inCodeBlock) {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Open new code block. </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">                        output +&#x3D; &quot;\n&quot; + &quot;&#x60;&#x60;&#x60;&quot; + file.type;
+                        inCodeBlock &#x3D; true;
+                    }
+                    output +&#x3D; &quot;\n&quot; + file.lines[i].code;
+                }
+            }
+
+            if (inCodeBlock) {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Close the current block of code. </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">                output +&#x3D; &quot;\n&quot; + &quot;&#x60;&#x60;&#x60;&quot;;
+                inCodeBlock &#x3D; false;
+            }
+
+            let filePathArray &#x3D; path.join(outputDir, file.name + &quot;.md&quot;).split(&quot;/&quot;);
+            filePathArray.pop();
+            let filePath &#x3D; filePathArray.join(&quot;/&quot;);
+
+            mkdirp(filePath, function (err) {
+                if (err) {
+                    logger.fatal(err.message);
+                }
+                else {
+                    let fileName &#x3D; path.join(outputDir, file.name + &quot;.md&quot;);
+                    that.outputFiles.push(fileName);
+                    logger.debug(&quot;Saving output for &quot; + file.type + &quot; file &quot; + file.name + &quot; as &quot; + fileName);
+                    writeFileSync(fileName, output, { flag: &quot;w&quot; });
+                }
+            });
+
+            next();
+        }
+    }
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> <a name="markdowngenerator-replaceanchors" id="markdowngenerator-replaceanchors" ></a><a href="#markdowngenerator-replaceanchors">🔗</a></p>
+<h2 id="replace-anchors">Replace Anchors</h2>
+<p>Processes a comment line, replacing anchors with markdown anchor link tags</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    replaceAnchors(comment: string,  fileName: string, line: number, position?: number) {
+        let pos &#x3D; position || 0;
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Look at the line for anchors - replace them with links. </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       
+        let match &#x3D; XRegExp.exec(comment, this.anchorRegExp, pos, false);
+
+        if (!match) {
+            return comment;
+        } else {
+
+            let anchor &#x3D; match[1].replace(&quot;/&quot;, &quot;-&quot;).toLowerCase();
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>Markdown doesn&#39;t natively support acnhors, but you can make them work 
+with simple html. In GitHub, however, anchors are prefixed with &#39;user-content&#39;
+For a discussion anchors in markdown see <a href="https://github.com/ShieldMyFiles/duly-noted/issues/::">issue/4</a> </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">            if (this.htmlAnchors || this.gitHubHtmlAnchors) {
+                let replacementText &#x3D; &#x27;&lt;a name&#x3D;&quot;&#x27; + anchor + &#x27;&quot; id&#x3D;&quot;&#x27; + anchor + &#x27;&quot; &gt;&lt;/a&gt;&#x27;;
+
+                if (this.gitHubHtmlAnchors) {
+                    replacementText +&#x3D; &quot;[🔗](#user-content-&quot; + anchor + &quot;)&quot; + match[1];
+                } else {
+                    replacementText +&#x3D; &quot;[🔗](#&quot; + anchor + &quot;)&quot; + match[1];
+                }
+
+                comment &#x3D; comment.replace(match[0], replacementText);
+                return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
+            }
+        }
+    }
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> <a name="markdowngenerator-replacelinks" id="markdowngenerator-replacelinks" ></a><a href="#markdowngenerator-replacelinks">🔗</a></p>
+<h2 id="replace-links">Replace Links</h2>
+<p>Processes a comment line, replacing links with markdown links. 
+This function calls itself recursively until all links are replaced.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    replaceLinks(comment: string, fileName: string, line: number, position?: number) {
+        let pos &#x3D; position || 0;
+
+        let linkPrefix &#x3D; this.getLinkPrefix(fileName);
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Look at the line for anchors - replace them with links. </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">       
+        let match &#x3D; XRegExp.exec(comment, this.linkRegExp, pos, false);
+
+        if (!match) {
+            return comment;
+        } else {
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Look external link.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">           
+            let tagArray &#x3D; match[1].split(&quot;/&quot;);
+            let externalTag &#x3D;  _.findWhere(this.externalReferences, {anchor: tagArray[0]});
+            if (externalTag) {
+                logger.debug(&quot;found external link: &quot; + match[1]);
+                let anchor &#x3D; match[1].replace(&quot;/&quot;, &quot;-&quot;).toLowerCase();
+                comment &#x3D; comment.replace(match[0], &quot; [&quot; + match[1] + &quot;](&quot; + externalTag.path + &quot;) &quot;);
+                return this.replaceLinks(comment, fileName, line, pos + match[0].length);
+            }
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Look for internal link.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">           
+            let internalTag &#x3D;  _.findWhere(this.tags, {anchor: match[1]});
+            if (!internalTag) {</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> If we can&#39;t match this link, then let&#39;s just stop processing this line and warn the user.</p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">               
+                logger.warn(&quot;link: &quot; + match[1] + &quot; in &quot; + fileName + &quot;:&quot; + line + &quot;:&quot; + pos + &quot; does not have a cooresponding anchor, so link cannot be created.&quot;);
+                return comment;
+            } else {
+                logger.debug(&quot;found internal link: &quot; + match[1] + &quot; &quot; + internalTag.path);
+                let anchor &#x3D; match[1].replace(&quot;/&quot;, &quot;-&quot;).toLowerCase();
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Make GitHub-hosted Markdown adjustment. See <a href="https://github.com/ShieldMyFiles/duly-noted/issues/::">issue/4</a> </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">               
+                if (this.gitHubHtmlAnchors) {
+                    comment &#x3D; comment.replace(match[0], &quot; [&quot; + match[1] + &quot;](&quot; + linkPrefix + internalTag.path + &quot;.md#user-content-&quot; + anchor + &quot;)&quot;);
+                } else {
+                    comment &#x3D; comment.replace(match[0], &quot; [&quot; + match[1] + &quot;](&quot; + linkPrefix + internalTag.path + &quot;.md#&quot; + anchor + &quot;)&quot;);
+                }
+            }
+            return this.replaceLinks(comment, fileName, line, pos + match[0].length);
+        }
+    }
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> <a name="markdowngenerator-generateindexpage" id="markdowngenerator-generateindexpage" ></a><a href="#markdowngenerator-generateindexpage">🔗</a></p>
+<h2 id="generates-the-index-page-">Generates the &quot;Index Page&quot;</h2>
+<p>This generates the index page, listing all the link collections, 
+and sucks in the user&#39;s defined README. </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    generateIndexPage(readmeText?): void {
+        logger.info(&quot;generating Duly Noted Index file.&quot;);
+        let that &#x3D; this;
+
+        let outputMap &#x3D; {
+            project: this.projectName,
+            collections: [],
+            files: this.outputFiles,
+            readme: readmeText
+        };
+
+        let collections &#x3D; that.referenceCollection.getTagsByCollection();
+
+        for (let i &#x3D; 0; i &lt; collections.length; i++) {
+            let anchors &#x3D; _.clone(collections[i].anchors);
+            let name &#x3D; collections[i].name.split(&quot;/&quot;);
+            name.shift();
+            name.shift();
+            name &#x3D; name.join(&quot;/&quot;);
+
+            for (let x &#x3D; 0; x &lt; anchors.length; x++) {
+                let anchor &#x3D; anchors[x].linkStub.replace(&quot;/&quot;, &quot;-&quot;).toLowerCase();
+
+                anchors[x].path &#x3D; anchors[x].path + &quot;.md#&quot;;
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> Adjustment for gitHub anchor links. See <a href="https://github.com/ShieldMyFiles/duly-noted/issues/::">issue/4</a> </p>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">               
+                if (this.gitHubHtmlAnchors) {
+                    anchors[x].path +&#x3D; &quot;user-content-&quot;;
+                }
+
+                if (name !&#x3D;&#x3D; &quot;&quot;) {
+                    anchors[x].path +&#x3D; name.replace(&quot;/&quot;, &quot;-&quot;).toLowerCase() + &quot;-&quot;;
+                }
+
+                anchors[x].path +&#x3D; anchor;
+
+            }
+
+            outputMap.collections.push({
+                name: name,
+                anchors: anchors
+            });
+        }
+
+        let md &#x3D; &quot;# &quot; + this.projectName + &quot; documentation \n&quot;;
+
+        md +&#x3D; &quot;### Anchor Collections \n&quot;;
+        for (let i &#x3D; 0; i &lt; outputMap.collections.length; i++) {
+           md +&#x3D; &quot;\n#### &quot; + outputMap.collections[i].name + &quot; \n&quot;;
+
+           for (let x &#x3D; 0; x &lt; outputMap.collections[i].anchors.length; x++) {
+               md +&#x3D; &quot;* [&quot; + outputMap.collections[i].anchors[x].anchor + &quot;]&quot; + &quot;(&quot; + outputMap.collections[i].anchors[x].path + &quot;) \n&quot;;
+           }
+        }
+
+        md +&#x3D; &quot;\n------------------------------ \n&quot;;
+        md +&#x3D; &quot;\n### Documentation Files \n&quot;;
+
+        for (let i &#x3D; 0; i &lt; outputMap.files.length; i++) {
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p>This shifts off the root folder b/c our index file is inside the output folder, 
+not one level up. See <a href="https://github.com/ShieldMyFiles/duly-noted/issues/::">issue/5</a> </p>
+<blockquote>
+<p>EXAMPLE: 
+docs/myfile.ts.md is linked to as ./myfile.ts.md</p>
+</blockquote>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">            let path: any &#x3D; outputMap.files[i].split(&quot;/&quot;);
+            let name &#x3D; path;
+            path.shift();
+            path.unshift(&quot;.&quot;);
+            path &#x3D; path.join(&quot;/&quot;);
+            name.shift();
+            name &#x3D; name.join(&quot;/&quot;);
+
+            md +&#x3D; &quot;* [&quot; + name + &quot;](&quot; + path + &quot;) \n&quot;;
+        }
+        md +&#x3D; &quot;\n------------------------------ \n&quot;;
+
+        md +&#x3D; outputMap.readme;
+
+        writeFileSync(path.join(that.outputDir, that.indexFile), md, { flag: &quot;w&quot; });
+    }
+
+</code>
+                        </pre>
+                    </div>
+            </div>
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <p> <a name="markdowngenerator-getlinkprefix" id="markdowngenerator-getlinkprefix" ></a><a href="#markdowngenerator-getlinkprefix">🔗</a>
+Generate a link Prefix from a fileName</p>
+<blockquote>
+<p>NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.</p>
+</blockquote>
+
+                    </div>
+
+            </div>
+            <div class="row">    
+            
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <pre>
+                            <code class="typescript">    getLinkPrefix(fileName: string): string {
+        let fileNameAsArray &#x3D; fileName.split(&quot;/&quot;);
+        let linkPrefix &#x3D; &quot;&quot;;
+        for (let i &#x3D; 0; i &lt; fileNameAsArray.length - 2; i++) {
+            linkPrefix +&#x3D; &quot;../&quot;;
+        }
+
+        return linkPrefix;
+    }
+}
+</code>
+                        </pre>
+                    </div>
+            </div>
+        <script type="text/javascript">
+            (function(){
+                console.log("loaded");
+                hljs.configure({
+                    tabReplace: '  '
+                });
+                hljs.initHighlighting();
+            })();
+        </script>
+    </body>
+</html>

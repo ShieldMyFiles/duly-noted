@@ -5,7 +5,10 @@
  [license](../.././license.md.md#user-content-license)
 
 This code parse files, build maps of each the code file, 
-as well as collections of internal and external references.
+as well as collections of internal and external references. 
+Examples below:
+ * Example Code Map: [ReferenceParser/example-output/code-map](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-example-output/code-map)
+ * Example Reference Map: [ReferenceParser/example-output/reference-collection](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-example-output/reference-collection)
 
 These files are typically deleted at the end of the [Index/run](../.././ts/index.ts.md#user-content-index-run) 
 process, however, you can leave them by setting `leaveJSONFiles = true`
@@ -13,79 +16,6 @@ in your 'duly-noted.json' file.
 
 These files are ouput at [ReferenceParser/constants/parseLoc](../.././ts/modules/referenceParser.ts.md#user-content-referenceparser-constants/parseloc) .
  
-### Example output JSON file for references
-```json
- {
-  "id": "duly-noted",
-  "anchors": [
-       {
-           "id": "license",
-           "line": 1,
-           "file": "./license.md"
-       },
-       ...
-   ],
-   "subcollections": [
-       {
-           "id": "Index",
-           "anchors": [
-               {
-                   "id": "main",
-                   "line": 0,
-                   "file": "./ts/index.ts"
-               },
-               {
-                   "id": "run",
-                   "line": 21,
-                   "file": "./ts/index.ts"
-               },
-               {
-                   "id": "getFiles",
-                   "line": 162,
-                   "file": "./ts/index.ts"
-               },
-               {
-                   "id": "deleteDir",
-                   "line": 175,
-                   "file": "./ts/index.ts"
-               }
-           ],
-           "subcollections": []
-       },
-       ...
-   }
-```
-
-## Example Output JSON map for code file.
-```json
-{
-   "name": "./ts/index.ts",
-   "lines": [
-       ...
-       {
-           "number": 5,
-           "longComment": true,
-           "comment": "This is the entry file to Duly Noted, "
-       },
-       {
-           "number": 6,
-           "longComment": true,
-           "comment": "it contains function that launches from the Command Line"
-       },
-       {
-           "number": 7,
-           "longComment": true,
-           "comment": ""
-       },
-       {
-           "number": 8,
-           "code": "import {IConfig} from \"./classes/IConfig\";"
-       },
-       ...
-   ]
-}
-
-```
 
 ```typescript
 
@@ -303,11 +233,7 @@ Parse a file to a file map.
                 longCommentCloseRegExp = new RegExp(that.commentPatterns["default"]["longCommentCloseRegExp"]);
             }
 
-```
- Line numbering traditionally starts at 1 (not 0)
-```typescript
-           
-            let lineNumber = 1;
+            let lineNumber = 0;
 ```
  Read each line of the file.
 ```typescript
@@ -501,4 +427,80 @@ for the entire project.
         });
     };
 }
+
+```
+ <a name="referenceparser-example-output/reference-collection" id="referenceparser-example-output/reference-collection" ></a>[🔗](#user-content-referenceparser-example-output/reference-collection)ReferenceParser/example-output/reference-collection
+### Example output JSON file for references
+```json
+ {
+  "id": "duly-noted",
+  "anchors": [
+       {
+           "id": "license",
+           "line": 1,
+           "file": "./license.md"
+       },
+       ...
+   ],
+   "subcollections": [
+       {
+           "id": "Index",
+           "anchors": [
+               {
+                   "id": "main",
+                   "line": 0,
+                   "file": "./ts/index.ts"
+               },
+               {
+                   "id": "run",
+                   "line": 21,
+                   "file": "./ts/index.ts"
+               },
+               {
+                   "id": "getFiles",
+                   "line": 162,
+                   "file": "./ts/index.ts"
+               },
+               {
+                   "id": "deleteDir",
+                   "line": 175,
+                   "file": "./ts/index.ts"
+               }
+           ],
+           "subcollections": []
+       },
+       ...
+   }
+```
+
+<a name="referenceparser-example-output/code-map" id="referenceparser-example-output/code-map" ></a>[🔗](#user-content-referenceparser-example-output/code-map)ReferenceParser/example-output/code-map
+## Example Output JSON map for code file.
+```json
+{
+   "name": "./ts/index.ts",
+   "lines": [
+       ...
+       {
+           "number": 5,
+           "longComment": true,
+           "comment": "This is the entry file to Duly Noted, "
+       },
+       {
+           "number": 6,
+           "longComment": true,
+           "comment": "it contains function that launches from the Command Line"
+       },
+       {
+           "number": 7,
+           "longComment": true,
+           "comment": ""
+       },
+       {
+           "number": 8,
+           "code": "import {IConfig} from \"./classes/IConfig\";"
+       },
+       ...
+   ]
+}
+
 ```

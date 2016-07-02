@@ -1,4 +1,9 @@
-// !IConfig
+/** !interfaces/IConfig
+ *
+ * # IConfig
+ * 
+ * This allows for strongly-typed representation of 'duly-noted.json' config file.
+ */
 export interface IConfig {
     projectName: string;
     files: string[];
@@ -20,6 +25,9 @@ export interface IConfig {
     };
 }
 
+/** !interfaces/IExternalReference
+ * IExternalReference
+ */
 export interface IExternalReference {
     anchorRegExp: string;
     path: string;

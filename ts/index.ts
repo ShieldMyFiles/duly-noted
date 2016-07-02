@@ -29,7 +29,7 @@ let logger = log4js.getLogger("duly-noted::run");
  *      2. User's Config File (`duly-noted.json`)
  *      3. Defaults values (see @issue/3)
  * 2. get the files and pass those to the @ReferenceParser/parse
- * 3. output the reponse to either/both @HtmlGenerator or @MarkdownGenerator
+ * 3. output the reponse to either/both @HtmlGenerator/generate or @MarkdownGenerator/generate
  */
 export function run() {
     logger.info("Welcome to Duly Noted.");
@@ -57,7 +57,8 @@ export function run() {
     logger.setLevel(logLevel);
 
 
-    //### Init - copies example duly-noted.json
+    //!Index/init
+    //### Init - copies example duly-noted.json from @default-duly-noted-json
     if (program.init) {
         try {
             let config = JSON.parse(readFileSync("duly-noted.json").toString());

@@ -32,7 +32,7 @@ Basic code flow is:
      2. User's Config File (`duly-noted.json`)
      3. Defaults values (see [issue/3](https://github.com/ShieldMyFiles/duly-noted/issues/::) )
 2. get the files and pass those to the [ReferenceParser/parse](.././ts/modules/referenceParser.ts.md#user-content-referenceparser-parse)
-3. output the reponse to either/both [HtmlGenerator](.././ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator) or [MarkdownGenerator](.././ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator)
+3. output the reponse to either/both [HtmlGenerator/generate](.././ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-generate) or [MarkdownGenerator/generate](.././ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-generate)
 
 ```typescript
 export function run() {
@@ -65,7 +65,11 @@ export function run() {
 
 
 ```
-### Init - copies example duly-noted.json
+<a name="index-init" id="index-init" ></a>[🔗](#user-content-index-init)Index/init
+```typescript
+   
+```
+### Init - copies example duly-noted.json from [default-duly-noted-json](.././bin/README.md.md#user-content-default-duly-noted-json)
 ```typescript
    
     if (program.init) {
@@ -166,7 +170,7 @@ and build the output documentation files.
                     let generatorActions = [];
 
 ```
- Trigger @HtmlGenerator/generate
+ Trigger [HtmlGenerator/generate](.././ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-generate)
 ```typescript
                    
                     if (_.contains(config.generators, "html")) {
@@ -174,7 +178,7 @@ and build the output documentation files.
                     }
 
 ```
- Trigger @MarkdownGenerator/generate
+ Trigger [MarkdownGenerator/generate](.././ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-generate)
 ```typescript
                    
                     if (_.contains(config.generators, "markdown")) {

@@ -1,7 +1,12 @@
-/**
- * # !MarkdownGenerator
+/** !MarkdownGenerator/main
+ * # Markdown Generator
  *  @authors/chris
  *  @license
+ * 
+ * This is a generator that takes the reference maps produced by
+ * @ReferenceParser/parse and turns them into nice markdown documentation files.
+ * 
+ * Markdown will be saved to the `outputDir` set in `duly-noted.json`
  */
 
 import {IReferenceCollection, IAnchor, ITag, ReferenceCollection} from "../classes/referenceCollection";
@@ -28,8 +33,8 @@ export interface IMarkdownGenerator {
     generate(): void;
 }
 
-/**
- * ## !classes/MarkdownGenerator
+/** !MarkdownGenerator/class
+ * ## Markdown Generator Class
  */
 export class MarkdownGenerator implements IMarkdownGenerator {
     outputDir: string;
@@ -45,8 +50,8 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     htmlAnchors: boolean;
     gitHubHtmlAnchors: boolean;
 
-    /**
-     * ### Creates an instance of @classes/MarkdownGenerator
+    /** !MarkdownGenerator/constructor
+     * ### Creates an instance of @MarkdownGenerator/class
      */
     constructor(config: IConfig, logLevel?: string) {
         logger.setLevel(logLevel || "DEBUG");
@@ -65,9 +70,9 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.gitHubHtmlAnchors = config.markdownGeneratorOptions.gitHubHtmlAnchors;
     }
 
-    /**
+    /** !MarkdownGenerator/generate
      * ## Generate Markdown Docs
-     * Creates Markdown docs for a set of file maps and reference maps set on @classes/MarkdownGenerator construction.
+     * Creates Markdown docs for a set of file maps and reference maps set in @MarkdownGenerator/constructor .
      */
     public generate(): Q.IPromise<{}> {
         return Q.Promise((resolve, reject) => {
@@ -98,10 +103,10 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         });
     }
 
-    /**
+    /** !MarkdownGenerator/processFiles
      * ## Process Files
      * Processes the file map for a file, making output decisions based on 
-     * code, comment, long comment presence 
+     * code, comment, long comment 
      */
     proccessFile(err: Error, content: string, next: Function, outputDir: string): void {
         let file: IFile = JSON.parse(content);
@@ -169,7 +174,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         }
     }
 
-    /**
+    /** !MarkdownGenerator/replaceAnchors
      * ## Replace Anchors
      * Processes a comment line, replacing anchors with markdown anchor link tags
      */
@@ -205,10 +210,10 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         }
     }
 
-    /**
+    /** !MarkdownGenerator/replaceLinks
      * ## Replace Links
-     * > Run this AFTER external link replacement to ensure warning accuracy
-     * Processes a comment line, replacing links with markdown links
+     * Processes a comment line, replacing links with markdown links. 
+     * This function calls itself recursively until all links are replaced.
      */
     replaceLinks(comment: string, fileName: string, line: number, position?: number) {
         let pos = position || 0;
@@ -235,15 +240,16 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             // Look for internal link.
             let internalTag =  _.findWhere(this.tags, {anchor: match[1]});
             if (!internalTag) {
+                // If we can't match this link, then let's just stop processing this line and warn the user.
                 logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a cooresponding anchor, so link cannot be created.");
                 return comment;
             } else {
                 logger.debug("found internal link: " + match[1] + " " + internalTag.path);
                 let anchor = match[1].replace("/", "-").toLowerCase();
 
+                // Make GitHub-hosted Markdown adjustment. See @issue/4
                 if (this.gitHubHtmlAnchors) {
                     comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#user-content-" + anchor + ")");
-
                 } else {
                     comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#" + anchor + ")");
                 }
@@ -252,10 +258,10 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         }
     }
 
-    /**
+    /** !MarkdownGenerator/generateIndexPage
      * ## Generates the "Index Page"
      * This generates the index page, listing all the link collections, 
-     * and sucks in the README. 
+     * and sucks in the user's defined README. 
      */
     generateIndexPage(readmeText?): void {
         logger.info("generating Duly Noted Index file.");
@@ -282,7 +288,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 
                 anchors[x].path = anchors[x].path + ".md#";
 
-                // Adjustment for gitHub anchor links. See @issue/6
+                // Adjustment for gitHub anchor links. See @issue/4
                 if (this.gitHubHtmlAnchors) {
                     anchors[x].path += "user-content-";
                 }
@@ -341,7 +347,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
     }
 
 
-    /**
+    /** !MarkdownGenerator/getLinkPrefix
      * Generate a link Prefix from a fileName
      * > NOTE: Without this code, links will not properly navigated to deeply nested pages with relative linking.
      */

@@ -11,7 +11,8 @@
         "./ts/helpers/helpers.ts",
         "./ts/helpers/fileType.ts",
         "./authors.md",
-        "./license.md"
+        "./license.md",
+        "./bin/README.md"
     ],
     "indexFile":"README.md",
     "outputDir": "./docs",

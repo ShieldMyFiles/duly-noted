@@ -1,5 +1,5 @@
 
-
+ <a name="referencecollection-main" id="referencecollection-main" ></a>[🔗](#user-content-referencecollection-main)ReferenceCollection/main
 
 
 
@@ -47,8 +47,8 @@ export interface ITag {
 }
 
 ```
-
-## <a name="classes-referencecollection" id="classes-referencecollection" ></a>[🔗](#user-content-classes-referencecollection)classes/ReferenceCollection
+ <a name="referencecollection-class" id="referencecollection-class" ></a>[🔗](#user-content-referencecollection-class)ReferenceCollection/class
+## Reference Collection Class
 
 ```typescript
 export class ReferenceCollection implements IReferenceCollection {
@@ -58,8 +58,8 @@ export class ReferenceCollection implements IReferenceCollection {
     logLevel: string;
 
 ```
-
-### Creates an instance of @ReferenceCollection
+ <a name="referencecollection-constructor" id="referencecollection-constructor" ></a>[🔗](#user-content-referencecollection-constructor)ReferenceCollection/constructor
+### Creates an instance of [ReferenceCollection/class](../.././ts/classes/referenceCollection.ts.md#user-content-referencecollection-class)
 
 ```typescript
     constructor(id: string, logLevel?: string) {
@@ -71,8 +71,9 @@ export class ReferenceCollection implements IReferenceCollection {
     }
 
 ```
-
-## Recursively inflate a reference collection in the form of [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection) from flat data (likely from JSON file)
+ <a name="referencecollection-inflate" id="referencecollection-inflate" ></a>[🔗](#user-content-referencecollection-inflate)ReferenceCollection/inflate
+## Inflate
+Recursively inflate a reference collection in the form of [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection) from flat data (likely from JSON file)
 
 ```typescript
     public inflate(collection: IReferenceCollection) {
@@ -85,8 +86,9 @@ export class ReferenceCollection implements IReferenceCollection {
     }
 
 ```
-
-## Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ianchor) to collection
+ <a name="referencecollection-addanchor" id="referencecollection-addanchor" ></a>[🔗](#user-content-referencecollection-addanchor)ReferenceCollection/addAnchor
+## Add Anchor
+Add an [interfaces/IAnchor](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ianchor) to collection
 
 ```typescript
     public addAnchor(anchor: IAnchor): void {
@@ -99,20 +101,21 @@ export class ReferenceCollection implements IReferenceCollection {
     }
 
 ```
-
-## Add a subcollection to this collection in the form of an [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
+ <a name="referencecollection-addsubcollection" id="referencecollection-addsubcollection" ></a>[🔗](#user-content-referencecollection-addsubcollection)ReferenceCollection/addSubcollection
+## Add Subcollection
+Add a subcollection to this collection in the form of an [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
 
 ```typescript
     public addSubcollection(collection: IReferenceCollection): void {
         let existingAnchor = findWhere(this.anchors, {id: collection.id});
         if (existingAnchor) {
-            logger.error("Cannot add collection '" + collection.id + "' because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
+            logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
             return;
         }
 
         let existingCollection = findWhere(this.anchors, {id: collection.id});
         if (existingCollection) {
-            logger.error("Cannot add collection '" + collection.id + "' because it was already defined as a subcollection of '" + collection.id +  "'");
+            logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as a subcollection of '" + collection.id +  "'");
             return;
         }
 
@@ -120,9 +123,11 @@ export class ReferenceCollection implements IReferenceCollection {
     }
 
 ```
-
-## Add Anchor Tag to the appropriate subcollection
-Recursively skims the collection and subcollections to place anchor in the correct place.
+ <a name="referencecollection-addanchortag" id="referencecollection-addanchortag" ></a>[🔗](#user-content-referencecollection-addanchortag)ReferenceCollection/addAnchorTag
+## Add Anchor Tag
+Add Anchor Tag to the appropriate subcollection by
+recursively skiming the collection and subcollections 
+to place anchor in the correct place.
 
 ```typescript
     public addAnchorTag(anchorTag: string[], fileName: string, lineNumber: number): void {
@@ -157,9 +162,10 @@ Recursively skims the collection and subcollections to place anchor in the corre
     }
 
 ```
-
-## Get All the tags in a collection and its subcollections
-Recursively cull all of the tags.
+ <a name="referencecollection-getalltags" id="referencecollection-getalltags" ></a>[🔗](#user-content-referencecollection-getalltags)ReferenceCollection/getAllTags
+## Get All Tags
+Get All the tags in a collection and its subcollections
+by recursively culling all of the tags.
 
 ```typescript
     public getAllTags(parentPath?: string, depth?: number): ITag[] {
@@ -211,8 +217,9 @@ Recursively cull all of the tags.
     }
 
 ```
-
-## Get a list of anchors sorted by an array of all the collections.
+ <a name="referencecollection-gettagsbycollection" id="referencecollection-gettagsbycollection" ></a>[🔗](#user-content-referencecollection-gettagsbycollection)ReferenceCollection/getTagsByCollection
+## Get Tags By Collection
+Get a list of anchors sorted by an array of all the collections.
 
 ```typescript
     public getTagsByCollection (allCollections?, parentPath?) {

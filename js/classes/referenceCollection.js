@@ -28,12 +28,12 @@ var ReferenceCollection = (function () {
     ReferenceCollection.prototype.addSubcollection = function (collection) {
         var existingAnchor = underscore_1.findWhere(this.anchors, { id: collection.id });
         if (existingAnchor) {
-            logger.error("Cannot add collection '" + collection.id + "' because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
+            logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
             return;
         }
         var existingCollection = underscore_1.findWhere(this.anchors, { id: collection.id });
         if (existingCollection) {
-            logger.error("Cannot add collection '" + collection.id + "' because it was already defined as a subcollection of '" + collection.id + "'");
+            logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as a subcollection of '" + collection.id + "'");
             return;
         }
         this.subcollections.push(collection);

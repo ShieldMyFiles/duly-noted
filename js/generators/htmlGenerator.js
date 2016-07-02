@@ -27,8 +27,8 @@ var HtmlGenerator = (function () {
         var projectPathArray = __dirname.split("/");
         projectPathArray.pop();
         this.projectPath = projectPathArray.join("/");
-        this.template = handlebars.compile(fs_1.readFileSync(path.join(this.projectPath, "templates", "stacked.html")).toString());
-        this.indexTemplate = handlebars.compile(fs_1.readFileSync(path.join(this.projectPath, "templates", "index.html")).toString());
+        this.template = handlebars.compile(fs_1.readFileSync(path.join(__dirname, "../../bin/templates", "stacked.html")).toString());
+        this.indexTemplate = handlebars.compile(fs_1.readFileSync(path.join(__dirname, "../../bin/templates", "index.html")).toString());
         this.projectName = config.projectName;
         this.readme = config.readme;
         handlebars.registerHelper("md", this.markdownHelper);
@@ -107,7 +107,7 @@ var HtmlGenerator = (function () {
         else {
             var anchor = match[1].replace("/", "-").toLowerCase();
             var replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
-            replacementText += "[🔗](#" + anchor + ")" + match[1];
+            replacementText += "[🔗](#" + anchor + ")";
             comment = comment.replace(match[0], replacementText);
             return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
         }

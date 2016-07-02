@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="..//css/default.css">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="..//scripts/highlight.js"></script>
+        <style>
+            body {
+                padding-top: 50px;
+            }
+            .starter-template {
+                padding: 40px 15px;
+                text-align: center;
+            }
+            pre {
+                display: block;
+                padding: 0;
+                margin: 0 0 30px 0;
+                font-size: 11px;
+                line-height: 1.42857143;
+                color: #333;
+                word-break: break-all;
+                word-wrap: break-word;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="..//index.html">Duly-Noted</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row">    
+            
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <h1 id="notes-for-the-bin-folder">Notes for the <code>bin</code> folder</h1>
+<p><a name="comment-patterns" id="comment-patterns" ></a><a href="#comment-patterns">🔗</a></p>
+<h2 id="comment-patterns-json">comment-patterns.json</h2>
+<p>This file contains RegEx patterns used to identify comment patterns for 
+the various supported languages.</p>
+<pre><code class="lang-json">...
+    &quot;typescript&quot;: {
+        &quot;commentRegExp&quot;: &quot;\\/\\/(.*)&quot;,
+        &quot;longCommentOpenRegExp&quot;: &quot;\\/\\*\\*(.*)&quot;,
+        &quot;longCommentLineRegExp&quot;: &quot;\\* (.*)&quot;,
+        &quot;longCommentCloseRegExp&quot;: &quot;\\*\/&quot;
+    }
+...
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>commentRegExp</td>
+<td>RegEx to identify the beginning of a standard (non-long-form) comment.</td>
+</tr>
+<tr>
+<td>longCommentOpenRegExp</td>
+<td>RegEx to identify the beginning of a long-form comment.</td>
+</tr>
+<tr>
+<td>longCommentLineRegExp</td>
+<td>RegEx for a continuation char used in long-form comments.</td>
+</tr>
+<tr>
+<td>longCommentCloseRegExp</td>
+<td>RegEx to identify the end of a long-form comment.</td>
+</tr>
+</tbody>
+</table>
+<p> For Example:
+ `
+     &#39;//&#39; &lt;==  commentRegExp</p>
+<pre><code> &#39;/**&#39; &lt;== longCommentOpenRegExp
+
+ &#39; * &#39; &lt;== longCommentLineRegExp
+
+ &#39; */&#39; &lt;== longCommentCloseRegExp
+</code></pre><p>`</p>
+<p><a name="defaults" id="defaults" ></a><a href="#defaults">🔗</a></p>
+<h2 id="defaults-json">defaults.json</h2>
+<p>This file contains the default values for settings.
+When any new settings is added a default should be set here
+so that those folks we are upgrading don&#39;t face breaking changes. See <a href="https://github.com/ShieldMyFiles/duly-noted/issues/::">issue/3</a> </p>
+<p>Please remember to document all settings in the main README.md.</p>
+<p><a name="default-duly-noted-json" id="default-duly-noted-json" ></a><a href="#default-duly-noted-json">🔗</a></p>
+<h2 id="default-duly-noted-json">default.duly-noted.json</h2>
+<p>This is the default duly noted json file that is copied when the user 
+runs <a href=".././ts/index.ts.md#index-init">Index/init</a></p>
+<p><a name="duly-noted-entry" id="duly-noted-entry" ></a><a href="#duly-noted-entry">🔗</a></p>
+<h2 id="duly-noted-js">duly-noted.js</h2>
+<p>This is the entry file for running the NPM package from the command line. 
+See <a href="http://blog.npmjs.org/post/118810260230/building-a-simple-command-line-tool-with-npm">NPM Blog</a> for some more info. 
+Points all actions to <a href=".././ts/index.ts.md#index-run">Index/run</a></p>
+<h2 id="-templates">/Templates</h2>
+<p>Temlates used by the <a href=".././ts/generators/htmlGenerator.ts.md#htmlgenerator-generate">HtmlGenerator/generate</a></p>
+
+                    </div>
+
+            </div>
+        <script type="text/javascript">
+            (function(){
+                console.log("loaded");
+                hljs.configure({
+                    tabReplace: '  '
+                });
+                hljs.initHighlighting();
+            })();
+        </script>
+    </body>
+</html>

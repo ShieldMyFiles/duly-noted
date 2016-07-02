@@ -1,7 +1,11 @@
 
- <a name="iconfig" id="iconfig" ></a>[🔗](#user-content-iconfig)IConfig
-```typescript
+ <a name="interfaces-iconfig" id="interfaces-iconfig" ></a>[🔗](#user-content-interfaces-iconfig)interfaces/IConfig
 
+# IConfig
+
+This allows for strongly-typed representation of 'duly-noted.json' config file.
+
+```typescript
 export interface IConfig {
     projectName: string;
     files: string[];
@@ -26,6 +30,11 @@ export interface IConfig {
     };
 }
 
+```
+ <a name="interfaces-iexternalreference" id="interfaces-iexternalreference" ></a>[🔗](#user-content-interfaces-iexternalreference)interfaces/IExternalReference
+IExternalReference
+
+```typescript
 export interface IExternalReference {
     anchorRegExp: string;
     path: string;
