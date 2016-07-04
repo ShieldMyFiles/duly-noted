@@ -112,15 +112,18 @@ export function run() {
     }
 
     // MarkdownGenerator Settings
-    if (!config.markdownGeneratorOptions) {
+    if (typeof config.markdownGeneratorOptions === "undefined") {
+        logger.debug("loading default markdownGeneratorOptions");
         config.markdownGeneratorOptions = defaults.markdownGeneratorOptions;
     }
 
-    if (!config.markdownGeneratorOptions.gitHubHtmlAnchors) {
+    if (typeof config.markdownGeneratorOptions.gitHubHtmlAnchors === "undefined") {
+        logger.debug("loading default markdownGeneratorOptions.gitHubHtmlAnchors");
         config.markdownGeneratorOptions.gitHubHtmlAnchors = defaults.markdownGeneratorOptions.gitHubHtmlAnchors;
     }
 
-    if (!config.markdownGeneratorOptions.htmlAnchors) {
+    if (typeof config.markdownGeneratorOptions.htmlAnchors === "undefined") {
+        logger.debug("loading default htmlAnchors");
         config.markdownGeneratorOptions.htmlAnchors = defaults.markdownGeneratorOptions.htmlAnchors;
     }
 
