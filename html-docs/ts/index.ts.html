@@ -326,15 +326,18 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">   
-    if (!config.markdownGeneratorOptions) {
+    if (typeof config.markdownGeneratorOptions &#x3D;&#x3D;&#x3D; &quot;undefined&quot;) {
+        logger.debug(&quot;loading default markdownGeneratorOptions&quot;);
         config.markdownGeneratorOptions &#x3D; defaults.markdownGeneratorOptions;
     }
 
-    if (!config.markdownGeneratorOptions.gitHubHtmlAnchors) {
+    if (typeof config.markdownGeneratorOptions.gitHubHtmlAnchors &#x3D;&#x3D;&#x3D; &quot;undefined&quot;) {
+        logger.debug(&quot;loading default markdownGeneratorOptions.gitHubHtmlAnchors&quot;);
         config.markdownGeneratorOptions.gitHubHtmlAnchors &#x3D; defaults.markdownGeneratorOptions.gitHubHtmlAnchors;
     }
 
-    if (!config.markdownGeneratorOptions.htmlAnchors) {
+    if (typeof config.markdownGeneratorOptions.htmlAnchors &#x3D;&#x3D;&#x3D; &quot;undefined&quot;) {
+        logger.debug(&quot;loading default htmlAnchors&quot;);
         config.markdownGeneratorOptions.htmlAnchors &#x3D; defaults.markdownGeneratorOptions.htmlAnchors;
     }
 
