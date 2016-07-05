@@ -6,7 +6,7 @@
         "longCommentCloseRegExp": "\\*\/"
     },
     "typescript": {
-        "commentRegExp": "^(?!\\/{3})(?:\\/{2})(.*)",
+        "commentRegExp": "^\\s*(?!\\/{3})(?:\\/{2})(.*)",
         "longCommentOpenRegExp": "\\/\\*\\*(.*)",
         "longCommentLineRegExp": "\\* (.*)",
         "longCommentCloseRegExp": "\\*\/"

@@ -55,7 +55,7 @@ export function run() {
 ```
 ### Set verbose mode
 ```typescript
-   
+
     if (program.verbose) {
         logLevel = "DEUBG";
     } else {
@@ -67,11 +67,11 @@ export function run() {
 ```
 <a name="index-init" id="index-init" ></a>[🔗](#user-content-index-init)Index/init
 ```typescript
-   
+
 ```
 ### Init - copies example duly-noted.json from [default-duly-noted-json](.././bin/README.md.md#user-content-default-duly-noted-json)
 ```typescript
-   
+
     if (program.init) {
         try {
             let config = JSON.parse(readFileSync("duly-noted.json").toString());
@@ -91,7 +91,7 @@ export function run() {
 ```
 ### Load the config file, or advise init
 ```typescript
-   
+
     try {
         logger.info("Parsing config file.")
         config = JSON.parse(readFileSync(program.config).toString());
@@ -115,13 +115,13 @@ Settings are in order of precedence
 ```
  Set outputDir
 ```typescript
-   
+
     config.outputDir = program.outputDir || config.outputDir || defaults.outputDir;
 
 ```
  Set generator
 ```typescript
-   
+
     if (program.generator) {
         config.generators = [program.generator];
     } else {
@@ -131,7 +131,7 @@ Settings are in order of precedence
 ```
  Get file actions
 ```typescript
-   
+
     let getFiles: Q.IPromise<string[]>[] = [];
 
     for (let i = 0; i < config.files.length; i++) {
@@ -141,7 +141,7 @@ Settings are in order of precedence
 ```
  MarkdownGenerator Settings
 ```typescript
-   
+
     if (typeof config.markdownGeneratorOptions === "undefined") {
         logger.debug("loading default markdownGeneratorOptions");
         config.markdownGeneratorOptions = defaults.markdownGeneratorOptions;
@@ -162,7 +162,7 @@ Settings are in order of precedence
 ```
  Run [Index/getFiles](.././ts/index.ts.md#user-content-index-getfiles) on each glob, wait for all actions.
 ```typescript
-   
+
     Q.all(getFiles)
         .then((results) => {
             let files = _.flatten(results);
@@ -191,7 +191,7 @@ and build the output documentation files.
 ```
  Trigger [HtmlGenerator/generate](.././ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-generate)
 ```typescript
-                   
+
                     if (_.contains(config.generators, "html")) {
                         generatorActions.push(new HtmlGenerator(config, logLevel).generate());
                     }
@@ -199,7 +199,7 @@ and build the output documentation files.
 ```
  Trigger [MarkdownGenerator/generate](.././ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-generate)
 ```typescript
-                   
+
                     if (_.contains(config.generators, "markdown")) {
                         generatorActions.push(new MarkdownGenerator(config, logLevel).generate());
                     }
@@ -209,7 +209,7 @@ and build the output documentation files.
 ```
  Once all generators are done we can clean up JSON maps.
 ```typescript
-                           
+
                             if (!config.leaveJSONFiles) {
                                 logger.info("Cleaning up - Removing JSON parse files.");
                                 deleteDir(parseLoc);
@@ -220,7 +220,7 @@ and build the output documentation files.
 ```
  <a name="todo-report-errors" id="todo-report-errors" ></a>[🔗](#user-content-todo-report-errors)todo/report-errors An overall strategy is needed to identify and report errors.
 ```typescript
-                   
+
                     logger.error(err.message + err.stack);
                 });
         });

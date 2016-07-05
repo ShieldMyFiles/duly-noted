@@ -188,17 +188,14 @@ Processes a comment line, replacing anchors with markdown anchor link tags
 ```
  Look at the line for anchors - replace them with links. 
 ```typescript
-       
+
         let match = XRegExp.exec(comment, this.anchorRegExp, pos, false);
 
         if (!match) {
             return comment;
         } else {
 
-```
-g, "-").toLowerCase();
-```typescript
-            let anchor = match[1].replace(/
+            let anchor = match[1].replace(/\//g, "-").toLowerCase();
             let replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
             replacementText += "[🔗](#" + anchor + ")";
 
@@ -222,7 +219,7 @@ This function calls itself recursively until all links are replaced.
 ```
  Look at the line for anchors - replace them with links. 
 ```typescript
-       
+
         let match = XRegExp.exec(comment, this.linkRegExp, pos, false);
 
         if (!match) {
@@ -232,7 +229,7 @@ This function calls itself recursively until all links are replaced.
 ```
  Look external link.
 ```typescript
-           
+
             let tagArray = match[1].split("/");
             let externalTag =  _.clone(_.findWhere(this.externalReferences, {anchor: tagArray[0]}));
             if (externalTag) {
@@ -241,10 +238,7 @@ This function calls itself recursively until all links are replaced.
                 }
 
                 logger.debug("found external link: " + externalTag.path);
-```
-g, "-").toLowerCase();
-```typescript
-                let anchor = match[1].replace(/
+                let anchor = match[1].replace(/\//g, "-").toLowerCase();
                 comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");
                 return this.replaceLinks(comment, fileName, line, pos + match[0].length);
             }
@@ -252,17 +246,14 @@ g, "-").toLowerCase();
 ```
  Look for internal link.
 ```typescript
-           
+
             let internalTag =  _.findWhere(this.tags, {anchor: match[1]});
             if (!internalTag) {
                 logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a cooresponding anchor, so link cannot be created.");
                 return comment;
             } else {
                 logger.debug("found internal link: " + match[1] + " " + internalTag.path);
-```
-g, "-").toLowerCase();
-```typescript
-                let anchor = match[1].replace(/
+                let anchor = match[1].replace(/\//g, "-").toLowerCase();
                 comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#" + anchor + ")");
             }
             return this.replaceLinks(comment, fileName, line, pos + match[0].length);
@@ -290,7 +281,7 @@ and sucks in the user's defined README.
 ```
  collections
 ```typescript
-       
+
         let collections = that.referenceCollection.getTagsByCollection();
 
         for (let i = 0; i < collections.length; i++) {
@@ -301,16 +292,10 @@ and sucks in the user's defined README.
             name = name.join("/");
 
             for (let x = 0; x < anchors.length; x++) {
-```
-g, "-").toLowerCase();
-```typescript
-                let anchor = anchors[x].linkStub.replace(/
+                let anchor = anchors[x].linkStub.replace(/\//g, "-").toLowerCase();
                 anchors[x].path = anchors[x].path + ".html#";
                 if (name !== "") {
-```
-g, "-").toLowerCase() + "-";
-```typescript
-                    anchors[x].path += name.replace(/
+                    anchors[x].path += name.replace(/\//g, "-").toLowerCase() + "-";
                 }
 
                 anchors[x].path += anchor;
@@ -326,16 +311,13 @@ g, "-").toLowerCase() + "-";
 ```
  Files
 ```typescript
-           
+
             for (let i = 0; i < files.length; i++) {
                 let fileNameArray = files[i].split(".");
                 let extension = fileNameArray[fileNameArray.length - 1];
                 if (extension === "html") {
                     let pathArray: string[] = files[i].split("/");
-```
- shift the output dir off the file name.
-```typescript
-                    pathArray.shift();
+                    pathArray.shift(); // shift the output dir off the file name.
                     let path = pathArray.join("/");
                     outputMap.files.push({path: path});
                 }
@@ -368,7 +350,7 @@ Generate a link Prefix from a fileName
 ```
  ## Handlebars Template Helpers
 ```typescript
-   
+
 
 ```
  HtmlGenerator/markdownHelper

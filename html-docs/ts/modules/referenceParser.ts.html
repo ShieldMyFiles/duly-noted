@@ -253,7 +253,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">               
+                            <code class="typescript">
                 logger.debug(&quot;Saving out internalReferences.json &amp; externalReferences.json&quot;);
                 writeFileSync(path.join(parseLoc, &quot;internalReferences.json&quot;), JSON.stringify(that.rootCollection), { flag: &quot;w&quot; });
                 writeFileSync(path.join(parseLoc, &quot;externalReferences.json&quot;), JSON.stringify(that.externalReferences), { flag: &quot;w&quot; });
@@ -287,48 +287,16 @@ Location to store output JSON file and reference collection maps.</p>
             name: fileName,
             type: &quot;markdown&quot;,
             lines: []
-        };</code>
-                        </pre>
-                    </div>
-            </div>
-            <div class="row">    
-            
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> Line numbering traditionally starts at 1</p>
-
-                    </div>
-
-            </div>
-            <div class="row">    
-            
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <pre>
-                            <code class="typescript">        let lineNumber &#x3D; 0;
+        };
+        let lineNumber &#x3D; 0; // Line numbering traditionally starts at 1
         return Q.Promise((resolve, reject) &#x3D;&gt; {
             lineReader.eachLine(fileName, (line, last) &#x3D;&gt; {
                 let thisLine: ILine &#x3D; {
                     number: lineNumber
                 };
 
-                file.lines.push(thisLine);</code>
-                        </pre>
-                    </div>
-            </div>
-            <div class="row">    
-            
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> In Markdown all lines are considered comments</p>
-
-                    </div>
-
-            </div>
-            <div class="row">    
-            
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <pre>
-                            <code class="typescript">                file.lines[lineNumber].comment &#x3D; line;
+                file.lines.push(thisLine);
+                file.lines[lineNumber].comment &#x3D; line; // In Markdown all lines are considered comments
 
                 that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
                 .then(() &#x3D;&gt; {
@@ -401,7 +369,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">           
+                            <code class="typescript">
             if (that.commentPatterns[file.type]) {
                 logger.debug(&quot;Using comment patten for &quot; + file.type);
                 commentRegExp &#x3D; new RegExp(that.commentPatterns[file.type][&quot;commentRegExp&quot;]);
@@ -422,7 +390,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">               
+                            <code class="typescript">
                 if (that.commentPatterns[file.type][&quot;longCommentOpenRegExp&quot;]) longCommentOpenRegExp &#x3D; new RegExp(that.commentPatterns[file.type][&quot;longCommentOpenRegExp&quot;]);
                 else longCommentOpenRegExp &#x3D; undefined;
 </code>
@@ -442,7 +410,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">               
+                            <code class="typescript">
                 if (that.commentPatterns[file.type][&quot;longCommentLineRegExp&quot;]) longCommentLineRegExp &#x3D; new RegExp(that.commentPatterns[file.type][&quot;longCommentLineRegExp&quot;]);
                 else longCommentLineRegExp &#x3D; undefined;
 </code>
@@ -462,7 +430,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">               
+                            <code class="typescript">
                 if (that.commentPatterns[file.type][&quot;longCommentCloseRegExp&quot;]) longCommentCloseRegExp &#x3D; new RegExp(that.commentPatterns[file.type][&quot;longCommentCloseRegExp&quot;]);
                 else longCommentLineRegExp &#x3D; undefined;
             } else {
@@ -490,7 +458,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">           
+                            <code class="typescript">
             lineReader.eachLine(fileName, (line, last) &#x3D;&gt; {
 
                 let thisLine: ILine &#x3D; {
@@ -514,7 +482,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">               
+                            <code class="typescript">
                 let longCommentOpenMatch;
                 if (longCommentOpenRegExp) {
                     longCommentOpenMatch &#x3D; XRegExp.exec(line, longCommentOpenRegExp, 0, false);
@@ -543,7 +511,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">               
+                            <code class="typescript">
                 if (!insideLongComment) {
                     let match &#x3D; XRegExp.exec(line, commentRegExp, 0, false);
 </code>
@@ -563,7 +531,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                   
+                            <code class="typescript">
                     if (match) {
 
                         file.lines[lineNumber].comment &#x3D; match[1];
@@ -598,7 +566,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                   
+                            <code class="typescript">
                     } else {
                         file.lines[lineNumber].code &#x3D; line;
                         if (last) {
@@ -628,7 +596,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">               
+                            <code class="typescript">
                 } else {
 
                     file.lines[lineNumber].longComment &#x3D; true;
@@ -639,24 +607,8 @@ Location to store output JSON file and reference collection maps.</p>
                         let match &#x3D; XRegExp.exec(line, longCommentLineRegExp, 0);
                         if (match &amp;&amp; match[1]) {
                             file.lines[lineNumber].comment &#x3D; match[1];
-                        } else {</code>
-                        </pre>
-                    </div>
-            </div>
-            <div class="row">    
-            
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <p> Blank Line inside long comment...</p>
-
-                    </div>
-
-            </div>
-            <div class="row">    
-            
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <pre>
-                            <code class="typescript">                            file.lines[lineNumber].comment &#x3D; &quot;&quot;;
+                        } else {
+                            file.lines[lineNumber].comment &#x3D; &quot;&quot;; // Blank Line inside long comment...
                         }
                     }
 </code>
@@ -676,7 +628,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                   
+                            <code class="typescript">
                     if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
                         file.lines[lineNumber].comment &#x3D; file.lines[lineNumber].comment.replace(longCommentCloseRegExp, &quot;&quot;);
                         insideLongComment &#x3D; false;
@@ -712,7 +664,7 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                   
+                            <code class="typescript">
                     if (last) {
                         that.writeOutFile(file)
                         .then(() &#x3D;&gt; {

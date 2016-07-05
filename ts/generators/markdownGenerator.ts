@@ -178,11 +178,12 @@ export class MarkdownGenerator implements IMarkdownGenerator {
      * ## Replace Anchors
      * Processes a comment line, replacing anchors with markdown anchor link tags
      */
-    replaceAnchors(comment: string,  fileName: string, line: number, position?: number) {
+    replaceAnchors(comment: string,  fileName: string, line: number, position?: number): string {
         let pos = position || 0;
 
         // Look at the line for anchors - replace them with links. 
         let match = XRegExp.exec(comment, this.anchorRegExp, pos, false);
+        let replacementText;
 
         if (!match) {
             return comment;
@@ -196,17 +197,19 @@ export class MarkdownGenerator implements IMarkdownGenerator {
              * For a discussion anchors in markdown see @issue/4
              */
             if (this.htmlAnchors || this.gitHubHtmlAnchors) {
-                let replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
+                replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
 
                 if (this.gitHubHtmlAnchors) {
                     replacementText += "[🔗](#user-content-" + anchor + ")" + match[1];
                 } else {
                     replacementText += "[🔗](#" + anchor + ")" + match[1];
                 }
-
-                comment = comment.replace(match[0], replacementText);
-                return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
+            } else {
+                replacementText = "";
             }
+
+            comment = comment.replace(match[0], replacementText);
+            return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
         }
     }
 

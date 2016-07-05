@@ -136,7 +136,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
+                            <code class="typescript">
     if (program.verbose) {
         logLevel &#x3D; &quot;DEUBG&quot;;
     } else {
@@ -161,7 +161,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   </code>
+                            <code class="typescript"></code>
                         </pre>
                     </div>
             </div>
@@ -178,7 +178,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
+                            <code class="typescript">
     if (program.init) {
         try {
             let config &#x3D; JSON.parse(readFileSync(&quot;duly-noted.json&quot;).toString());
@@ -211,7 +211,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
+                            <code class="typescript">
     try {
         logger.info(&quot;Parsing config file.&quot;)
         config &#x3D; JSON.parse(readFileSync(program.config).toString());
@@ -260,7 +260,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
+                            <code class="typescript">
     config.outputDir &#x3D; program.outputDir || config.outputDir || defaults.outputDir;
 </code>
                         </pre>
@@ -279,7 +279,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
+                            <code class="typescript">
     if (program.generator) {
         config.generators &#x3D; [program.generator];
     } else {
@@ -302,7 +302,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
+                            <code class="typescript">
     let getFiles: Q.IPromise&lt;string[]&gt;[] &#x3D; [];
 
     for (let i &#x3D; 0; i &lt; config.files.length; i++) {
@@ -325,7 +325,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
+                            <code class="typescript">
     if (typeof config.markdownGeneratorOptions &#x3D;&#x3D;&#x3D; &quot;undefined&quot;) {
         logger.debug(&quot;loading default markdownGeneratorOptions&quot;);
         config.markdownGeneratorOptions &#x3D; defaults.markdownGeneratorOptions;
@@ -359,7 +359,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">   
+                            <code class="typescript">
     Q.all(getFiles)
         .then((results) &#x3D;&gt; {
             let files &#x3D; _.flatten(results);
@@ -423,7 +423,7 @@ and build the output documentation files.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                   
+                            <code class="typescript">
                     if (_.contains(config.generators, &quot;html&quot;)) {
                         generatorActions.push(new HtmlGenerator(config, logLevel).generate());
                     }
@@ -444,7 +444,7 @@ and build the output documentation files.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                   
+                            <code class="typescript">
                     if (_.contains(config.generators, &quot;markdown&quot;)) {
                         generatorActions.push(new MarkdownGenerator(config, logLevel).generate());
                     }
@@ -467,7 +467,7 @@ and build the output documentation files.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                           
+                            <code class="typescript">
                             if (!config.leaveJSONFiles) {
                                 logger.info(&quot;Cleaning up - Removing JSON parse files.&quot;);
                                 deleteDir(parseLoc);
@@ -491,7 +491,7 @@ and build the output documentation files.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">                   
+                            <code class="typescript">
                     logger.error(err.message + err.stack);
                 });
         });

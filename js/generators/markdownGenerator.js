@@ -114,22 +114,26 @@ var MarkdownGenerator = (function () {
     MarkdownGenerator.prototype.replaceAnchors = function (comment, fileName, line, position) {
         var pos = position || 0;
         var match = XRegExp.exec(comment, this.anchorRegExp, pos, false);
+        var replacementText;
         if (!match) {
             return comment;
         }
         else {
             var anchor = match[1].replace(/\//g, "-").toLowerCase();
             if (this.htmlAnchors || this.gitHubHtmlAnchors) {
-                var replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
+                replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
                 if (this.gitHubHtmlAnchors) {
                     replacementText += "[🔗](#user-content-" + anchor + ")" + match[1];
                 }
                 else {
                     replacementText += "[🔗](#" + anchor + ")" + match[1];
                 }
-                comment = comment.replace(match[0], replacementText);
-                return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
             }
+            else {
+                replacementText = "";
+            }
+            comment = comment.replace(match[0], replacementText);
+            return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
         }
     };
     MarkdownGenerator.prototype.replaceLinks = function (comment, fileName, line, position) {

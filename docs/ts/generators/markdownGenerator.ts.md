@@ -76,7 +76,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 ```
  For a discussion anchors in markdown see [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/4) 
 ```typescript
-       
+
         this.htmlAnchors = config.markdownGeneratorOptions.htmlAnchors;
         this.gitHubHtmlAnchors = config.markdownGeneratorOptions.gitHubHtmlAnchors;
     }
@@ -147,13 +147,10 @@ code, comment, long comment
 ```
  Comment
 ```typescript
-               
+
                 if (typeof(file.lines[i].comment) === "string" && file.lines[i].comment !== null) {
                     if (inCodeBlock) {
-```
- Close the current block of code. 
-```typescript
-                        output += "\n" + "```" ;
+                        output += "\n" + "```" ; // Close the current block of code. 
                         inCodeBlock = false;
                     }
 
@@ -163,13 +160,10 @@ code, comment, long comment
 ```
  Code
 ```typescript
-               
+
                 if (typeof(file.lines[i].code) === "string" && file.lines[i].code !== null) {
                     if (!inCodeBlock) {
-```
- Open new code block. 
-```typescript
-                        output += "\n" + "```" + file.type;
+                        output += "\n" + "```" + file.type; // Open new code block. 
                         inCodeBlock = true;
                     }
                     output += "\n" + file.lines[i].code;
@@ -177,10 +171,7 @@ code, comment, long comment
             }
 
             if (inCodeBlock) {
-```
- Close the current block of code. 
-```typescript
-                output += "\n" + "```";
+                output += "\n" + "```"; // Close the current block of code. 
                 inCodeBlock = false;
             }
 
@@ -210,23 +201,21 @@ code, comment, long comment
 Processes a comment line, replacing anchors with markdown anchor link tags
 
 ```typescript
-    replaceAnchors(comment: string,  fileName: string, line: number, position?: number) {
+    replaceAnchors(comment: string,  fileName: string, line: number, position?: number): string {
         let pos = position || 0;
 
 ```
  Look at the line for anchors - replace them with links. 
 ```typescript
-       
+
         let match = XRegExp.exec(comment, this.anchorRegExp, pos, false);
+        let replacementText;
 
         if (!match) {
             return comment;
         } else {
 
-```
-g, "-").toLowerCase();
-```typescript
-            let anchor = match[1].replace(/
+            let anchor = match[1].replace(/\//g, "-").toLowerCase();
 
 ```
 
@@ -236,17 +225,19 @@ For a discussion anchors in markdown see [issue/4](https://github.com/ShieldMyFi
 
 ```typescript
             if (this.htmlAnchors || this.gitHubHtmlAnchors) {
-                let replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
+                replacementText = '<a name="' + anchor + '" id="' + anchor + '" ></a>';
 
                 if (this.gitHubHtmlAnchors) {
                     replacementText += "[🔗](#user-content-" + anchor + ")" + match[1];
                 } else {
                     replacementText += "[🔗](#" + anchor + ")" + match[1];
                 }
-
-                comment = comment.replace(match[0], replacementText);
-                return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
+            } else {
+                replacementText = "";
             }
+
+            comment = comment.replace(match[0], replacementText);
+            return this.replaceAnchors(comment, fileName, line, pos + match[0].length);
         }
     }
 
@@ -265,7 +256,7 @@ This function calls itself recursively until all links are replaced.
 ```
  Look at the line for anchors - replace them with links. 
 ```typescript
-       
+
         let match = XRegExp.exec(comment, this.linkRegExp, pos, false);
 
         if (!match) {
@@ -275,7 +266,7 @@ This function calls itself recursively until all links are replaced.
 ```
  Look external link.
 ```typescript
-           
+
             let tagArray = match[1].split("/");
             let externalTag = _.clone(_.findWhere(this.externalReferences, {anchor: tagArray[0]}));
             if (externalTag) {
@@ -285,10 +276,7 @@ This function calls itself recursively until all links are replaced.
                 }
 
                 logger.debug("found external link: " + externalTag.path);
-```
-g, "-").toLowerCase();
-```typescript
-                let anchor = match[1].replace(/
+                let anchor = match[1].replace(/\//g, "-").toLowerCase();
                 comment = comment.replace(match[0], " [" + match[1] + "](" + externalTag.path + ") ");
                 return this.replaceLinks(comment, fileName, line, pos + match[0].length);
             }
@@ -296,26 +284,23 @@ g, "-").toLowerCase();
 ```
  Look for internal link.
 ```typescript
-           
+
             let internalTag =  _.findWhere(this.tags, {anchor: match[1]});
             if (!internalTag) {
 ```
  If we can't match this link, then let's just stop processing this line and warn the user.
 ```typescript
-               
+
                 logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a cooresponding anchor, so link cannot be created.");
                 return comment;
             } else {
                 logger.debug("found internal link: " + match[1] + " " + internalTag.path);
-```
-g, "-").toLowerCase();
-```typescript
-                let anchor = match[1].replace(/
+                let anchor = match[1].replace(/\//g, "-").toLowerCase();
 
 ```
  Make GitHub-hosted Markdown adjustment. See [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/4) 
 ```typescript
-               
+
                 if (this.gitHubHtmlAnchors) {
                     comment = comment.replace(match[0], " [" + match[1] + "](" + linkPrefix + internalTag.path + ".md#user-content-" + anchor + ")");
                 } else {
@@ -354,26 +339,20 @@ and sucks in the user's defined README.
             name = name.join("/");
 
             for (let x = 0; x < anchors.length; x++) {
-```
-g, "-").toLowerCase();
-```typescript
-                let anchor = anchors[x].linkStub.replace(/
+                let anchor = anchors[x].linkStub.replace(/\//g, "-").toLowerCase();
 
                 anchors[x].path = anchors[x].path + ".md#";
 
 ```
  Adjustment for gitHub anchor links. See [issue/4](https://github.com/ShieldMyFiles/duly-noted/issues/4) 
 ```typescript
-               
+
                 if (this.gitHubHtmlAnchors) {
                     anchors[x].path += "user-content-";
                 }
 
                 if (name !== "") {
-```
-g, "-").toLowerCase() + "-";
-```typescript
-                    anchors[x].path += name.replace(/
+                    anchors[x].path += name.replace(/\//g, "-").toLowerCase() + "-";
                 }
 
                 anchors[x].path += anchor;

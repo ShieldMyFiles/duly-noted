@@ -115,7 +115,7 @@ Parser all files for anchors - produce a [interfaces/IReferenceCollection](../..
 ```
  Once all parse actions are complete write our the files.
 ```typescript
-               
+
                 logger.debug("Saving out internalReferences.json & externalReferences.json");
                 writeFileSync(path.join(parseLoc, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
                 writeFileSync(path.join(parseLoc, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
@@ -138,10 +138,7 @@ When a file is markdown, we parse the whole thing.
             type: "markdown",
             lines: []
         };
-```
- Line numbering traditionally starts at 1
-```typescript
-        let lineNumber = 0;
+        let lineNumber = 0; // Line numbering traditionally starts at 1
         return Q.Promise((resolve, reject) => {
             lineReader.eachLine(fileName, (line, last) => {
                 let thisLine: ILine = {
@@ -149,10 +146,7 @@ When a file is markdown, we parse the whole thing.
                 };
 
                 file.lines.push(thisLine);
-```
- In Markdown all lines are considered comments
-```typescript
-                file.lines[lineNumber].comment = line;
+                file.lines[lineNumber].comment = line; // In Markdown all lines are considered comments
 
                 that.parseComment(file.lines[lineNumber].comment, fileName, lineNumber)
                 .then(() => {
@@ -200,7 +194,7 @@ Parse a file to a file map.
 ```
  Load comment RegEx based on file type
 ```typescript
-           
+
             if (that.commentPatterns[file.type]) {
                 logger.debug("Using comment patten for " + file.type);
                 commentRegExp = new RegExp(that.commentPatterns[file.type]["commentRegExp"]);
@@ -208,21 +202,21 @@ Parse a file to a file map.
 ```
  Set RegEx for open a long comment
 ```typescript
-               
+
                 if (that.commentPatterns[file.type]["longCommentOpenRegExp"]) longCommentOpenRegExp = new RegExp(that.commentPatterns[file.type]["longCommentOpenRegExp"]);
                 else longCommentOpenRegExp = undefined;
 
 ```
  Set RegEx for continues a long comment
 ```typescript
-               
+
                 if (that.commentPatterns[file.type]["longCommentLineRegExp"]) longCommentLineRegExp = new RegExp(that.commentPatterns[file.type]["longCommentLineRegExp"]);
                 else longCommentLineRegExp = undefined;
 
 ```
  Set RegEx for closes a long comment
 ```typescript
-               
+
                 if (that.commentPatterns[file.type]["longCommentCloseRegExp"]) longCommentCloseRegExp = new RegExp(that.commentPatterns[file.type]["longCommentCloseRegExp"]);
                 else longCommentLineRegExp = undefined;
             } else {
@@ -237,7 +231,7 @@ Parse a file to a file map.
 ```
  Read each line of the file.
 ```typescript
-           
+
             lineReader.eachLine(fileName, (line, last) => {
 
                 let thisLine: ILine = {
@@ -248,7 +242,7 @@ Parse a file to a file map.
 ```
  Logic for long comments, either beginning, or already started.
 ```typescript
-               
+
                 let longCommentOpenMatch;
                 if (longCommentOpenRegExp) {
                     longCommentOpenMatch = XRegExp.exec(line, longCommentOpenRegExp, 0, false);
@@ -264,14 +258,14 @@ Parse a file to a file map.
 ```
  We are not inside a long comment - look for a regular comment.
 ```typescript
-               
+
                 if (!insideLongComment) {
                     let match = XRegExp.exec(line, commentRegExp, 0, false);
 
 ```
  Contains a tradition comment
 ```typescript
-                   
+
                     if (match) {
 
                         file.lines[lineNumber].comment = match[1];
@@ -293,7 +287,7 @@ Parse a file to a file map.
 ```
  This is not a comment (code only)
 ```typescript
-                   
+
                     } else {
                         file.lines[lineNumber].code = line;
                         if (last) {
@@ -310,7 +304,7 @@ Parse a file to a file map.
 ```
  Inside a long comment - so the whole thing is a comment
 ```typescript
-               
+
                 } else {
 
                     file.lines[lineNumber].longComment = true;
@@ -322,17 +316,14 @@ Parse a file to a file map.
                         if (match && match[1]) {
                             file.lines[lineNumber].comment = match[1];
                         } else {
-```
- Blank Line inside long comment...
-```typescript
-                            file.lines[lineNumber].comment = "";
+                            file.lines[lineNumber].comment = ""; // Blank Line inside long comment...
                         }
                     }
 
 ```
  If this line contains a long comment closing symbol, then next line isn't long comment, and we can remove the closing tag
 ```typescript
-                   
+
                     if (XRegExp.exec(line, longCommentCloseRegExp, 0)) {
                         file.lines[lineNumber].comment = file.lines[lineNumber].comment.replace(longCommentCloseRegExp, "");
                         insideLongComment = false;
@@ -355,7 +346,7 @@ Parse a file to a file map.
 ```
  If this is the last line, then we can wrap things up.
 ```typescript
-                   
+
                     if (last) {
                         that.writeOutFile(file)
                         .then(() => {
