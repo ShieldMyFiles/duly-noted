@@ -84,8 +84,9 @@ function run() {
     Q.all(getFiles)
         .then(function (results) {
         var files = _.flatten(results);
+        logger.debug(files);
         var referenceParser = new referenceParser_1.ReferenceParser(config, logLevel);
-        referenceParser.parse()
+        referenceParser.parse(files)
             .then(function (response) {
             logger.info("Parsing complete, beginning export.");
             var generatorActions = [];
@@ -111,9 +112,12 @@ function run() {
 exports.run = run;
 function getFilesFromGlob(globString) {
     return Q.Promise(function (resolve, reject) {
-        glob(globString, function (err, files) {
+        glob(globString, { nodir: true }, function (err, files) {
             if (err)
                 reject(err);
+            if (files.length === 0) {
+                logger.warn("No files found for '" + globString + "'");
+            }
             resolve(files);
         });
     });

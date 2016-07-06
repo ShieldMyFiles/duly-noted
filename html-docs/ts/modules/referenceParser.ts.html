@@ -105,7 +105,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::ReferenceParser&quot;);
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">export interface IReferenceParser {
-    parse(): Q.Promise&lt;IReferenceCollection&gt;;
+    parse(files: string[]): Q.Promise&lt;IReferenceCollection&gt;;
 }
 </code>
                         </pre>
@@ -145,7 +145,6 @@ Location to store output JSON file and reference collection maps.</p>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">export class ReferenceParser implements IReferenceParser {
-    files: string[];
     rootCollection: IReferenceCollection;
     anchorRegExp: RegExp;
     commentPatterns: {}[];
@@ -169,7 +168,6 @@ Location to store output JSON file and reference collection maps.</p>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">    constructor(config: IConfig, logLevel?: string) {
-        this.files &#x3D; config.files;
         this.rootCollection &#x3D; new ReferenceCollection(parseLoc, logLevel);
         this.anchorRegExp &#x3D; new RegExp(config.anchorRegExp);
 
@@ -199,10 +197,10 @@ Location to store output JSON file and reference collection maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">    public parse(): Q.Promise&lt;IReferenceCollection&gt; {
+                            <code class="typescript">    public parse(files: string[]): Q.Promise&lt;IReferenceCollection&gt; {
         let that &#x3D; this;
         return Q.Promise&lt;IReferenceCollection&gt;((resolve, reject) &#x3D;&gt; {
-            logger.info(&quot;Starting parse actions for &quot; + that.files.length + &quot; files.&quot;);
+            logger.info(&quot;Starting parse actions for &quot; + files.length + &quot; files.&quot;);
 </code>
                         </pre>
                     </div>
@@ -225,13 +223,13 @@ Location to store output JSON file and reference collection maps.</p>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
                             <code class="typescript">            let parseActions &#x3D; [];
-            for (let i &#x3D; 0; i &lt; that.files.length; i++) {
-                let fileName &#x3D; that.files[i].split(&quot;.&quot;);
+            for (let i &#x3D; 0; i &lt; files.length; i++) {
+                let fileName &#x3D; files[i].split(&quot;.&quot;);
                 let extension &#x3D; fileName[fileName.length - 1];
                 if (extension &#x3D;&#x3D;&#x3D; &quot;md&quot;) {
-                    parseActions.push(that.parseAsMarkdown(that.files[i]));
+                    parseActions.push(that.parseAsMarkdown(files[i]));
                 } else {
-                    parseActions.push(that.parseFile(that.files[i]));
+                    parseActions.push(that.parseFile(files[i]));
                 }
             }
 
@@ -258,6 +256,10 @@ Location to store output JSON file and reference collection maps.</p>
                 writeFileSync(path.join(parseLoc, &quot;internalReferences.json&quot;), JSON.stringify(that.rootCollection), { flag: &quot;w&quot; });
                 writeFileSync(path.join(parseLoc, &quot;externalReferences.json&quot;), JSON.stringify(that.externalReferences), { flag: &quot;w&quot; });
                 resolve(that.rootCollection);
+            })
+            .catch((err) &#x3D;&gt; {
+                logger.error(err.message + err.stack);
+                reject(err);
             });
         });
     }
@@ -308,6 +310,7 @@ Location to store output JSON file and reference collection maps.</p>
                         })
                         .catch((err) &#x3D;&gt; {
                             logger.fatal(err.message);
+                            reject(err);
                         });
                     }
                 });
@@ -547,6 +550,7 @@ Location to store output JSON file and reference collection maps.</p>
                                     })
                                     .catch((err) &#x3D;&gt; {
                                         logger.fatal(err.message);
+                                        reject(err);
                                     });
                                 }
                             });</code>
@@ -577,6 +581,7 @@ Location to store output JSON file and reference collection maps.</p>
                             })
                             .catch((err) &#x3D;&gt; {
                                 logger.fatal(err.message);
+                                reject(err);
                             });
                         }
                     }</code>
@@ -644,6 +649,7 @@ Location to store output JSON file and reference collection maps.</p>
                                 })
                                 .catch((err) &#x3D;&gt; {
                                     logger.fatal(err.message);
+                                    reject(err);
                                 });
                         }
                     });
@@ -673,6 +679,7 @@ Location to store output JSON file and reference collection maps.</p>
                         })
                         .catch((err) &#x3D;&gt; {
                             logger.fatal(err.message);
+                            reject(err);
                         });
                     }
                 }

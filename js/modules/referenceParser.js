@@ -12,7 +12,6 @@ var logger = log4js.getLogger("duly-noted::ReferenceParser");
 exports.parseLoc = "duly-noted";
 var ReferenceParser = (function () {
     function ReferenceParser(config, logLevel) {
-        this.files = config.files;
         this.rootCollection = new referenceCollection_1.ReferenceCollection(exports.parseLoc, logLevel);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
         var commentPatternsFile = path.join(__dirname, "../../bin/comment-patterns.json");
@@ -22,19 +21,19 @@ var ReferenceParser = (function () {
         logger.setLevel(logLevel || "DEBUG");
         logger.debug("ready");
     }
-    ReferenceParser.prototype.parse = function () {
+    ReferenceParser.prototype.parse = function (files) {
         var that = this;
         return Q.Promise(function (resolve, reject) {
-            logger.info("Starting parse actions for " + that.files.length + " files.");
+            logger.info("Starting parse actions for " + files.length + " files.");
             var parseActions = [];
-            for (var i = 0; i < that.files.length; i++) {
-                var fileName = that.files[i].split(".");
+            for (var i = 0; i < files.length; i++) {
+                var fileName = files[i].split(".");
                 var extension = fileName[fileName.length - 1];
                 if (extension === "md") {
-                    parseActions.push(that.parseAsMarkdown(that.files[i]));
+                    parseActions.push(that.parseAsMarkdown(files[i]));
                 }
                 else {
-                    parseActions.push(that.parseFile(that.files[i]));
+                    parseActions.push(that.parseFile(files[i]));
                 }
             }
             Q.all(parseActions)
@@ -43,6 +42,10 @@ var ReferenceParser = (function () {
                 fs_1.writeFileSync(path.join(exports.parseLoc, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
                 fs_1.writeFileSync(path.join(exports.parseLoc, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
                 resolve(that.rootCollection);
+            })
+                .catch(function (err) {
+                logger.error(err.message + err.stack);
+                reject(err);
             });
         });
     };
@@ -72,6 +75,7 @@ var ReferenceParser = (function () {
                         })
                             .catch(function (err) {
                             logger.fatal(err.message);
+                            reject(err);
                         });
                     }
                 });
@@ -150,6 +154,7 @@ var ReferenceParser = (function () {
                                 })
                                     .catch(function (err) {
                                     logger.fatal(err.message);
+                                    reject(err);
                                 });
                             }
                         });
@@ -164,6 +169,7 @@ var ReferenceParser = (function () {
                             })
                                 .catch(function (err) {
                                 logger.fatal(err.message);
+                                reject(err);
                             });
                         }
                     }
@@ -197,6 +203,7 @@ var ReferenceParser = (function () {
                             })
                                 .catch(function (err) {
                                 logger.fatal(err.message);
+                                reject(err);
                             });
                         }
                     });
@@ -208,6 +215,7 @@ var ReferenceParser = (function () {
                         })
                             .catch(function (err) {
                             logger.fatal(err.message);
+                            reject(err);
                         });
                     }
                 }

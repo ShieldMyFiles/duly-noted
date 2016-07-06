@@ -40,7 +40,7 @@ let logger = log4js.getLogger("duly-noted::ReferenceParser");
 
 ```typescript
 export interface IReferenceParser {
-    parse(): Q.Promise<IReferenceCollection>;
+    parse(files: string[]): Q.Promise<IReferenceCollection>;
 }
 
 ```
@@ -56,7 +56,6 @@ export const parseLoc = "duly-noted";
 
 ```typescript
 export class ReferenceParser implements IReferenceParser {
-    files: string[];
     rootCollection: IReferenceCollection;
     anchorRegExp: RegExp;
     commentPatterns: {}[];
@@ -68,7 +67,6 @@ export class ReferenceParser implements IReferenceParser {
 
 ```typescript
     constructor(config: IConfig, logLevel?: string) {
-        this.files = config.files;
         this.rootCollection = new ReferenceCollection(parseLoc, logLevel);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
 
@@ -86,10 +84,10 @@ export class ReferenceParser implements IReferenceParser {
 Parser all files for anchors - produce a [interfaces/IReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection)
 
 ```typescript
-    public parse(): Q.Promise<IReferenceCollection> {
+    public parse(files: string[]): Q.Promise<IReferenceCollection> {
         let that = this;
         return Q.Promise<IReferenceCollection>((resolve, reject) => {
-            logger.info("Starting parse actions for " + that.files.length + " files.");
+            logger.info("Starting parse actions for " + files.length + " files.");
 
 ```
  
@@ -100,13 +98,13 @@ Parser all files for anchors - produce a [interfaces/IReferenceCollection](../..
 
 ```typescript
             let parseActions = [];
-            for (let i = 0; i < that.files.length; i++) {
-                let fileName = that.files[i].split(".");
+            for (let i = 0; i < files.length; i++) {
+                let fileName = files[i].split(".");
                 let extension = fileName[fileName.length - 1];
                 if (extension === "md") {
-                    parseActions.push(that.parseAsMarkdown(that.files[i]));
+                    parseActions.push(that.parseAsMarkdown(files[i]));
                 } else {
-                    parseActions.push(that.parseFile(that.files[i]));
+                    parseActions.push(that.parseFile(files[i]));
                 }
             }
 
@@ -120,6 +118,10 @@ Parser all files for anchors - produce a [interfaces/IReferenceCollection](../..
                 writeFileSync(path.join(parseLoc, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
                 writeFileSync(path.join(parseLoc, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
                 resolve(that.rootCollection);
+            })
+            .catch((err) => {
+                logger.error(err.message + err.stack);
+                reject(err);
             });
         });
     }
@@ -158,6 +160,7 @@ When a file is markdown, we parse the whole thing.
                         })
                         .catch((err) => {
                             logger.fatal(err.message);
+                            reject(err);
                         });
                     }
                 });
@@ -281,6 +284,7 @@ Parse a file to a file map.
                                     })
                                     .catch((err) => {
                                         logger.fatal(err.message);
+                                        reject(err);
                                     });
                                 }
                             });
@@ -298,6 +302,7 @@ Parse a file to a file map.
                             })
                             .catch((err) => {
                                 logger.fatal(err.message);
+                                reject(err);
                             });
                         }
                     }
@@ -339,6 +344,7 @@ Parse a file to a file map.
                                 })
                                 .catch((err) => {
                                     logger.fatal(err.message);
+                                    reject(err);
                                 });
                         }
                     });
@@ -355,6 +361,7 @@ Parse a file to a file map.
                         })
                         .catch((err) => {
                             logger.fatal(err.message);
+                            reject(err);
                         });
                     }
                 }

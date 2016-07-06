@@ -363,6 +363,7 @@ let logger &#x3D; log4js.getLogger(&quot;duly-noted::run&quot;);
     Q.all(getFiles)
         .then((results) &#x3D;&gt; {
             let files &#x3D; _.flatten(results);
+            logger.debug(files);
             let referenceParser &#x3D; new ReferenceParser(config, logLevel);
 </code>
                         </pre>
@@ -383,7 +384,7 @@ all of the files, along with line-by-line comment maps.</p>
 
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <pre>
-                            <code class="typescript">            referenceParser.parse()
+                            <code class="typescript">            referenceParser.parse(files)
                 .then((response) &#x3D;&gt; {
 </code>
                         </pre>
@@ -517,8 +518,11 @@ and build the output documentation files.</p>
                         <pre>
                             <code class="typescript">function getFilesFromGlob(globString: string): Q.Promise&lt;string[]&gt; {
     return Q.Promise&lt;string[]&gt;((resolve, reject) &#x3D;&gt; {
-        glob(globString, (err, files: string[]) &#x3D;&gt; {
+        glob(globString, {nodir: true}, (err, files: string[]) &#x3D;&gt; {
             if (err) reject(err);
+            if (files.length &#x3D;&#x3D;&#x3D; 0) {
+                logger.warn(&quot;No files found for &#x27;&quot; + globString + &quot;&#x27;&quot;);
+            }
             resolve(files);
         });
     });

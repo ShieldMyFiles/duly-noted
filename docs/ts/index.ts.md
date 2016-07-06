@@ -166,6 +166,7 @@ Settings are in order of precedence
     Q.all(getFiles)
         .then((results) => {
             let files = _.flatten(results);
+            logger.debug(files);
             let referenceParser = new ReferenceParser(config, logLevel);
 
 ```
@@ -175,7 +176,7 @@ The output of this will be a JSON map of the references for
 all of the files, along with line-by-line comment maps.
 
 ```typescript
-            referenceParser.parse()
+            referenceParser.parse(files)
                 .then((response) => {
 
 ```
@@ -234,8 +235,11 @@ This is a simple helper to get a set of files from a glob.
 ```typescript
 function getFilesFromGlob(globString: string): Q.Promise<string[]> {
     return Q.Promise<string[]>((resolve, reject) => {
-        glob(globString, (err, files: string[]) => {
+        glob(globString, {nodir: true}, (err, files: string[]) => {
             if (err) reject(err);
+            if (files.length === 0) {
+                logger.warn("No files found for '" + globString + "'");
+            }
             resolve(files);
         });
     });

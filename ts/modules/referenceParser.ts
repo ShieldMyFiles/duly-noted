@@ -36,7 +36,7 @@ let logger = log4js.getLogger("duly-noted::ReferenceParser");
  * ## Interface for ReferenceParser
  */
 export interface IReferenceParser {
-    parse(): Q.Promise<IReferenceCollection>;
+    parse(files: string[]): Q.Promise<IReferenceCollection>;
 }
 
 /** !ReferenceParser/constants/parseLoc
@@ -48,7 +48,6 @@ export const parseLoc = "duly-noted";
  * ## Reference Parser Class
  */
 export class ReferenceParser implements IReferenceParser {
-    files: string[];
     rootCollection: IReferenceCollection;
     anchorRegExp: RegExp;
     commentPatterns: {}[];
@@ -58,7 +57,6 @@ export class ReferenceParser implements IReferenceParser {
      * ### Creates an instance of @ReferenceParser/class
      */
     constructor(config: IConfig, logLevel?: string) {
-        this.files = config.files;
         this.rootCollection = new ReferenceCollection(parseLoc, logLevel);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
 
@@ -74,10 +72,10 @@ export class ReferenceParser implements IReferenceParser {
      * ## Parse 
      * Parser all files for anchors - produce a @interfaces/IReferenceCollection
      */
-    public parse(): Q.Promise<IReferenceCollection> {
+    public parse(files: string[]): Q.Promise<IReferenceCollection> {
         let that = this;
         return Q.Promise<IReferenceCollection>((resolve, reject) => {
-            logger.info("Starting parse actions for " + that.files.length + " files.");
+            logger.info("Starting parse actions for " + files.length + " files.");
 
             /** 
              *  Build a collection of parse actions. 
@@ -86,13 +84,13 @@ export class ReferenceParser implements IReferenceParser {
              *  * Otherwise pass to @ReferenceParser/parseFile 
              */
             let parseActions = [];
-            for (let i = 0; i < that.files.length; i++) {
-                let fileName = that.files[i].split(".");
+            for (let i = 0; i < files.length; i++) {
+                let fileName = files[i].split(".");
                 let extension = fileName[fileName.length - 1];
                 if (extension === "md") {
-                    parseActions.push(that.parseAsMarkdown(that.files[i]));
+                    parseActions.push(that.parseAsMarkdown(files[i]));
                 } else {
-                    parseActions.push(that.parseFile(that.files[i]));
+                    parseActions.push(that.parseFile(files[i]));
                 }
             }
 
@@ -103,6 +101,10 @@ export class ReferenceParser implements IReferenceParser {
                 writeFileSync(path.join(parseLoc, "internalReferences.json"), JSON.stringify(that.rootCollection), { flag: "w" });
                 writeFileSync(path.join(parseLoc, "externalReferences.json"), JSON.stringify(that.externalReferences), { flag: "w" });
                 resolve(that.rootCollection);
+            })
+            .catch((err) => {
+                logger.error(err.message + err.stack);
+                reject(err);
             });
         });
     }
@@ -139,6 +141,7 @@ export class ReferenceParser implements IReferenceParser {
                         })
                         .catch((err) => {
                             logger.fatal(err.message);
+                            reject(err);
                         });
                     }
                 });
@@ -236,6 +239,7 @@ export class ReferenceParser implements IReferenceParser {
                                     })
                                     .catch((err) => {
                                         logger.fatal(err.message);
+                                        reject(err);
                                     });
                                 }
                             });
@@ -250,6 +254,7 @@ export class ReferenceParser implements IReferenceParser {
                             })
                             .catch((err) => {
                                 logger.fatal(err.message);
+                                reject(err);
                             });
                         }
                     }
@@ -285,6 +290,7 @@ export class ReferenceParser implements IReferenceParser {
                                 })
                                 .catch((err) => {
                                     logger.fatal(err.message);
+                                    reject(err);
                                 });
                         }
                     });
@@ -298,6 +304,7 @@ export class ReferenceParser implements IReferenceParser {
                         })
                         .catch((err) => {
                             logger.fatal(err.message);
+                            reject(err);
                         });
                     }
                 }
