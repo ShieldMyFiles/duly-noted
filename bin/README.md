@@ -53,4 +53,4 @@ See [NPM Blog](http://blog.npmjs.org/post/118810260230/building-a-simple-command
 Points all actions to @Index/run
 
 ## /Templates
-Temlates used by the @HtmlGenerator/generate
+Templates used by the @HtmlGenerator/generate

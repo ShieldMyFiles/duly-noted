@@ -100,7 +100,7 @@ var ReferenceParser = (function () {
                 type: fileType_1.getFileType(fileName)
             };
             if (that.commentPatterns[file.type]) {
-                logger.debug("Using comment patten for " + file.type);
+                logger.debug("Using comment pattern for " + file.type);
                 commentRegExp = new RegExp(that.commentPatterns[file.type]["commentRegExp"]);
                 if (that.commentPatterns[file.type]["longCommentOpenRegExp"])
                     longCommentOpenRegExp = new RegExp(that.commentPatterns[file.type]["longCommentOpenRegExp"]);
@@ -116,7 +116,7 @@ var ReferenceParser = (function () {
                     longCommentLineRegExp = undefined;
             }
             else {
-                logger.debug("Using default comment patten.");
+                logger.debug("Using default comment pattern.");
                 commentRegExp = new RegExp(that.commentPatterns["default"]["commentRegExp"]);
                 longCommentOpenRegExp = new RegExp(that.commentPatterns["default"]["longCommentOpenRegExp"]);
                 longCommentLineRegExp = new RegExp(that.commentPatterns["default"]["longCommentLineRegExp"]);

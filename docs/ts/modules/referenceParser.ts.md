@@ -199,7 +199,7 @@ Parse a file to a file map.
 ```typescript
 
             if (that.commentPatterns[file.type]) {
-                logger.debug("Using comment patten for " + file.type);
+                logger.debug("Using comment pattern for " + file.type);
                 commentRegExp = new RegExp(that.commentPatterns[file.type]["commentRegExp"]);
 
 ```
@@ -223,7 +223,7 @@ Parse a file to a file map.
                 if (that.commentPatterns[file.type]["longCommentCloseRegExp"]) longCommentCloseRegExp = new RegExp(that.commentPatterns[file.type]["longCommentCloseRegExp"]);
                 else longCommentLineRegExp = undefined;
             } else {
-                logger.debug("Using default comment patten.");
+                logger.debug("Using default comment pattern.");
                 commentRegExp =  new RegExp(that.commentPatterns["default"]["commentRegExp"]);
                 longCommentOpenRegExp = new RegExp(that.commentPatterns["default"]["longCommentOpenRegExp"]);
                 longCommentLineRegExp = new RegExp(that.commentPatterns["default"]["longCommentLineRegExp"]);
