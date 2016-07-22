@@ -249,7 +249,7 @@ export class MarkdownGenerator implements IMarkdownGenerator {
             let internalTag =  _.findWhere(this.tags, {anchor: match[1]});
             if (!internalTag) {
                 // If we can't match this link, then let's just stop processing this line and warn the user.
-                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a cooresponding anchor, so link cannot be created.");
+                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a corresponding anchor, so link cannot be created.");
                 return comment;
             } else {
                 logger.debug("found internal link: " + match[1] + " " + internalTag.path);

@@ -54,4 +54,4 @@ See [NPM Blog](http://blog.npmjs.org/post/118810260230/building-a-simple-command
 Points all actions to [Index/run](.././ts/index.ts.md#user-content-index-run)
 
 ## /Templates
-Temlates used by the [HtmlGenerator/generate](.././ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-generate)
+Templates used by the [HtmlGenerator/generate](.././ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-generate)

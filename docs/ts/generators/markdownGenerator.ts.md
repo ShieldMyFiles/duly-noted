@@ -291,7 +291,7 @@ This function calls itself recursively until all links are replaced.
  If we can't match this link, then let's just stop processing this line and warn the user.
 ```typescript
 
-                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a cooresponding anchor, so link cannot be created.");
+                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a corresponding anchor, so link cannot be created.");
                 return comment;
             } else {
                 logger.debug("found internal link: " + match[1] + " " + internalTag.path);

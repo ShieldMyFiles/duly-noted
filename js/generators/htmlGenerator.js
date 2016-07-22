@@ -133,7 +133,7 @@ var HtmlGenerator = (function () {
             }
             var internalTag = _.findWhere(this.tags, { anchor: match[1] });
             if (!internalTag) {
-                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a cooresponding anchor, so link cannot be created.");
+                logger.warn("link: " + match[1] + " in " + fileName + ":" + line + ":" + pos + " does not have a corresponding anchor, so link cannot be created.");
                 return comment;
             }
             else {
