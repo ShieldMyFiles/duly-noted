@@ -175,9 +175,8 @@ code, comment, long comment
                 inCodeBlock = false;
             }
 
-            let filePathArray = path.join(outputDir, file.name + ".md").split("/");
-            filePathArray.pop();
-            let filePath = filePathArray.join("/");
+            let filePathFull = path.join(outputDir, file.name + ".md");
+            let filePath = path.parse(filePathFull).dir;
 
             mkdirp(filePath, function (err) {
                 if (err) {

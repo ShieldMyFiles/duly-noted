@@ -78,8 +78,7 @@ export function run() {
             logger.fatal("It looks like you already have a 'duly-noted.json' file. Please just update that one.");
             return;
         } catch (err) {
-            let projectPathArray = __dirname.split("/");
-            let projectPath = projectPathArray.join("/");
+            let projectPath = __dirname;
             let dnJSON = readFileSync(path.join(projectPath, "/../bin/default.duly-noted.json")).toString();
             writeFileSync("duly-noted.json", dnJSON);
             logger.info("duly-noted.json file created. YOU SHOULD UPDATE IT TO FIT YOUR NEEDS.");

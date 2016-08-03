@@ -46,7 +46,6 @@ export interface IReferenceParser {
 ```
  <a name="referenceparser-constants-parseloc" id="referenceparser-constants-parseloc" ></a>[🔗](#user-content-referenceparser-constants-parseloc)ReferenceParser/constants/parseLoc
 Location to store output JSON file and reference collection maps.
-> Note that the `./` is needed here to avoid ENOENT errors on Windows machines. See [issue/10](https://github.com/ShieldMyFiles/duly-noted/issues/10) 
 
 ```typescript
 export const parseLoc = "./duly-noted";
@@ -381,9 +380,10 @@ Writes out a file map
     writeOutFile(file: IFile) {
         let that = this;
         return Q.Promise<{}>((resolve, reject) => {
-            let filePathArray = path.join(parseLoc, file.name + ".json").split("/");
-            filePathArray.pop();
-            let filePath = filePathArray.join("/");
+
+            let filePathFull = path.join(parseLoc, file.name + ".json");
+            let filePath = path.parse(filePathFull).dir;
+
             mkdirp(filePath, function (err) {
                 if (err) {
                     logger.fatal(err.message);

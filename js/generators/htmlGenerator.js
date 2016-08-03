@@ -84,9 +84,8 @@ var HtmlGenerator = (function () {
             }
         }
         var output = this.template(outputMap);
-        var filePathArray = path.join(outputDir, file.name + ".md").split("/");
-        filePathArray.pop();
-        var filePath = filePathArray.join("/");
+        var filePathFull = path.join(outputDir, file.name + ".md");
+        var filePath = path.parse(filePathFull).dir;
         mkdirp(filePath, function (err) {
             if (err) {
                 logger.fatal(err.message);

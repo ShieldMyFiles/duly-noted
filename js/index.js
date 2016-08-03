@@ -39,8 +39,7 @@ function run() {
             return;
         }
         catch (err) {
-            var projectPathArray = __dirname.split("/");
-            var projectPath = projectPathArray.join("/");
+            var projectPath = __dirname;
             var dnJSON = fs_1.readFileSync(path.join(projectPath, "/../bin/default.duly-noted.json")).toString();
             fs_1.writeFileSync("duly-noted.json", dnJSON);
             logger.info("duly-noted.json file created. YOU SHOULD UPDATE IT TO FIT YOUR NEEDS.");

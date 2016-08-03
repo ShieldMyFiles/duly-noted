@@ -94,9 +94,8 @@ var MarkdownGenerator = (function () {
                 output_1 += "\n" + "```";
                 inCodeBlock = false;
             }
-            var filePathArray = path.join(outputDir, file_1.name + ".md").split("/");
-            filePathArray.pop();
-            var filePath = filePathArray.join("/");
+            var filePathFull = path.join(outputDir, file_1.name + ".md");
+            var filePath = path.parse(filePathFull).dir;
             mkdirp(filePath, function (err) {
                 if (err) {
                     logger.fatal(err.message);

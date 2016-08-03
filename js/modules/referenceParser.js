@@ -10,7 +10,6 @@ var Q = require("q");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceParser");
 exports.parseLoc = "./duly-noted";
-logger.debug("parse Loc = " + exports.parseLoc);
 var ReferenceParser = (function () {
     function ReferenceParser(config, logLevel) {
         this.rootCollection = new referenceCollection_1.ReferenceCollection(exports.parseLoc, logLevel);
@@ -227,9 +226,8 @@ var ReferenceParser = (function () {
     ReferenceParser.prototype.writeOutFile = function (file) {
         var that = this;
         return Q.Promise(function (resolve, reject) {
-            var filePathArray = path.join(exports.parseLoc, file.name + ".json").split("/");
-            filePathArray.pop();
-            var filePath = filePathArray.join("/");
+            var filePathFull = path.join(exports.parseLoc, file.name + ".json");
+            var filePath = path.parse(filePathFull).dir;
             mkdirp(filePath, function (err) {
                 if (err) {
                     logger.fatal(err.message);

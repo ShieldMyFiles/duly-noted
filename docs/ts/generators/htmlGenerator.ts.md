@@ -160,10 +160,10 @@ code, comment, long comment
          }
         let output = this.template(outputMap);
 
-        let filePathArray = path.join(outputDir, file.name + ".md").split("/");
-        filePathArray.pop();
-        let filePath = filePathArray.join("/");
 
+        let filePathFull = path.join(outputDir, file.name + ".md");
+        let filePath = path.parse(filePathFull).dir;
+        
         mkdirp(filePath, function (err) {
             if (err) {
                 logger.fatal(err.message);
