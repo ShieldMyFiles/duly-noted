@@ -1,90 +1,90 @@
 # Duly-Noted documentation 
 ### Anchor Collections 
 
-####  
-* [license](./license.md.md#user-content-license) 
-* [comment-patterns](./bin/README.md.md#user-content-comment-patterns) 
-* [defaults](./bin/README.md.md#user-content-defaults) 
-* [default-duly-noted-json](./bin/README.md.md#user-content-default-duly-noted-json) 
-* [duly-noted-entry](./bin/README.md.md#user-content-duly-noted-entry) 
+#### duly-noted 
+* [license](./license.md.md#user-content-duly-noted-license) 
+* [comment-patterns](./bin/README.md.md#user-content-duly-noted-comment-patterns) 
+* [defaults](./bin/README.md.md#user-content-duly-noted-defaults) 
+* [default-duly-noted-json](./bin/README.md.md#user-content-duly-noted-default-duly-noted-json) 
+* [duly-noted-entry](./bin/README.md.md#user-content-duly-noted-duly-noted-entry) 
 
-#### Index 
-* [main](./ts/index.ts.md#user-content-index-main) 
-* [run](./ts/index.ts.md#user-content-index-run) 
-* [init](./ts/index.ts.md#user-content-index-init) 
-* [getFiles](./ts/index.ts.md#user-content-index-getfiles) 
-* [deleteDir](./ts/index.ts.md#user-content-index-deletedir) 
+#### duly-noted/Index 
+* [main](./ts/index.ts.md#user-content-duly-noted-index-main) 
+* [run](./ts/index.ts.md#user-content-duly-noted-index-run) 
+* [init](./ts/index.ts.md#user-content-duly-noted-index-init) 
+* [getFiles](./ts/index.ts.md#user-content-duly-noted-index-getfiles) 
+* [deleteDir](./ts/index.ts.md#user-content-duly-noted-index-deletedir) 
 
-#### HtmlGenerator 
-* [main](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-main) 
-* [class](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-class) 
-* [constructor](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-constructor) 
-* [generate](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-generate) 
-* [processFiles](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-processfiles) 
-* [replaceAnchors](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-replaceanchors) 
-* [replaceLinks](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-replacelinks) 
-* [generateIndexPage](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-generateindexpage) 
-* [getLinkPrefix](./ts/generators/htmlGenerator.ts.md#user-content-htmlgenerator-getlinkprefix) 
+#### duly-noted/HtmlGenerator 
+* [main](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-htmlgenerator-main) 
+* [class](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-htmlgenerator-class) 
+* [constructor](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-htmlgenerator-constructor) 
+* [generate](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-htmlgenerator-generate) 
+* [processFiles](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-htmlgenerator-processfiles) 
+* [replaceAnchors](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-htmlgenerator-replaceanchors) 
+* [replaceLinks](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-htmlgenerator-replacelinks) 
+* [generateIndexPage](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-htmlgenerator-generateindexpage) 
+* [getLinkPrefix](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-htmlgenerator-getlinkprefix) 
 
-#### MarkdownGenerator 
-* [main](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-main) 
-* [class](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-class) 
-* [constructor](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-constructor) 
-* [generate](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-generate) 
-* [processFiles](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-processfiles) 
-* [replaceAnchors](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-replaceanchors) 
-* [replaceLinks](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-replacelinks) 
-* [generateIndexPage](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-generateindexpage) 
-* [getLinkPrefix](./ts/generators/markdownGenerator.ts.md#user-content-markdowngenerator-getlinkprefix) 
+#### duly-noted/MarkdownGenerator 
+* [main](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-markdowngenerator-main) 
+* [class](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-markdowngenerator-class) 
+* [constructor](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-markdowngenerator-constructor) 
+* [generate](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-markdowngenerator-generate) 
+* [processFiles](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-markdowngenerator-processfiles) 
+* [replaceAnchors](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-markdowngenerator-replaceanchors) 
+* [replaceLinks](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-markdowngenerator-replacelinks) 
+* [generateIndexPage](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-markdowngenerator-generateindexpage) 
+* [getLinkPrefix](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-markdowngenerator-getlinkprefix) 
 
-#### ReferenceParser 
-* [main](./ts/modules/referenceParser.ts.md#user-content-referenceparser-main) 
-* [class](./ts/modules/referenceParser.ts.md#user-content-referenceparser-class) 
-* [constructor](./ts/modules/referenceParser.ts.md#user-content-referenceparser-constructor) 
-* [parse](./ts/modules/referenceParser.ts.md#user-content-referenceparser-parse) 
-* [parseAsMarkdown](./ts/modules/referenceParser.ts.md#user-content-referenceparser-parseasmarkdown) 
-* [parseFile](./ts/modules/referenceParser.ts.md#user-content-referenceparser-parsefile) 
-* [writeOutFile](./ts/modules/referenceParser.ts.md#user-content-referenceparser-writeoutfile) 
-* [parseComment](./ts/modules/referenceParser.ts.md#user-content-referenceparser-parsecomment) 
+#### duly-noted/ReferenceParser 
+* [main](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-main) 
+* [class](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-class) 
+* [constructor](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-constructor) 
+* [parse](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-parse) 
+* [parseAsMarkdown](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-parseasmarkdown) 
+* [parseFile](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-parsefile) 
+* [writeOutFile](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-writeoutfile) 
+* [parseComment](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-parsecomment) 
 
-#### ReferenceParser/constants 
-* [parseLoc](./ts/modules/referenceParser.ts.md#user-content-referenceparser-constants-parseloc) 
+#### duly-noted/ReferenceParser/constants 
+* [parseLoc](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-constants-parseloc) 
 
-#### ReferenceParser/example-output 
-* [reference-collection](./ts/modules/referenceParser.ts.md#user-content-referenceparser-example-output-reference-collection) 
-* [code-map](./ts/modules/referenceParser.ts.md#user-content-referenceparser-example-output-code-map) 
+#### duly-noted/ReferenceParser/example-output 
+* [reference-collection](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-example-output-reference-collection) 
+* [code-map](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-example-output-code-map) 
 
-#### ReferenceCollection 
-* [main](./ts/classes/referenceCollection.ts.md#user-content-referencecollection-main) 
-* [class](./ts/classes/referenceCollection.ts.md#user-content-referencecollection-class) 
-* [constructor](./ts/classes/referenceCollection.ts.md#user-content-referencecollection-constructor) 
-* [inflate](./ts/classes/referenceCollection.ts.md#user-content-referencecollection-inflate) 
-* [addAnchor](./ts/classes/referenceCollection.ts.md#user-content-referencecollection-addanchor) 
-* [addSubcollection](./ts/classes/referenceCollection.ts.md#user-content-referencecollection-addsubcollection) 
-* [addAnchorTag](./ts/classes/referenceCollection.ts.md#user-content-referencecollection-addanchortag) 
-* [getAllTags](./ts/classes/referenceCollection.ts.md#user-content-referencecollection-getalltags) 
-* [getTagsByCollection](./ts/classes/referenceCollection.ts.md#user-content-referencecollection-gettagsbycollection) 
+#### duly-noted/ReferenceCollection 
+* [main](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-main) 
+* [class](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-class) 
+* [constructor](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-constructor) 
+* [inflate](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-inflate) 
+* [addAnchor](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-addanchor) 
+* [addSubcollection](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-addsubcollection) 
+* [addAnchorTag](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-addanchortag) 
+* [getAllTags](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-getalltags) 
+* [getTagsByCollection](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-gettagsbycollection) 
 
-#### interfaces 
-* [IConfig](./ts/classes/IConfig.ts.md#user-content-interfaces-iconfig) 
-* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-interfaces-ireferencecollection) 
-* [IAnchor](./ts/classes/referenceCollection.ts.md#user-content-interfaces-ianchor) 
-* [IExternalReference](./ts/classes/IConfig.ts.md#user-content-interfaces-iexternalreference) 
-* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-interfaces-imarkdowngenerator) 
-* [ITag](./ts/classes/referenceCollection.ts.md#user-content-interfaces-itag) 
-* [IReferenceParser](./ts/modules/referenceParser.ts.md#user-content-interfaces-ireferenceparser) 
-* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-interfaces-ihtmlgenerator) 
+#### duly-noted/interfaces 
+* [IConfig](./ts/classes/IConfig.ts.md#user-content-duly-noted-interfaces-iconfig) 
+* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-interfaces-ireferencecollection) 
+* [IAnchor](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-interfaces-ianchor) 
+* [IExternalReference](./ts/classes/IConfig.ts.md#user-content-duly-noted-interfaces-iexternalreference) 
+* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-interfaces-imarkdowngenerator) 
+* [ITag](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-interfaces-itag) 
+* [IReferenceParser](./ts/modules/referenceParser.ts.md#user-content-duly-noted-interfaces-ireferenceparser) 
+* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-interfaces-ihtmlgenerator) 
 
-#### helpers 
-* [q-helpers](./ts/helpers/helpers.ts.md#user-content-helpers-q-helpers) 
-* [getFileType](./ts/helpers/fileType.ts.md#user-content-helpers-getfiletype) 
+#### duly-noted/helpers 
+* [q-helpers](./ts/helpers/helpers.ts.md#user-content-duly-noted-helpers-q-helpers) 
+* [getFileType](./ts/helpers/fileType.ts.md#user-content-duly-noted-helpers-getfiletype) 
 
-#### authors 
-* [chris](./authors.md.md#user-content-authors-chris) 
-* [joe](./authors.md.md#user-content-authors-joe) 
+#### duly-noted/authors 
+* [chris](./authors.md.md#user-content-duly-noted-authors-chris) 
+* [joe](./authors.md.md#user-content-duly-noted-authors-joe) 
 
-#### todo 
-* [report-errors](./ts/index.ts.md#user-content-todo-report-errors) 
+#### duly-noted/todo 
+* [report-errors](./ts/index.ts.md#user-content-duly-noted-todo-report-errors) 
 
 ------------------------------ 
 

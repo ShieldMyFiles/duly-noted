@@ -9,7 +9,8 @@ var lineReader = require("line-reader");
 var Q = require("q");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceParser");
-exports.parseLoc = "duly-noted";
+exports.parseLoc = "./duly-noted";
+logger.debug("parse Loc = " + exports.parseLoc);
 var ReferenceParser = (function () {
     function ReferenceParser(config, logLevel) {
         this.rootCollection = new referenceCollection_1.ReferenceCollection(exports.parseLoc, logLevel);

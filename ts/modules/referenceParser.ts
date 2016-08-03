@@ -41,8 +41,9 @@ export interface IReferenceParser {
 
 /** !ReferenceParser/constants/parseLoc
  * Location to store output JSON file and reference collection maps.
+ * > Note that the `./` is needed here to avoid ENOENT errors on Windows machines. See @issue/10
  */
-export const parseLoc = "duly-noted";
+export const parseLoc = "./duly-noted";
 
 /** !ReferenceParser/class
  * ## Reference Parser Class

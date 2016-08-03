@@ -46,9 +46,10 @@ export interface IReferenceParser {
 ```
  <a name="referenceparser-constants-parseloc" id="referenceparser-constants-parseloc" ></a>[🔗](#user-content-referenceparser-constants-parseloc)ReferenceParser/constants/parseLoc
 Location to store output JSON file and reference collection maps.
+> Note that the `./` is needed here to avoid ENOENT errors on Windows machines. See [issue/10](https://github.com/ShieldMyFiles/duly-noted/issues/10) 
 
 ```typescript
-export const parseLoc = "duly-noted";
+export const parseLoc = "./duly-noted";
 
 ```
  <a name="referenceparser-class" id="referenceparser-class" ></a>[🔗](#user-content-referenceparser-class)ReferenceParser/class
