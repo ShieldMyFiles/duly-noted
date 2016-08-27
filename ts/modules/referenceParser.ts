@@ -61,7 +61,7 @@ export class ReferenceParser implements IReferenceParser {
         this.anchorRegExp = new RegExp(config.anchorRegExp);
 
         let commentPatternsFile = path.join(__dirname, "../../bin/comment-patterns.json");
-        logger.debug("Loading Comment Patterns from " + commentPatternsFile);
+        logger.debug("Loading Comment Patterns from: " + commentPatternsFile);
         this.commentPatterns = JSON.parse(readFileSync(commentPatternsFile).toString());
         this.externalReferences = config.externalReferences;
         logger.setLevel(logLevel || "DEBUG");
@@ -198,6 +198,29 @@ export class ReferenceParser implements IReferenceParser {
             }
 
             let lineNumber = 0;
+
+
+            // This block fo code checks to make sure that the file isn't empty. See @issue/11
+            lineReader.open(fileName, function(err, reader) {
+                if (err) throw err;
+                if (!reader.hasNextLine()) {
+                    let thisLine: ILine = {
+                        number: lineNumber,
+                        code: ""
+                    };
+                    file.lines.push(thisLine);
+                    that.writeOutFile(file)
+                    .then(() => {
+                        resolve(null);
+                        return false;
+                    })
+                    .catch((err) => {
+                        logger.fatal(err.message);
+                        reject(err);
+                    });
+                }
+            });
+
             // Read each line of the file.
             lineReader.eachLine(fileName, (line, last) => {
 

@@ -90,9 +90,11 @@ function run() {
             logger.info("Parsing complete, beginning export.");
             var generatorActions = [];
             if (_.contains(config.generators, "html")) {
+                logger.info("Queueing HTML Parser.");
                 generatorActions.push(new htmlGenerator_1.HtmlGenerator(config, logLevel).generate());
             }
             if (_.contains(config.generators, "markdown")) {
+                logger.info("Queueing Markdown Parser.");
                 generatorActions.push(new markdownGenerator_1.MarkdownGenerator(config, logLevel).generate());
             }
             Q.all(generatorActions)
@@ -101,6 +103,9 @@ function run() {
                     logger.info("Cleaning up - Removing JSON parse files.");
                     deleteDir(referenceParser_1.parseLoc);
                 }
+            })
+                .catch(function (err) {
+                logger.error(err.message + err.stack);
             });
         })
             .catch(function (err) {

@@ -193,6 +193,7 @@ and build the output documentation files.
 ```typescript
 
                     if (_.contains(config.generators, "html")) {
+                        logger.info("Queueing HTML Parser.");
                         generatorActions.push(new HtmlGenerator(config, logLevel).generate());
                     }
 
@@ -201,20 +202,24 @@ and build the output documentation files.
 ```typescript
 
                     if (_.contains(config.generators, "markdown")) {
+                        logger.info("Queueing Markdown Parser.");
                         generatorActions.push(new MarkdownGenerator(config, logLevel).generate());
                     }
 
                     Q.all(generatorActions)
-                        .then(() => {
+                    .then(() => {
 ```
  Once all generators are done we can clean up JSON maps.
 ```typescript
 
-                            if (!config.leaveJSONFiles) {
-                                logger.info("Cleaning up - Removing JSON parse files.");
-                                deleteDir(parseLoc);
-                            }
-                        });
+                        if (!config.leaveJSONFiles) {
+                            logger.info("Cleaning up - Removing JSON parse files.");
+                            deleteDir(parseLoc);
+                        }
+                    })
+                    .catch((err: Error) => {
+                        logger.error(err.message + err.stack);
+                    });
                 })
                 .catch((err: Error) => {
 ```

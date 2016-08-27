@@ -15,7 +15,7 @@ var ReferenceParser = (function () {
         this.rootCollection = new referenceCollection_1.ReferenceCollection(exports.parseLoc, logLevel);
         this.anchorRegExp = new RegExp(config.anchorRegExp);
         var commentPatternsFile = path.join(__dirname, "../../bin/comment-patterns.json");
-        logger.debug("Loading Comment Patterns from " + commentPatternsFile);
+        logger.debug("Loading Comment Patterns from: " + commentPatternsFile);
         this.commentPatterns = JSON.parse(fs_1.readFileSync(commentPatternsFile).toString());
         this.externalReferences = config.externalReferences;
         logger.setLevel(logLevel || "DEBUG");
@@ -123,6 +123,26 @@ var ReferenceParser = (function () {
                 longCommentCloseRegExp = new RegExp(that.commentPatterns["default"]["longCommentCloseRegExp"]);
             }
             var lineNumber = 0;
+            lineReader.open(fileName, function (err, reader) {
+                if (err)
+                    throw err;
+                if (!reader.hasNextLine()) {
+                    var thisLine = {
+                        number: lineNumber,
+                        code: ""
+                    };
+                    file.lines.push(thisLine);
+                    that.writeOutFile(file)
+                        .then(function () {
+                        resolve(null);
+                        return false;
+                    })
+                        .catch(function (err) {
+                        logger.fatal(err.message);
+                        reject(err);
+                    });
+                }
+            });
             lineReader.eachLine(fileName, function (line, last) {
                 var thisLine = {
                     number: lineNumber

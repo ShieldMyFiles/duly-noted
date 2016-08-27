@@ -2,8 +2,8 @@
 ### Anchor Collections 
 
 #### duly-noted 
-* [comment-patterns](./bin/README.md.md#user-content-duly-noted-comment-patterns) 
 * [license](./license.md.md#user-content-duly-noted-license) 
+* [comment-patterns](./bin/README.md.md#user-content-duly-noted-comment-patterns) 
 * [defaults](./bin/README.md.md#user-content-duly-noted-defaults) 
 * [default-duly-noted-json](./bin/README.md.md#user-content-duly-noted-default-duly-noted-json) 
 * [duly-noted-entry](./bin/README.md.md#user-content-duly-noted-duly-noted-entry) 

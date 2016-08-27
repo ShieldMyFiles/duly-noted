@@ -153,22 +153,27 @@ export function run() {
 
                     // Trigger @HtmlGenerator/generate
                     if (_.contains(config.generators, "html")) {
+                        logger.info("Queueing HTML Parser.");
                         generatorActions.push(new HtmlGenerator(config, logLevel).generate());
                     }
 
                     // Trigger @MarkdownGenerator/generate
                     if (_.contains(config.generators, "markdown")) {
+                        logger.info("Queueing Markdown Parser.");
                         generatorActions.push(new MarkdownGenerator(config, logLevel).generate());
                     }
 
                     Q.all(generatorActions)
-                        .then(() => {
-                            // Once all generators are done we can clean up JSON maps.
-                            if (!config.leaveJSONFiles) {
-                                logger.info("Cleaning up - Removing JSON parse files.");
-                                deleteDir(parseLoc);
-                            }
-                        });
+                    .then(() => {
+                        // Once all generators are done we can clean up JSON maps.
+                        if (!config.leaveJSONFiles) {
+                            logger.info("Cleaning up - Removing JSON parse files.");
+                            deleteDir(parseLoc);
+                        }
+                    })
+                    .catch((err: Error) => {
+                        logger.error(err.message + err.stack);
+                    });
                 })
                 .catch((err: Error) => {
                     // !todo/report-errors An overall strategy is needed to identify and report errors.
