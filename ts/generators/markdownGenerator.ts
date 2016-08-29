@@ -318,11 +318,15 @@ export class MarkdownGenerator implements IMarkdownGenerator {
 
         md += "### Anchor Collections \n";
         for (let i = 0; i < outputMap.collections.length; i++) {
-           md += "\n#### " + outputMap.collections[i].name + " \n";
+            let name = outputMap.collections[i].name.split("/");
+            name.shift();
+            name = name.join("/");
 
-           for (let x = 0; x < outputMap.collections[i].anchors.length; x++) {
-               md += "* [" + outputMap.collections[i].anchors[x].anchor + "]" + "(" + outputMap.collections[i].anchors[x].path + ") \n";
-           }
+            md += "\n#### " + name + " \n";
+
+            for (let x = 0; x < outputMap.collections[i].anchors.length; x++) {
+                md += "* [" + outputMap.collections[i].anchors[x].anchor + "]" + "(" + outputMap.collections[i].anchors[x].path + ") \n";
+            }
         }
 
         md += "\n------------------------------ \n";

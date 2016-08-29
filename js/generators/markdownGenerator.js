@@ -207,7 +207,10 @@ var MarkdownGenerator = (function () {
         var md = "# " + this.projectName + " documentation \n";
         md += "### Anchor Collections \n";
         for (var i = 0; i < outputMap.collections.length; i++) {
-            md += "\n#### " + outputMap.collections[i].name + " \n";
+            var name_2 = outputMap.collections[i].name.split("/");
+            name_2.shift();
+            name_2 = name_2.join("/");
+            md += "\n#### " + name_2 + " \n";
             for (var x = 0; x < outputMap.collections[i].anchors.length; x++) {
                 md += "* [" + outputMap.collections[i].anchors[x].anchor + "]" + "(" + outputMap.collections[i].anchors[x].path + ") \n";
             }
@@ -216,13 +219,13 @@ var MarkdownGenerator = (function () {
         md += "\n### Documentation Files \n";
         for (var i = 0; i < outputMap.files.length; i++) {
             var path_1 = outputMap.files[i].split("/");
-            var name_2 = path_1;
+            var name_3 = path_1;
             path_1.shift();
             path_1.unshift(".");
             path_1 = path_1.join("/");
-            name_2.shift();
-            name_2 = name_2.join("/");
-            md += "* [" + name_2 + "](" + path_1 + ") \n";
+            name_3.shift();
+            name_3 = name_3.join("/");
+            md += "* [" + name_3 + "](" + path_1 + ") \n";
         }
         md += "\n------------------------------ \n";
         md += outputMap.readme;
