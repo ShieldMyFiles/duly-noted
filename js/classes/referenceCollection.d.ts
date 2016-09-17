@@ -17,7 +17,6 @@ export declare class ReferenceCollection implements IReferenceCollection {
     id: string;
     anchors: IAnchor[];
     subcollections: IReferenceCollection[];
-    logLevel: string;
     constructor(id: string, logLevel?: string);
     inflate(collection: IReferenceCollection): this;
     addAnchor(anchor: IAnchor): void;

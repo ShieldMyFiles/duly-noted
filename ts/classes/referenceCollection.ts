@@ -1,7 +1,9 @@
-/** !ReferenceCollection/main
+/** !ReferenceCollection
  *# Reference Collection
  *@authors/chris
  *@license
+ * 
+ * TEST @ReferenceCollection
  * 
  * This reference parser that parses all the links and anchors in your code - the output of which is two reference collections:
  * * `internalReferences.json`
@@ -10,6 +12,7 @@
 import {findWhere, findIndex} from "underscore";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::ReferenceCollection");
+let logRunLevel: string;
 
 /**
  * ## !interfaces/IReferenceCollection
@@ -45,14 +48,13 @@ export class ReferenceCollection implements IReferenceCollection {
     id: string;
     anchors: IAnchor[];
     subcollections: IReferenceCollection[];
-    logLevel: string;
 
     /** !ReferenceCollection/constructor
      * ### Creates an instance of @ReferenceCollection/class
      */
     constructor(id: string, logLevel?: string) {
-        this.logLevel = logLevel || "DEBUG";
-        logger.setLevel(logLevel);
+        logRunLevel = logLevel || "DEBUG";
+        logger.setLevel(logRunLevel);
         this.id = id;
         this.anchors = [];
         this.subcollections = [];
@@ -89,19 +91,15 @@ export class ReferenceCollection implements IReferenceCollection {
      * Add a subcollection to this collection in the form of an @interfaces/IReferenceCollection
      */
     public addSubcollection(collection: IReferenceCollection): void {
-        let existingAnchor = findWhere(this.anchors, {id: collection.id});
-        if (existingAnchor) {
-            logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
-            return;
-        }
 
-        let existingCollection = findWhere(this.anchors, {id: collection.id});
+        let existingCollection = findWhere(this.subcollections, {id: collection.id});
         if (existingCollection) {
             logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as a subcollection of '" + collection.id +  "'");
             return;
         }
 
         this.subcollections.push(collection);
+        logger.debug("Added subcollection '" + collection.id + "' to '" + this.id +"'");
     }
 
     /** !ReferenceCollection/addAnchorTag
@@ -128,9 +126,8 @@ export class ReferenceCollection implements IReferenceCollection {
             });
 
             if (i > -1) {
-            logger.debug("Collection present:" + collectionTag);
-
-            return this.subcollections[i].addAnchorTag(anchorTag, fileName, lineNumber);
+                logger.debug("Collection present: " + collectionTag);
+                return this.subcollections[i].addAnchorTag(anchorTag, fileName, lineNumber);
             } else {
                 logger.debug("Collection not present:" + collectionTag);
                 let newSubCollection = new ReferenceCollection(collectionTag);
@@ -150,30 +147,34 @@ export class ReferenceCollection implements IReferenceCollection {
         parentPath = parentPath || "";
         depth = depth || 0;
 
+        logger.debug("parentPath " + parentPath + " depth " + depth);
+
         let allTags: ITag[] = [];
         if (depth > 0) {
-
-            for (let i = 0; i < this.anchors.length; i++) {
-                if (parentPath !== "" && parentPath !== null) {
+            if (parentPath !== "" && parentPath !== null) {
+                for (let i = 0; i < this.anchors.length; i++) {
                     allTags.push({
                         anchor: parentPath + "/" + this.id + "/" + this.anchors[i].id,
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
+                }
 
-                    for (let i = 0; i < this.subcollections.length; i++) {
-                        allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id,  depth + 1));
-                    }
-                } else {
+                for (let i = 0; i < this.subcollections.length; i++) {
+                    allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id,  depth + 1));
+                }
+
+            } else {
+                for (let i = 0; i < this.anchors.length; i++) {
                     allTags.push({
                         anchor: this.id + "/" + this.anchors[i].id,
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
+                }
 
-                    for (let i = 0; i < this.subcollections.length; i++) {
-                        allTags = allTags.concat(this.subcollections[i].getAllTags(this.id,  depth + 1));
-                    }
+                for (let i = 0; i < this.subcollections.length; i++) {
+                    allTags = allTags.concat(this.subcollections[i].getAllTags(this.id,  depth + 1));
                 }
             }
         } else {

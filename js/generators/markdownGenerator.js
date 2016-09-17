@@ -22,6 +22,7 @@ var MarkdownGenerator = (function () {
         this.linkRegExp = new RegExp(config.linkRegExp);
         this.referenceCollection = new referenceCollection_1.ReferenceCollection("").inflate(JSON.parse(fs_1.readFileSync(path.join(referenceParser_1.parseLoc, "internalReferences.json")).toString()));
         this.tags = this.referenceCollection.getAllTags();
+        logger.debug(JSON.stringify(this.tags));
         this.readme = config.readme;
         this.projectName = config.projectName;
         this.indexFile = config.indexFile;

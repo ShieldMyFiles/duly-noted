@@ -1,8 +1,10 @@
 
- <a name="referencecollection-main" id="referencecollection-main" ></a>[🔗](#user-content-referencecollection-main)ReferenceCollection/main
+ <a name="referencecollection" id="referencecollection" ></a>[🔗](#user-content-referencecollection)ReferenceCollection
 
 
 
+
+TEST [ReferenceCollection](../.././ts/classes/referenceCollection.ts.md#user-content-referencecollection)
 
 This reference parser that parses all the links and anchors in your code - the output of which is two reference collections:
 * `internalReferences.json`
@@ -12,6 +14,7 @@ This reference parser that parses all the links and anchors in your code - the o
 import {findWhere, findIndex} from "underscore";
 import log4js = require("log4js");
 let logger = log4js.getLogger("duly-noted::ReferenceCollection");
+let logRunLevel: string;
 
 ```
 
@@ -55,7 +58,6 @@ export class ReferenceCollection implements IReferenceCollection {
     id: string;
     anchors: IAnchor[];
     subcollections: IReferenceCollection[];
-    logLevel: string;
 
 ```
  <a name="referencecollection-constructor" id="referencecollection-constructor" ></a>[🔗](#user-content-referencecollection-constructor)ReferenceCollection/constructor
@@ -63,8 +65,8 @@ export class ReferenceCollection implements IReferenceCollection {
 
 ```typescript
     constructor(id: string, logLevel?: string) {
-        this.logLevel = logLevel || "DEBUG";
-        logger.setLevel(logLevel);
+        logRunLevel = logLevel || "DEBUG";
+        logger.setLevel(logRunLevel);
         this.id = id;
         this.anchors = [];
         this.subcollections = [];
@@ -107,19 +109,15 @@ Add a subcollection to this collection in the form of an [interfaces/IReferenceC
 
 ```typescript
     public addSubcollection(collection: IReferenceCollection): void {
-        let existingAnchor = findWhere(this.anchors, {id: collection.id});
-        if (existingAnchor) {
-            logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
-            return;
-        }
 
-        let existingCollection = findWhere(this.anchors, {id: collection.id});
+        let existingCollection = findWhere(this.subcollections, {id: collection.id});
         if (existingCollection) {
             logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as a subcollection of '" + collection.id +  "'");
             return;
         }
 
         this.subcollections.push(collection);
+        logger.debug("Added subcollection '" + collection.id + "' to '" + this.id +"'");
     }
 
 ```
@@ -148,9 +146,8 @@ to place anchor in the correct place.
             });
 
             if (i > -1) {
-            logger.debug("Collection present:" + collectionTag);
-
-            return this.subcollections[i].addAnchorTag(anchorTag, fileName, lineNumber);
+                logger.debug("Collection present: " + collectionTag);
+                return this.subcollections[i].addAnchorTag(anchorTag, fileName, lineNumber);
             } else {
                 logger.debug("Collection not present:" + collectionTag);
                 let newSubCollection = new ReferenceCollection(collectionTag);
@@ -172,30 +169,34 @@ by recursively culling all of the tags.
         parentPath = parentPath || "";
         depth = depth || 0;
 
+        logger.debug("parentPath " + parentPath + " depth " + depth);
+
         let allTags: ITag[] = [];
         if (depth > 0) {
-
-            for (let i = 0; i < this.anchors.length; i++) {
-                if (parentPath !== "" && parentPath !== null) {
+            if (parentPath !== "" && parentPath !== null) {
+                for (let i = 0; i < this.anchors.length; i++) {
                     allTags.push({
                         anchor: parentPath + "/" + this.id + "/" + this.anchors[i].id,
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
+                }
 
-                    for (let i = 0; i < this.subcollections.length; i++) {
-                        allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id,  depth + 1));
-                    }
-                } else {
+                for (let i = 0; i < this.subcollections.length; i++) {
+                    allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id,  depth + 1));
+                }
+
+            } else {
+                for (let i = 0; i < this.anchors.length; i++) {
                     allTags.push({
                         anchor: this.id + "/" + this.anchors[i].id,
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
+                }
 
-                    for (let i = 0; i < this.subcollections.length; i++) {
-                        allTags = allTags.concat(this.subcollections[i].getAllTags(this.id,  depth + 1));
-                    }
+                for (let i = 0; i < this.subcollections.length; i++) {
+                    allTags = allTags.concat(this.subcollections[i].getAllTags(this.id,  depth + 1));
                 }
             }
         } else {

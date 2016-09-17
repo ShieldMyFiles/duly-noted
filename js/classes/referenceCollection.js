@@ -2,10 +2,11 @@
 var underscore_1 = require("underscore");
 var log4js = require("log4js");
 var logger = log4js.getLogger("duly-noted::ReferenceCollection");
+var logRunLevel;
 var ReferenceCollection = (function () {
     function ReferenceCollection(id, logLevel) {
-        this.logLevel = logLevel || "DEBUG";
-        logger.setLevel(logLevel);
+        logRunLevel = logLevel || "DEBUG";
+        logger.setLevel(logRunLevel);
         this.id = id;
         this.anchors = [];
         this.subcollections = [];
@@ -26,17 +27,13 @@ var ReferenceCollection = (function () {
         this.anchors.push(anchor);
     };
     ReferenceCollection.prototype.addSubcollection = function (collection) {
-        var existingAnchor = underscore_1.findWhere(this.anchors, { id: collection.id });
-        if (existingAnchor) {
-            logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as an anchor " + existingAnchor.file + ":" + existingAnchor.line);
-            return;
-        }
-        var existingCollection = underscore_1.findWhere(this.anchors, { id: collection.id });
+        var existingCollection = underscore_1.findWhere(this.subcollections, { id: collection.id });
         if (existingCollection) {
             logger.error("Cannot add collection '" + collection.id + "' from: " + collection.anchors[0].file + " because it was already defined as a subcollection of '" + collection.id + "'");
             return;
         }
         this.subcollections.push(collection);
+        logger.debug("Added subcollection '" + collection.id + "' to '" + this.id + "'");
     };
     ReferenceCollection.prototype.addAnchorTag = function (anchorTag, fileName, lineNumber) {
         logger.debug("processing new anchorTag: " + JSON.stringify(anchorTag));
@@ -55,7 +52,7 @@ var ReferenceCollection = (function () {
                 return item.id === collectionTag_1;
             });
             if (i > -1) {
-                logger.debug("Collection present:" + collectionTag_1);
+                logger.debug("Collection present: " + collectionTag_1);
                 return this.subcollections[i].addAnchorTag(anchorTag, fileName, lineNumber);
             }
             else {
@@ -70,28 +67,31 @@ var ReferenceCollection = (function () {
     ReferenceCollection.prototype.getAllTags = function (parentPath, depth) {
         parentPath = parentPath || "";
         depth = depth || 0;
+        logger.debug("parentPath " + parentPath + " depth " + depth);
         var allTags = [];
         if (depth > 0) {
-            for (var i = 0; i < this.anchors.length; i++) {
-                if (parentPath !== "" && parentPath !== null) {
+            if (parentPath !== "" && parentPath !== null) {
+                for (var i = 0; i < this.anchors.length; i++) {
                     allTags.push({
                         anchor: parentPath + "/" + this.id + "/" + this.anchors[i].id,
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
-                    for (var i_1 = 0; i_1 < this.subcollections.length; i_1++) {
-                        allTags = allTags.concat(this.subcollections[i_1].getAllTags(parentPath + "/" + this.id, depth + 1));
-                    }
                 }
-                else {
+                for (var i = 0; i < this.subcollections.length; i++) {
+                    allTags = allTags.concat(this.subcollections[i].getAllTags(parentPath + "/" + this.id, depth + 1));
+                }
+            }
+            else {
+                for (var i = 0; i < this.anchors.length; i++) {
                     allTags.push({
                         anchor: this.id + "/" + this.anchors[i].id,
                         path: this.anchors[i].file,
                         linkStub: this.anchors[i].id
                     });
-                    for (var i_2 = 0; i_2 < this.subcollections.length; i_2++) {
-                        allTags = allTags.concat(this.subcollections[i_2].getAllTags(this.id, depth + 1));
-                    }
+                }
+                for (var i = 0; i < this.subcollections.length; i++) {
+                    allTags = allTags.concat(this.subcollections[i].getAllTags(this.id, depth + 1));
                 }
             }
         }

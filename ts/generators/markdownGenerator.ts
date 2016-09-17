@@ -61,6 +61,9 @@ export class MarkdownGenerator implements IMarkdownGenerator {
         this.linkRegExp = new RegExp(config.linkRegExp);
         this.referenceCollection = new ReferenceCollection("").inflate(JSON.parse(readFileSync(path.join(parseLoc, "internalReferences.json")).toString()));
         this.tags = this.referenceCollection.getAllTags();
+
+        logger.debug(JSON.stringify(this.tags));
+
         this.readme = config.readme;
         this.projectName = config.projectName;
         this.indexFile = config.indexFile;

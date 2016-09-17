@@ -2,6 +2,7 @@
 ### Anchor Collections 
 
 ####  
+* [ReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection) 
 * [license](./license.md.md#user-content-duly-noted-license) 
 * [comment-patterns](./bin/README.md.md#user-content-duly-noted-comment-patterns) 
 * [defaults](./bin/README.md.md#user-content-duly-noted-defaults) 
@@ -54,8 +55,25 @@
 * [reference-collection](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-example-output-reference-collection) 
 * [code-map](./ts/modules/referenceParser.ts.md#user-content-duly-noted-referenceparser-example-output-code-map) 
 
+#### interfaces 
+* [IConfig](./ts/classes/IConfig.ts.md#user-content-duly-noted-interfaces-iconfig) 
+* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-interfaces-ireferencecollection) 
+* [IAnchor](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-interfaces-ianchor) 
+* [IExternalReference](./ts/classes/IConfig.ts.md#user-content-duly-noted-interfaces-iexternalreference) 
+* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-interfaces-imarkdowngenerator) 
+* [IReferenceParser](./ts/modules/referenceParser.ts.md#user-content-duly-noted-interfaces-ireferenceparser) 
+* [ITag](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-interfaces-itag) 
+* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-interfaces-ihtmlgenerator) 
+
+#### helpers 
+* [q-helpers](./ts/helpers/helpers.ts.md#user-content-duly-noted-helpers-q-helpers) 
+* [getFileType](./ts/helpers/fileType.ts.md#user-content-duly-noted-helpers-getfiletype) 
+
+#### authors 
+* [chris](./authors.md.md#user-content-duly-noted-authors-chris) 
+* [joe](./authors.md.md#user-content-duly-noted-authors-joe) 
+
 #### ReferenceCollection 
-* [main](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-main) 
 * [class](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-class) 
 * [constructor](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-constructor) 
 * [inflate](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-inflate) 
@@ -65,26 +83,8 @@
 * [getAllTags](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-getalltags) 
 * [getTagsByCollection](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-referencecollection-gettagsbycollection) 
 
-#### interfaces 
-* [IConfig](./ts/classes/IConfig.ts.md#user-content-duly-noted-interfaces-iconfig) 
-* [IReferenceCollection](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-interfaces-ireferencecollection) 
-* [IAnchor](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-interfaces-ianchor) 
-* [IExternalReference](./ts/classes/IConfig.ts.md#user-content-duly-noted-interfaces-iexternalreference) 
-* [IMarkdownGenerator](./ts/generators/markdownGenerator.ts.md#user-content-duly-noted-interfaces-imarkdowngenerator) 
-* [ITag](./ts/classes/referenceCollection.ts.md#user-content-duly-noted-interfaces-itag) 
-* [IReferenceParser](./ts/modules/referenceParser.ts.md#user-content-duly-noted-interfaces-ireferenceparser) 
-* [IHtmlGenerator](./ts/generators/htmlGenerator.ts.md#user-content-duly-noted-interfaces-ihtmlgenerator) 
-
-#### helpers 
-* [q-helpers](./ts/helpers/helpers.ts.md#user-content-duly-noted-helpers-q-helpers) 
-* [getFileType](./ts/helpers/fileType.ts.md#user-content-duly-noted-helpers-getfiletype) 
-
 #### todo 
 * [report-errors](./ts/index.ts.md#user-content-duly-noted-todo-report-errors) 
-
-#### authors 
-* [chris](./authors.md.md#user-content-duly-noted-authors-chris) 
-* [joe](./authors.md.md#user-content-duly-noted-authors-joe) 
 
 ------------------------------ 
 
